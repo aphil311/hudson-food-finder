@@ -28,7 +28,7 @@
 
 
 ### Built With
-[![Bootstrap][Bootstrap.com]][Bootstrap-url] [![Flask][Flask.com]][Flask-url] [![PostgreSQL][PostgreSQL.com]][PostgreSQL-url]
+[![Bootstrap][Bootstrap.com]][Bootstrap-url] [![Flask][Flask.com]][Flask-url] [![PostgreSQL][PostgreSQL.com]][PostgreSQL-url] [![Jinja][Jinja.com]][Jinja-url] [![Render][Render.com]][Render-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,6 +114,11 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [Bootstrap-url]: https://getbootstrap.com
 [Flask.com]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
 [Flask-url]: https://flask.palletsprojects.com/en/2.2.x/
+[Jinja.com]: https://img.shields.io/badge/jinja-cccccc.svg?style=for-the-badge&logo=jinja&logoColor=black
+[Jinja-url]: https://jinja.palletsprojects.com/en/3.1.x/
+[Render.com]: https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white
+[Render-url]: https://render.com
+
 [PostgreSQL.com]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
 [PostgreSQL-url]: https://www.postgresql.org
 
