@@ -3,7 +3,7 @@
 import argparse
 import sys
 import wsgiref.simple_server as wss
-import application
+import app
 
 def main():
     # handle arguments
@@ -15,7 +15,7 @@ def main():
     port = args.port
 
     try:
-        httpd = wss.make_server('0.0.0.0', port, application.app)
+        httpd = wss.make_server('0.0.0.0', port, app.app)
         print('Listening on port', port, '...')
         httpd.serve_forever()
     except Exception as ex:
