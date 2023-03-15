@@ -20,7 +20,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 **Overview:** This a final project for COS333 - Advanced Programming Techniques by Aidan Phillips, Yousef Amin, and Zain Ahmad. The course is taught by Professor Dondero and our group's TA is Oleg Golev.
+
 **Background:** In early 2021, the Hudson County Department of Health and Human Services (HHS) convened the Food Security Task Force to guide the development and implementation of a plan to help ensure that the long-term food needs of Hudson County residents are met. A 2021 needs assessment of over 10,000 Hudson County residents found that more than half of respondents did not know where they could go for food assistance.
+
 **Goals:** Creating a central information hub for residents to access services and food assistance is a priority for the Task Force, and the goal of this project is to develop an app that will allow residents to find food resources around the County. Requests include that it be mobile-friendly, interactive, searchable directory of supportive food resources — pantries, food services, farmers markets, pop-up food distributions, produce prescription programs with food farmacies, free school meals, and potentially stores that accept SNAP/WIC - with user-friendly interfaces for both staff of HHS and the public.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
