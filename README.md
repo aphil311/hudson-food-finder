@@ -25,8 +25,6 @@
 
 **Goals:** Creating a central information hub for residents to access services and food assistance is a priority for the Task Force, and the goal of this project is to develop an app that will allow residents to find food resources around the County. Requests include that it be mobile-friendly, interactive, searchable directory of supportive food resources — pantries, food services, farmers markets, pop-up food distributions, produce prescription programs with food farmacies, free school meals, and potentially stores that accept SNAP/WIC - with user-friendly interfaces for both staff of HHS and the public.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ### Built With
@@ -58,8 +56,6 @@ It is assumed that you are using Python in your virtual environment for installa
    pip install -r requirements.txt
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- USAGE EXAMPLES -->
@@ -82,16 +78,12 @@ This project can be run locally by running `python runserver.py <port>` and navi
 
 See the [open issues](https://github.com/aphil311/hudson_food_finder/issues) for a full list of proposed features (and known issues).
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
