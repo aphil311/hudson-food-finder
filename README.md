@@ -19,7 +19,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-**Overview:** This a final project for COS333 - Advanced Programming Techniques by Aidan Phillips, Yousef Amin, and Zain Ahmad. The course is taught by Professor Dondero and our group's TA is Oleg Golev.
+**Overview:** This a final project for COS333 - Advanced Programming Techniques by Aidan Phillips, Yousef Amin, and Zain Ahmed. The course is taught by Professor Dondero and our group's TA is Oleg Golev.
 
 **Background:** In early 2021, the Hudson County Department of Health and Human Services (HHS) convened the Food Security Task Force to guide the development and implementation of a plan to help ensure that the long-term food needs of Hudson County residents are met. A 2021 needs assessment of over 10,000 Hudson County residents found that more than half of respondents did not know where they could go for food assistance.
 
@@ -28,7 +28,7 @@
 
 
 ### Built With
-[![Bootstrap][Bootstrap.com]][Bootstrap-url] [![Flask][Flask.com]][Flask-url] [![PostgreSQL][PostgreSQL.com]][PostgreSQL-url] [![Jinja][Jinja.com]][Jinja-url] [![Render][Render.com]][Render-url]
+[![Bootstrap][Bootstrap.com]][Bootstrap-url] [![Flask][Flask.com]][Flask-url] [![PostgreSQL][PostgreSQL.com]][PostgreSQL-url] [![Jinja][Jinja.com]][Jinja-url] [![Render][Render.com]][Render-url] [![Amazon][AWS.com]][AWS-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -118,6 +118,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [Jinja-url]: https://jinja.palletsprojects.com/en/3.1.x/
 [Render.com]: https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white
 [Render-url]: https://render.com
+[AWS.com]:https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white
+[AWS-url]: https://aws.amazon.com
+
 
 [PostgreSQL.com]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
 [PostgreSQL-url]: https://www.postgresql.org
