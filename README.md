@@ -19,7 +19,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-**Overview:** This a final project for COS333 - Advanced Programming Techniques by Aidan Phillips, Yousef Amin, and Zain Ahmad. The course is taught by Professor Dondero and our group's TA is Oleg Golev.
+**Overview:** This a final project for COS333 - Advanced Programming Techniques by Aidan Phillips, Yousef Amin, and Zain Ahmed. The course is taught by Professor Dondero and our group's TA is Oleg Golev.
 
 **Background:** In early 2021, the Hudson County Department of Health and Human Services (HHS) convened the Food Security Task Force to guide the development and implementation of a plan to help ensure that the long-term food needs of Hudson County residents are met. A 2021 needs assessment of over 10,000 Hudson County residents found that more than half of respondents did not know where they could go for food assistance.
 
