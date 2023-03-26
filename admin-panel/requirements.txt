@@ -1,0 +1,5 @@
+Flask
+gunicorn
+SQLAlchemy
+psycopg2
+python-decouple

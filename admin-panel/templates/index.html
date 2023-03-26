@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/static/styles.css">
+<html>
+<head>
+    <title>Hudson County Food Finder</title>
+</head>
+<body>
+    <div>
+        <table>
+            <tr>
+                <td>Offering</td>
+                <td>Days Open</td>
+                <td>Days Description</td>
+                <td>Start Time</td>
+                <td>End Time</td>
+                <td>Start Date</td>
+                <td>End Date</td>
+                <td>Primary Service</td>
+                <td>Group Served</td>
+                <td>Other Services</td>
+                <td>Description</td>
+            </tr>
+            {% for offering in offerings %}
+            <tr>
+                <td>{{ offering.get_org_id() }}</td>
+                <td>{{ offering.get_service() }}</td>
+                <td>{{ offering.get_other_services() }}</td>
+                <td>{{ offering.get_people_group() }}</td>
+                <td>{{ offering.get_description() }}</td>
+                <td>{{ offering.get_start_time() }}</td>
+                <td>{{ offering.get_end_time() }}</td>
+                <td>{{ offering.get_start_date() }}</td>
+                <td>{{ offering.get_end_date() }}</td>
+                <td>{{ offering.get_days() }}</td>
+                <td>{{ offering.get_off_id() }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
