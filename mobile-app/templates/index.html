@@ -14,25 +14,17 @@
         </form>
         <button style="margin-left: auto;"><i class="fa fa-filter"></i></button>
     </div>
+    {% for offering in offerings %}
     <div class="offering flex-container">
         <img class="offering-logo" src="/static/assets/ymca.png" alt="">
         <div class="offering-info">
-            <p>Passiac YMCA</p>
-            <p>75 High St. Passiac, NJ</p>
-            <p>Every 1st Friday</p>
-            <p>9am - 5pm</p>
+            <p>{{ offering.get_description() }}</p>
+            <p>{{ offering.get_daysf() }}</p>
+            <p>{{ offering.get_start_timef() }} to {{ offering.get_end_timef() }}</p>
+            <p>{{ offering.get_start_datef() }} until {{ offering.get_end_datef() }}</p>
         </div>
     </div>
     <hr>
-    <div class="offering flex-container">
-        <img class="offering-logo" src="/static/assets/ymca.png" alt="">
-        <div class="offering-info">
-            <p>Passiac YMCA</p>
-            <p>75 High St. Passiac, NJ</p>
-            <p>Monday, Wednesday, Friday</p>
-            <p>9am - 5pm</p>
-        </div>
-    </div>
-    <hr>
+    {% endfor %}
 </body>
 </html>
