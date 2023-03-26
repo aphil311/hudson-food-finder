@@ -8,9 +8,16 @@
 import flask
 import database
 
+#-----------------------------------------------------------------------
 app = flask.Flask(__name__, template_folder='templates',
     static_folder='static')
+#-----------------------------------------------------------------------
 
+#-----------------------------------------------------------------------
+# index()
+# Parameters: none
+# Returns: the rendered index.html template
+#-----------------------------------------------------------------------
 @app.route('/')
 def index():
     offerings = database.find_offerings(('%', '%', '%', '%', '%', '%',

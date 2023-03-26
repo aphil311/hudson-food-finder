@@ -1,14 +1,26 @@
 #!/usr/bin/env python
 
+#-----------------------------------------------------------------------
+# runserver.py
+# Authors: Aidan Phillips
+# Starts the server
+#-----------------------------------------------------------------------
+
 import argparse
 import sys
 import wsgiref.simple_server as wss
 import app
 
+#-----------------------------------------------------------------------
+# main()
+# Parameters: none
+# Returns: nothing
+# Handles command line arguments and starts the server
+#-----------------------------------------------------------------------
 def main():
     # handle arguments
     parser = argparse.ArgumentParser(
-        description='The registrar application')
+        description='The mobile client application')
     parser.add_argument('port', type=int,
         help='the port at which the server should listen')
     args = parser.parse_args()
