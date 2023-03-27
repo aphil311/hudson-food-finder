@@ -7,9 +7,11 @@
 </head>
 <body>
     <h1>Hudson County Food Finder Admin Panel</h1>
-    {% include 'button-panel.html' %}
-    <div>
-        {% include 'admin-table.html' %}
-    </div>
+    <p>Upload a file to bulk edit the table</p>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file">
+        <input type="submit" value="Upload" name="submit">
+    <p>{{ message }}</p>
+    <a href="/">Return Home</a>
 </body>
 </html>

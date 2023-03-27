@@ -6,6 +6,7 @@
 # Main file for generating views for the admin panel web app
 #-----------------------------------------------------------------------
 import flask
+import os
 import database
 
 #-----------------------------------------------------------------------
@@ -21,9 +22,25 @@ app = flask.Flask(__name__, template_folder='templates',
 @app.route('/')
 def index():
     # only show offerings from the logged in organization
-    org_id = '1'
-    offerings = database.find_offerings(('%', '%', '%', '%', '%', '%',
-        org_id, 'start_time'))
+    offerings = database.find_offerings(('%'))
     html_code = flask.render_template('index.html',
         offerings=offerings)
+    return flask.make_response(html_code)
+
+@app.route('/upload')
+def upload():
+    html_code = flask.render_template('upload.html', message='')
+    return flask.make_response(html_code)
+
+@app.route('/upload', methods=['POST'])
+def upload_confirmation():
+    file = flask.request.files['file']
+    file.save('static/files/' + file.filename)
+    status = database.bulk_update('static/files/' + file.filename)
+    if status == 0:
+        message = 'file successfully uploaded'
+    else:
+        message = 'file failed to upload'
+    os.remove('static/files/' + file.filename)
+    html_code = flask.render_template('upload.html', message=message)
     return flask.make_response(html_code)

@@ -1,0 +1,28 @@
+<table>
+    <tr>
+        <th>Organization</th>
+        <th>Offering</th>
+        <th>Days Open</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Service</th>
+        <th>Group Served</th>
+        <th>Description</th>
+    </tr>
+    {% for offering in offerings %}
+    <tr>
+        <td>{{ offering.get_org() }}</td>
+        <td>{{ offering.get_title() }}</td>
+        <td>{{ offering.get_days_openf() }}</td>
+        <td>{{ offering.get_start_timef() }}</td>
+        <td>{{ offering.get_end_timef() }}</td>
+        <td>{{ offering.get_start_datef() }}</td>
+        <td>{{ offering.get_end_datef() }}</td>
+        <td>{{ offering.get_service() }}</td>
+        <td>{{ offering.get_people_group() }}</td>
+        <td>{{ offering.get_description() }}</td>
+    </tr>
+    {% endfor %}
+</table>
