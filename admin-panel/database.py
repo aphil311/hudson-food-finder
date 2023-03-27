@@ -8,6 +8,7 @@
 import sqlite3
 import contextlib
 import sys
+import csv
 from decouple import config
 import offering as offmod
 
@@ -71,6 +72,21 @@ def find_offerings(filter):
     for row in table:
         offerings.append(offmod.Offering(row))
     return offerings
+
+def bulk_update(filename):
+    try:
+        with open(filename, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            for row in csv_reader:
+                for item in row:
+                    print(item)
+                line_count += 1
+            print(f'Processed {line_count} lines.')
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return 1
+    return 0
 
 if __name__ == '__main__':
     # testing code
