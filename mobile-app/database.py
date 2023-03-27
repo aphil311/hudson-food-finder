@@ -42,15 +42,18 @@ def query(stmt_str, args):
 #-----------------------------------------------------------------------
 def find_offerings(filter):
     # SELECT
-    stmt_str = 'SELECT * FROM public_offerings '
-    # WHERE
-    stmt_str += 'WHERE service LIKE ? AND '
-    stmt_str += 'days LIKE ? AND '
-    stmt_str += 'start_time LIKE ? AND '
-    stmt_str += 'end_time LIKE ? AND '
-    stmt_str += 'people_group LIKE ? AND '
-    stmt_str += 'other_services LIKE ? '
-    # ORDER BY
+    stmt_str = 'SELECT public_organizations.photo_url, '
+    stmt_str += 'public_offerings.title, '
+    stmt_str += 'public_organizations.street, '
+    stmt_str += 'public_offerings.days_open, '
+    stmt_str += 'public_offerings.start_time, '
+    stmt_str += 'public_offerings.end_time FROM '
+    stmt_str += 'public_organizations, public_offerings, '
+    stmt_str += 'public_ownership '
+    stmt_str += 'WHERE public_ownership.off_id = '
+    stmt_str += 'public_offerings.off_id AND '
+    stmt_str += 'public_ownership.org_id = public_organizations.org_id '
+    stmt_str += 'AND public_offerings.title LIKE ? '
     stmt_str += 'ORDER BY ?'
 
     # Execute query
@@ -64,4 +67,4 @@ def find_offerings(filter):
 
 if __name__ == '__main__':
     # testing code
-    find_offerings(('%', '%', '%', '%', '%', '%', 'start_time'))
+    find_offerings(('%', 'public_offerings.start_time'))
