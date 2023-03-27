@@ -42,17 +42,26 @@ def query(stmt_str, args):
 #-----------------------------------------------------------------------
 def find_offerings(filter):
     # SELECT
-    stmt_str = 'SELECT * FROM public_offerings '
-    # WHERE
-    stmt_str += 'WHERE service LIKE ? AND '
-    stmt_str += 'days LIKE ? AND '
-    stmt_str += 'start_time LIKE ? AND '
-    stmt_str += 'end_time LIKE ? AND '
-    stmt_str += 'people_group LIKE ? AND '
-    stmt_str += 'other_services LIKE ? AND '
-    stmt_str += 'org_id = ? '
-    # ORDER BY
-    stmt_str += 'ORDER BY ?'
+    stmt_str = 'SELECT public_organizations.org_name, '
+    stmt_str += 'public_offerings.title, public_offerings.days_open, '
+    stmt_str += 'public_offerings.start_time, '
+    stmt_str += 'public_offerings.end_time, '
+    stmt_str += 'public_offerings.init_date, '
+    stmt_str += 'public_offerings.close_date, '
+    stmt_str += 'public_services.service_type, '
+    stmt_str += 'public_people_groups.people_group, '
+    stmt_str += 'public_offerings.off_desc '
+    stmt_str += 'FROM public_ownership, public_offerings, '
+    stmt_str += 'public_organizations, public_services, '
+    stmt_str += 'public_people_groups '
+    stmt_str += 'WHERE public_ownership.org_id = '
+    stmt_str += 'public_organizations.org_id AND '
+    stmt_str += 'public_ownership.off_id = public_offerings.off_id AND '
+    stmt_str += 'public_offerings.off_service = '
+    stmt_str += 'public_services.service_id AND '
+    stmt_str += 'public_offerings.group_served = '
+    stmt_str += 'public_people_groups.group_id AND '
+    stmt_str += 'public_organizations.org_name LIKE ?'
 
     # Execute query
     table = query(stmt_str, filter)
@@ -65,4 +74,4 @@ def find_offerings(filter):
 
 if __name__ == '__main__':
     # testing code
-    find_offerings(('%', '%', '%', '%', '%', '%', '1', 'start_time'))
+    find_offerings(('%', 'start_time'))

@@ -1,0 +1,10 @@
+.flex-container {
+    display: flex;
+}
+th {
+    text-align: left;
+    padding: 0 5px;
+}
+td {
+    padding: 0 5px;
+}

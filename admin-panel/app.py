@@ -21,9 +21,7 @@ app = flask.Flask(__name__, template_folder='templates',
 @app.route('/')
 def index():
     # only show offerings from the logged in organization
-    org_id = '1'
-    offerings = database.find_offerings(('%', '%', '%', '%', '%', '%',
-        org_id, 'start_time'))
+    offerings = database.find_offerings(('%'))
     html_code = flask.render_template('index.html',
         offerings=offerings)
     return flask.make_response(html_code)
