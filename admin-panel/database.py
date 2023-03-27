@@ -13,7 +13,7 @@ from decouple import config
 import offering as offmod
 
 #-----------------------------------------------------------------------
-_DATABASE_URL_ = config('DB_URL')
+_DATABASE_URL_ = config('DB_URL')+'rw'
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -74,13 +74,37 @@ def find_offerings(filter):
     return offerings
 
 def bulk_update(filename):
+    stmt_str = 'DELETE FROM public_offerings WHERE ?'
+    inputs = []
+    inputs.append('1=1')
+    query(stmt_str, inputs)
+    stmt_str = 'DELETE FROM public_ownership WHERE ?'
+    query(stmt_str, inputs)
     try:
         with open(filename, 'r') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             line_count = 0
             for row in csv_reader:
-                for item in row:
-                    print(item)
+                if line_count != 0:
+                    inputs = []
+                    inputs2 = []
+                    stmt_str = 'INSERT INTO public_offerings ('
+                    stmt_str += 'title, days_open, days_desc, start_time, '
+                    stmt_str += 'end_time, init_date, close_date, '
+                    stmt_str += 'off_service, group_served, off_desc)'
+                    stmt_str += 'VALUES ('
+                    stmt_str += '?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                    stmt_str2 = 'INSERT INTO public_ownership ('
+                    stmt_str2 += 'org_id, off_id) VALUES ('
+                    stmt_str2 += '?, ?)'
+                    for i in range(len(row)):
+                        if i == 0:
+                            inputs2.append(row[i])
+                            inputs2.append(line_count)
+                        else:
+                            inputs.append(str(row[i]))
+                    query(stmt_str, inputs)
+                    query(stmt_str2, inputs2)
                 line_count += 1
             print(f'Processed {line_count} lines.')
     except Exception as ex:
@@ -90,4 +114,5 @@ def bulk_update(filename):
 
 if __name__ == '__main__':
     # testing code
-    find_offerings(('%', 'start_time'))
+    # find_offerings(('%', 'start_time'))
+    bulk_update('test.csv')
