@@ -61,16 +61,23 @@ class Offering:
     # formatted getter methods
     #-------------------------------------------------------------------
     def get_start_timef(self):
-        return self._start_time.strftime('%I:%M %p')
+        return self._start_time.strftime('%-I:%M %p')
 
     def get_end_timef(self):
-        return self._end_time.strftime('%I:%M %p')
+        return self._end_time.strftime('%-I:%M %p')
 
     def get_daysf(self):
-        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
-            'Friday', 'Saturday', 'Sunday']
+        if self._days == [True, True, True, True, True, True, True]:
+            return 'Open every day'
+        elif self._days == [False, True, True, True, True, True, False]:
+            return 'Open on weekdays'
+        elif self._days == [True, False, False, False, False, False,
+            True]:
+            return 'Open on weekends'
+        days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                'Thursday', 'Friday', 'Saturday']
         result = ''
         for i in range(7):
             if self._days[i]:
                 result += days[i] + ', '
-        return 'Every ' + result[:-2]
+        return 'Open every ' + result[:-2]

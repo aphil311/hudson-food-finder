@@ -51,16 +51,16 @@ off_id INT NOT NULL);
 INSERT INTO public_organizations (org_name, phone, website, 
 photo_url, street, zip_code, services) 
 VALUES ('Heavens Gate Christian Fellowship', '2016006557',
-'https://www.facebook.com/HGCFPHOP/', '/static/img/HeavensGate.jpg',
+'https://www.facebook.com/HGCFPHOP/', './static/img/HeavensGate.jpeg',
 '170 Paulison Ave', '07055', '0'), 
 ('United Passiac Organization', '8628885525',
-'https://unitedpassaic.com', '/static/img/UnitedPassaic.jpg',
+'https://unitedpassaic.com', './static/img/UnitedPassiac.png',
 '163 Autumn St', '07055', '0'),
 ('Elijahs Promise', '7325459002',
-'https://elijahspromise.org', '/static/img/ElijahsPromise.jpg',
+'https://elijahspromise.org', './static/img/ElijahsPromise.jpeg',
 '18 Neilson Street', '08901', '0'),
 ('Boston Public Market', '6179734909',
-'https://bostonpublicmarket.org', '/static/img/BostonPublicMarket.jpg',
+'https://bostonpublicmarket.org', '/static/img/BostonPublicMarket.jpeg',
 '523 Chestnut St', '07083', '0');
 
 INSERT INTO public_offerings (title, days_open, days_desc, start_time,
