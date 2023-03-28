@@ -5,14 +5,14 @@
 # Authors: Aidan Phillips, Yousef Amin
 #-----------------------------------------------------------------------
 
-import sqlite3
 import contextlib
 import sys
+import psycopg2
 from decouple import config
 import offering as offmod
 
 #-----------------------------------------------------------------------
-_DATABASE_URL_ = config('DB_URL')+'ro'
+_DATABASE_URL_ = config('DB_URL')
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -24,14 +24,14 @@ _DATABASE_URL_ = config('DB_URL')+'ro'
 #-----------------------------------------------------------------------
 def query(stmt_str, args):
     try:
-        with sqlite3.connect(_DATABASE_URL_, isolation_level=None,
-            uri=True) as connection:
+        with psycopg2.connect(_DATABASE_URL_) as connection:
             with contextlib.closing(connection.cursor()) as cursor:
                 cursor.execute(stmt_str, args)
                 table = cursor.fetchall()
                 return table
     except Exception as ex:
         print(ex, file=sys.stderr)
+        return None
 
 #-----------------------------------------------------------------------
 # find_offerings()
@@ -41,30 +41,32 @@ def query(stmt_str, args):
 # Returns: a list of offering objects
 #-----------------------------------------------------------------------
 def find_offerings(filter):
+    query_str = 'SELECT * from offerings'
+    inputs = []
+    print(query(query_str, inputs))
     search_types = 5
     inputs = []
     # search term
-    for i in range(search_types):
+    for _ in range(search_types):
         inputs.append('%' + filter[0] + '%')
 
     # SELECT
-    stmt_str = 'SELECT public_organizations.photo_url, '
-    stmt_str += 'public_offerings.title, '
-    stmt_str += 'public_organizations.street, '
-    stmt_str += 'public_offerings.days_open, '
-    stmt_str += 'public_offerings.start_time, '
-    stmt_str += 'public_offerings.end_time FROM '
-    stmt_str += 'public_organizations, public_offerings, '
-    stmt_str += 'public_ownership '
-    stmt_str += 'WHERE public_ownership.off_id = '
-    stmt_str += 'public_offerings.off_id AND '
-    stmt_str += 'public_ownership.org_id = public_organizations.org_id '
-    stmt_str += 'AND(public_organizations.street LIKE ? '
-    stmt_str += 'OR public_offerings.off_desc LIKE ? '
-    stmt_str += 'OR public_offerings.title LIKE ? '
-    stmt_str += 'OR public_organizations.zip_code LIKE ? '
-    stmt_str += 'OR public_organizations.org_name LIKE ?)'
-    # stmt_str += 'ORDER BY ?'
+    stmt_str = 'SELECT organizations.photo_url, '
+    stmt_str += 'offerings.title, '
+    stmt_str += 'organizations.street, '
+    stmt_str += 'offerings.days_open, '
+    stmt_str += 'offerings.start_time, '
+    stmt_str += 'offerings.end_time FROM '
+    stmt_str += 'organizations, offerings, '
+    stmt_str += 'org_ownership '
+    stmt_str += 'WHERE org_ownership.off_id = '
+    stmt_str += 'offerings.off_id AND '
+    stmt_str += 'org_ownership.org_id = organizations.org_id '
+    stmt_str += 'AND(organizations.street LIKE %s '
+    stmt_str += 'OR offerings.off_desc LIKE %s '
+    stmt_str += 'OR offerings.title LIKE %s '
+    stmt_str += 'OR organizations.zip_code LIKE %s '
+    stmt_str += 'OR organizations.org_name LIKE %s)'
 
     # Execute query
     table = query(stmt_str, inputs)
@@ -77,4 +79,4 @@ def find_offerings(filter):
 
 if __name__ == '__main__':
     # testing code
-    find_offerings(('%', 'public_offerings.start_time'))
+    find_offerings(('%', 'offerings.start_time'))

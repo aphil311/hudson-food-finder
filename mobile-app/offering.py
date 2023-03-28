@@ -69,9 +69,9 @@ class Offering:
     def get_daysf(self):
         if self._days == [True, True, True, True, True, True, True]:
             return 'Open every day'
-        elif self._days == [False, True, True, True, True, True, False]:
+        if self._days == [False, True, True, True, True, True, False]:
             return 'Open on weekdays'
-        elif self._days == [True, False, False, False, False, False,
+        if self._days == [True, False, False, False, False, False,
             True]:
             return 'Open on weekends'
         days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',

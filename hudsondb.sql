@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS public_organizations;
-CREATE TABLE public_organizations (
-org_id INTEGER PRIMARY KEY,
+DROP TABLE IF EXISTS organizations;
+CREATE TABLE organizations (
+org_id SERIAL PRIMARY KEY,
 org_name TEXT, 
 phone TEXT,
 website TEXT,
@@ -11,9 +11,9 @@ services TEXT);
 -- here service will be a int, other services restricted to 1 for testing, 
 -- date will be MM-DD-YYYY, time is 24 hr, days is days of week with hyphens 
 -- so monday only to replicate boolean array in postgres(F-T-F-F-F-F-F), 
-DROP TABLE IF EXISTS public_offerings;
-CREATE TABLE public_offerings (
-off_id INTEGER PRIMARY KEY,
+DROP TABLE IF EXISTS offerings;
+CREATE TABLE offerings (
+off_id SERIAL PRIMARY KEY,
 title TEXT,
 days_open TEXT,
 days_desc TEXT,
@@ -25,30 +25,30 @@ off_service INT,
 group_served INT,
 off_desc TEXT);
 -- 
-DROP TABLE IF EXISTS public_zip_codes;
-CREATE TABLE public_zip_codes (
+DROP TABLE IF EXISTS zip_codes;
+CREATE TABLE zip_codes (
 zip_code TEXT NOT NULL,
 city TEXT NOT NULL,
 abr_state TEXT NOT NULL);
 --
-DROP TABLE IF EXISTS public_services;
-CREATE TABLE public_services (
+DROP TABLE IF EXISTS services;
+CREATE TABLE services (
 service_id INT PRIMARY KEY,
 service_type TEXT NOT NULL);
 --
-DROP TABLE IF EXISTS public_people_groups;
-CREATE TABLE public_people_groups (
-group_id int PRIMARY KEY,
+DROP TABLE IF EXISTS people_groups;
+CREATE TABLE people_groups (
+group_id SERIAL PRIMARY KEY,
 people_group TEXT NOT NULL);
 ---
-DROP TABLE IF EXISTS public_ownership;
-CREATE TABLE public_ownership (
+DROP TABLE IF EXISTS org_ownership;
+CREATE TABLE org_ownership (
 org_id INT NOT NULL,
 off_id INT NOT NULL);
 --
 -- test cases
 --
-INSERT INTO public_organizations (org_name, phone, website, 
+INSERT INTO organizations (org_name, phone, website, 
 photo_url, street, zip_code, services) 
 VALUES ('Heavens Gate Christian Fellowship', '2016006557',
 'https://www.facebook.com/HGCFPHOP/', './static/img/HeavensGate.jpeg',
@@ -63,40 +63,40 @@ VALUES ('Heavens Gate Christian Fellowship', '2016006557',
 'https://bostonpublicmarket.org', '/static/img/BostonPublicMarket.jpeg',
 '523 Chestnut St', '07083', '0');
 
-INSERT INTO public_offerings (title, days_open, days_desc, start_time,
+INSERT INTO offerings (title, days_open, days_desc, start_time,
 end_time, init_date, close_date, off_service, group_served, off_desc)
 VALUES 
 ('Monthly Food Pantry', 'F-F-T-F-F-F-F', 'Third Friday of the month', 
 '7:30', '12:00', '03-26-2023',
-NULL, 0, 2, 'description'),
+NULL, 0, 3, 'description'),
 ('United Passiac Organization', 'F-T-T-T-T-T-F', NULL, '15:30', '19:00', '03-26-2023',
-'07-01-2023', 0, 1, 'description'),
+'07-01-2023', 0, 2, 'description'),
 ('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '17:00', '22:00', '03-26-2023',
-'06-01-2023', 1, 3, 'description'),
-('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '12:00', '23:59', '03-26-2023',
 '06-01-2023', 1, 4, 'description'),
+('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '12:00', '23:59', '03-26-2023',
+'06-01-2023', 1, 5, 'description'),
 ('Boston Public Market', 'T-T-T-T-T-T-T', NULL, '9:00', '17:00', '03-26-2023', 
-NULL, 3, 0, 'description');
+NULL, 3, 1, 'description');
 
-INSERT INTO public_zip_codes (zip_code, city, abr_state) VALUES
-('07055', 'Passaic', 'NJ'),
+INSERT INTO zip_codes (zip_code, city, abr_state) VALUES
+('07055', 'Passiac', 'NJ'),
 ('07083', 'New Brunswick', 'MA'),
 ('08901', 'Union', 'NJ');
 
-INSERT INTO public_services (service_id, service_type) VALUES
+INSERT INTO services (service_id, service_type) VALUES
 (0, 'Food Pantry'),
 (1, 'Soup Kitchen'),
 (2, 'Groceries (SNAP)'),
 (3, 'Restaurant (SNAP)');
 
-INSERT INTO public_people_groups (group_id, people_group) VALUES
-(0, 'All'),
-(1, 'Children'),
-(2, 'Adults'),
-(3, 'Families'),
-(4, 'Seniors');
+INSERT INTO people_groups (people_group) VALUES
+('All'),
+('Children'),
+('Adults'),
+('Families'),
+('Seniors');
 
-INSERT INTO public_ownership (org_id, off_id) VALUES
+INSERT INTO org_ownership (org_id, off_id) VALUES
 (1, 1),
 (2, 2),
 (3, 3),

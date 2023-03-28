@@ -10,15 +10,22 @@ from datetime import date
 from datetime import time
 import sys
 
+#-----------------------------------------------------------------------
+# Offering class
+# Represents an offering in the database
+#-----------------------------------------------------------------------
 class Offering:
     #-------------------------------------------------------------------
     # __init__()
+    # Constructor for the offering class
     # Parameters: properties - a list of raw properties pulled directly
     #                          from the database
     #-------------------------------------------------------------------
     def __init__(self, properties):
         self._org = properties[0]
         self._title = properties[1]
+
+        # convert days_open from a string to a list of booleans
         temp = properties[2].split('-')
         self._days_open = []
         for day in temp:
@@ -31,15 +38,16 @@ class Offering:
                       file=sys.stderr)
                 self._days_open.append(None)
 
+        # convert start_time and end_time from strings to time objects
         temp = properties[3].split(':')
         self._start_time = time(int(temp[0]), int(temp[1]))
         temp = properties[4].split(':')
         self._end_time = time(int(temp[0]), int(temp[1]))
 
+        # convert init_date and close_date from strings to date objects
         temp = properties[5].split('-')
         self._init_date = date(int(temp[2]), int(temp[0]),
             int(temp[1]))
-
         if properties[6]:
             temp = properties[6].split('-')
             self._close_date = date(int(temp[2]), int(temp[0]),

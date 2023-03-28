@@ -5,8 +5,9 @@
 # Authors: Aidan Phillips
 # Main file for generating views for the admin panel web app
 #-----------------------------------------------------------------------
-import flask
+
 import os
+import flask
 import database
 
 #-----------------------------------------------------------------------
@@ -16,22 +17,29 @@ app = flask.Flask(__name__, template_folder='templates',
 
 #-----------------------------------------------------------------------
 # index()
-# Parameters: none
-# Returns: the rendered index.html template
+# Home page for the admin panel - shows all offerings in a table with
+# a few buttons to sort, filter, and edit offerings
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
-    # only show offerings from the logged in organization
     offerings = database.find_offerings(('%'))
     html_code = flask.render_template('index.html',
         offerings=offerings)
     return flask.make_response(html_code)
 
+#-----------------------------------------------------------------------
+# upload()
+# Page for uploading a csv file to update the database
+#-----------------------------------------------------------------------
 @app.route('/upload')
 def upload():
     html_code = flask.render_template('upload.html', message='')
     return flask.make_response(html_code)
 
+#-----------------------------------------------------------------------
+# upload_confirmation()
+# Page for confirming the upload of a csv file to update the database
+#-----------------------------------------------------------------------
 @app.route('/upload', methods=['POST'])
 def upload_confirmation():
     file = flask.request.files['file']
