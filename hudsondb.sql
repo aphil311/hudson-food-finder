@@ -51,16 +51,16 @@ off_id INT NOT NULL);
 INSERT INTO public_organizations (org_name, phone, website, 
 photo_url, street, zip_code, services) 
 VALUES ('Heavens Gate Christian Fellowship', '2016006557',
-'https://www.facebook.com/HGCFPHOP/', '/static/img/HeavensGate.jpg',
+'https://www.facebook.com/HGCFPHOP/', './static/img/HeavensGate.jpeg',
 '170 Paulison Ave', '07055', '0'), 
 ('United Passiac Organization', '8628885525',
-'https://unitedpassaic.com', '/static/img/UnitedPassaic.jpg',
+'https://unitedpassaic.com', './static/img/UnitedPassiac.png',
 '163 Autumn St', '07055', '0'),
 ('Elijahs Promise', '7325459002',
-'https://elijahspromise.org', '/static/img/ElijahsPromise.jpg',
+'https://elijahspromise.org', './static/img/ElijahsPromise.jpeg',
 '18 Neilson Street', '08901', '0'),
 ('Boston Public Market', '6179734909',
-'https://bostonpublicmarket.org', '/static/img/BostonPublicMarket.jpg',
+'https://bostonpublicmarket.org', '/static/img/BostonPublicMarket.jpeg',
 '523 Chestnut St', '07083', '0');
 
 INSERT INTO public_offerings (title, days_open, days_desc, start_time,
@@ -103,16 +103,11 @@ INSERT INTO public_ownership (org_id, off_id) VALUES
 (3, 4),
 (4, 5);
 
-SELECT public_organizations.org_name, public_offerings.title,
-public_offerings.days_open, public_offerings.start_time,
-public_offerings.end_time, public_offerings.init_date,
-public_offerings.close_date, public_services.service_type,
-public_people_groups.people_group, public_offerings.off_desc
-FROM public_ownership, public_offerings, public_organizations,
-public_services, public_people_groups
-WHERE public_ownership.org_id = public_organizations.org_id AND
-public_ownership.off_id = public_offerings.off_id AND
-public_offerings.off_service = public_services.service_id AND
-public_offerings.group_served = public_people_groups.group_id;
+-- SELECT public_organizations.photo_url, public_organizations.street, 
+-- public_offerings.days_open, public_offerings.start_time 
+-- FROM public_organizations, public_offerings, public_ownership
+-- WHERE public_ownership.off_id = public_offerings.off_id AND 
+-- public_ownership.org_id = public_organizations.org_id
+-- ORDER BY public_offerings.start_time;
 
 -- SELECT * FROM public_organizations;
