@@ -41,6 +41,12 @@ def query(stmt_str, args):
 # Returns: a list of offering objects
 #-----------------------------------------------------------------------
 def find_offerings(filter):
+    search_types = 5
+    inputs = []
+    # search term
+    for i in range(search_types):
+        inputs.append('%' + filter[0] + '%')
+
     # SELECT
     stmt_str = 'SELECT public_organizations.photo_url, '
     stmt_str += 'public_offerings.title, '
@@ -53,11 +59,15 @@ def find_offerings(filter):
     stmt_str += 'WHERE public_ownership.off_id = '
     stmt_str += 'public_offerings.off_id AND '
     stmt_str += 'public_ownership.org_id = public_organizations.org_id '
-    stmt_str += 'AND public_offerings.title LIKE ? '
-    stmt_str += 'ORDER BY ?'
+    stmt_str += 'AND(public_organizations.street LIKE ? '
+    stmt_str += 'OR public_offerings.off_desc LIKE ? '
+    stmt_str += 'OR public_offerings.title LIKE ? '
+    stmt_str += 'OR public_organizations.zip_code LIKE ? '
+    stmt_str += 'OR public_organizations.org_name LIKE ?)'
+    # stmt_str += 'ORDER BY ?'
 
     # Execute query
-    table = query(stmt_str, filter)
+    table = query(stmt_str, inputs)
 
     # create offering objects and put them in a list
     offerings = []
