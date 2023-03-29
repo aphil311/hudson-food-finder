@@ -33,7 +33,7 @@ abr_state TEXT NOT NULL);
 --
 DROP TABLE IF EXISTS services;
 CREATE TABLE services (
-service_id INT PRIMARY KEY,
+service_id SERIAL PRIMARY KEY,
 service_type TEXT NOT NULL);
 --
 DROP TABLE IF EXISTS people_groups;
@@ -68,26 +68,26 @@ end_time, init_date, close_date, off_service, group_served, off_desc)
 VALUES 
 ('Monthly Food Pantry', 'F-F-T-F-F-F-F', 'Third Friday of the month', 
 '7:30', '12:00', '03-26-2023',
-NULL, 0, 3, 'description'),
+NULL, 1, 3, 'description'),
 ('United Passiac Organization', 'F-T-T-T-T-T-F', NULL, '15:30', '19:00', '03-26-2023',
-'07-01-2023', 0, 2, 'description'),
+'07-01-2023', 1, 2, 'description'),
 ('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '17:00', '22:00', '03-26-2023',
-'06-01-2023', 1, 4, 'description'),
+'06-01-2023', 2, 4, 'description'),
 ('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '12:00', '23:59', '03-26-2023',
-'06-01-2023', 1, 5, 'description'),
+'06-01-2023', 2, 5, 'description'),
 ('Boston Public Market', 'T-T-T-T-T-T-T', NULL, '9:00', '17:00', '03-26-2023', 
-NULL, 3, 1, 'description');
+NULL, 4, 1, 'description');
 
 INSERT INTO zip_codes (zip_code, city, abr_state) VALUES
 ('07055', 'Passiac', 'NJ'),
 ('07083', 'New Brunswick', 'MA'),
 ('08901', 'Union', 'NJ');
 
-INSERT INTO services (service_id, service_type) VALUES
-(0, 'Food Pantry'),
-(1, 'Soup Kitchen'),
-(2, 'Groceries (SNAP)'),
-(3, 'Restaurant (SNAP)');
+INSERT INTO services (service_type) VALUES
+('Food Pantry'),
+('Soup Kitchen'),
+('Groceries (SNAP)'),
+('Restaurant (SNAP)');
 
 INSERT INTO people_groups (people_group) VALUES
 ('All'),
