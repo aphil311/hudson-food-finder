@@ -1,0 +1,82 @@
+<div id="filter-view">
+    <form action="">
+        <details>
+            <summary>Sort by</summary>
+            <input type="radio" id="sort-by-name" name="sort" value="name">
+            <label for="sort-by-name">Name</label><br>
+            <input type="radio" id="sort-by-distance" name="sort" value="distance">
+            <label for="sort-by-distance">Distance</label><br>
+            <input type="radio" id="sort-by-days" name="sort" value="days">
+            <label for="sort-by-days">Days</label><br>
+            <input type="radio" id="sort-by-start-time" name="sort" value="start-time">
+            <label for="sort-by-start-time">Start Time</label><br>
+            <input type="radio" id="sort-by-end-time" name="sort" value="end-time">
+            <label for="sort-by-end-time">End Time</label><br>
+        </details>
+        <details>
+            <summary>Primary Service</summary>
+            <input type="checkbox" id="food-pantry" name="food-pantry" value="food-pantry">
+            <label for="food-pantry">Food Pantry</label><br>
+            <input type="checkbox" id="soup-kitchen" name="soup-kitchen" value="soup-kitchen">
+            <label for="soup-kitchen">Soup Kitchen</label><br>
+            <input type="checkbox" id="groceries" name="groceries" value="groceries">
+            <label for="groceries">Groceries</label><br>
+        </details>
+        <details>
+            <summary>Days Open</summary>
+            <input type="checkbox" id="sunday" name="sunday" value="sunday">
+            <label for="sunday">Sunday</label><br>
+            <input type="checkbox" id="monday" name="monday" value="monday">
+            <label for="monday">Monday</label><br>
+            <input type="checkbox" id="tuesday" name="tuesday" value="tuesday">
+            <label for="tuesday">Tuesday</label><br>
+            <input type="checkbox" id="wednesday" name="wednesday" value="wednesday">
+            <label for="wednesday">Wednesday</label><br>
+            <input type="checkbox" id="thursday" name="thursday" value="thursday">
+            <label for="thursday">Thursday</label><br>
+            <input type="checkbox" id="friday" name="friday" value="friday">
+            <label for="friday">Friday</label><br>
+            <input type="checkbox" id="saturday" name="saturday" value="saturday">
+            <label for="saturday">Saturday</label><br>
+        </details>
+        <details>
+            <summary>Hours Open</summary>
+            <input type="number" id="start-time" name="start-time" placeholder="HH"> :
+            <input type="number" id="end-time" name="end-time" placeholder="MM"> to
+            <input type="number" id="start-time" name="start-time" placeholder="HH"> :
+            <input type="number" id="end-time" name="end-time" placeholder="MM">
+        </details>
+        <details>
+            <summary>People Served</summary>
+            <input type="checkbox" id="all" name="all" value="all">
+            <label for="all">All</label><br>
+            <input type="checkbox" id="children" name="children" value="children">
+            <label for="children">Children</label><br>
+            <input type="checkbox" id="adults" name="adults" value="adults">
+            <label for="adults">Adults</label><br>
+            <input type="checkbox" id="families" name="families" value="families">
+            <label for="families">Families</label><br>
+            <input type="checkbox" id="seniors" name="seniors" value="seniors">
+            <label for="seniors">Seniors</label><br>
+        </details>
+        <details>
+            <summary>Additional Services</summary>
+            <!-- immigration, job search, clinic, nutrition, physical activity, elderly care, bus stop -->
+            <input type="checkbox" id="immigration" name="immigration" value="immigration">
+            <label for="immigration">Immigration</label><br>
+            <input type="checkbox" id="job-search" name="job-search" value="job-search">
+            <label for="job-search">Job Search</label><br>
+            <input type="checkbox" id="clinic" name="clinic" value="clinic">
+            <label for="clinic">Clinic</label><br>
+            <input type="checkbox" id="nutrition" name="nutrition" value="nutrition">
+            <label for="nutrition">Nutrition</label><br>
+            <input type="checkbox" id="physical-activity" name="physical-activity" value="physical-activity">
+            <label for="physical-activity">Physical Activity</label><br>
+            <input type="checkbox" id="elderly-care" name="elderly-care" value="elderly-care">
+            <label for="elderly-care">Elderly Care</label><br>
+            <input type="checkbox" id="bus-stop" name="bus-stop" value="bus-stop">
+            <label for="bus-stop">Bus Stop</label><br>
+        </details>
+        <input type="submit" value="Filter">
+    </form>
+</div>
