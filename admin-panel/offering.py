@@ -101,7 +101,7 @@ class Offering:
         return self._close_date.strftime('%m/%d/%y')
 
     def get_days_openf(self):
-        days = ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su']
+        days = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa']
         result = ''
         for i in range(7):
             if self._days_open[i]:
