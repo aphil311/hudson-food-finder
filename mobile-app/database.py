@@ -1,80 +1,52 @@
 #!/usr/bin/env python
 
 #-----------------------------------------------------------------------
-# database.py
-# Authors: Aidan Phillips, Yousef Amin
+# read.py
+# Authors: Aidan Phillips
+# Reads the database and generates a list of offerings
 #-----------------------------------------------------------------------
 
-import sqlite3
-import contextlib
 import sys
+import sqlalchemy
+import sqlalchemy.orm
+import psycopg2
 from decouple import config
 import offering as offmod
+from schema import Offering, Organization, Ownership
 
 #-----------------------------------------------------------------------
-_DATABASE_URL_ = config('DB_URL')+'ro'
+_DATABASE_URL_ = config('DB_URL')
 #-----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
-# query()
-# Parameters: stmt_str - a string containing a SQL statement
-#             args - a list containing the arguments to use with the
-#                    SQL statement
-# Returns: results of the query as a table
-#-----------------------------------------------------------------------
-def query(stmt_str, args):
+def find_offerings(filter):
     try:
-        with sqlite3.connect(_DATABASE_URL_, isolation_level=None,
-            uri=True) as connection:
-            with contextlib.closing(connection.cursor()) as cursor:
-                cursor.execute(stmt_str, args)
-                table = cursor.fetchall()
-                return table
+        engine = sqlalchemy.create_engine('postgresql://',
+            creator=lambda: psycopg2.connect(_DATABASE_URL_))
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.photo_url,
+                Offering.title, Organization.street, Offering.days_open,
+                Offering.start_time, Offering.end_time) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .filter(Organization.street.ilike(f'%{filter}%') |
+                        Offering.off_desc.ilike(f'%{filter}%') |
+                        Offering.title.ilike(f'%{filter}%') |
+                        Organization.zip_code.ilike(f'%{filter}%') |
+                        Organization.org_name.ilike(f'%{filter}%'))
+
+            # execute the query and return the results
+            offerings = []
+            results = query.all()
+            for row in results:
+                offerings.append(offmod.Offering(row))
+            return offerings
     except Exception as ex:
         print(ex, file=sys.stderr)
+        return None
 
-#-----------------------------------------------------------------------
-# find_offerings()
-# Parameters: sort - a string containing the column to sort by
-#             filter - a tuple with one string for each column we want
-#                      to filter by
-# Returns: a list of offering objects
-#-----------------------------------------------------------------------
-def find_offerings(filter):
-    search_types = 5
-    inputs = []
-    # search term
-    for i in range(search_types):
-        inputs.append('%' + filter[0] + '%')
-
-    # SELECT
-    stmt_str = 'SELECT public_organizations.photo_url, '
-    stmt_str += 'public_offerings.title, '
-    stmt_str += 'public_organizations.street, '
-    stmt_str += 'public_offerings.days_open, '
-    stmt_str += 'public_offerings.start_time, '
-    stmt_str += 'public_offerings.end_time FROM '
-    stmt_str += 'public_organizations, public_offerings, '
-    stmt_str += 'public_ownership '
-    stmt_str += 'WHERE public_ownership.off_id = '
-    stmt_str += 'public_offerings.off_id AND '
-    stmt_str += 'public_ownership.org_id = public_organizations.org_id '
-    stmt_str += 'AND(public_organizations.street LIKE ? '
-    stmt_str += 'OR public_offerings.off_desc LIKE ? '
-    stmt_str += 'OR public_offerings.title LIKE ? '
-    stmt_str += 'OR public_organizations.zip_code LIKE ? '
-    stmt_str += 'OR public_organizations.org_name LIKE ?)'
-    # stmt_str += 'ORDER BY ?'
-
-    # Execute query
-    table = query(stmt_str, inputs)
-
-    # create offering objects and put them in a list
-    offerings = []
-    for row in table:
-        offerings.append(offmod.Offering(row))
-    return offerings
+def main():
+    find_offerings('')
 
 if __name__ == '__main__':
-    # testing code
-    find_offerings(('%', 'public_offerings.start_time'))
+    main()

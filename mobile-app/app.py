@@ -15,20 +15,21 @@ app = flask.Flask(__name__, template_folder='templates',
 
 #-----------------------------------------------------------------------
 # index()
-# Parameters: none
-# Returns: the rendered index.html template
+# Displays offerings in a list
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
-    offerings = database.find_offerings(('', 'start_time'))
+    offerings = database.find_offerings('')
     html_code = flask.render_template('index.html', offerings=offerings)
     return flask.make_response(html_code)
 
+#-----------------------------------------------------------------------
+# search_results()
+# Displays offerings in a list based on the search query
+#-----------------------------------------------------------------------
 @app.route('/index', methods=['GET'])
 def search_results():
-    query = []
-    query.append(flask.request.args.get('search'))
-    query.append('start_time')
+    query = (flask.request.args.get('search'))
     offerings = database.find_offerings(query)
     html_code = flask.render_template('index.html', offerings=offerings)
     return flask.make_response(html_code)
