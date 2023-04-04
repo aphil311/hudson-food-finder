@@ -8,26 +8,15 @@
     <title>Hudson County Food Finder</title>
 </head>
 <body>
-    <h1>Hudson County <br> Food Finder</h1>
+    <a href="/"><h1>Hudson County <br> Food Finder</h1></a>
     <div class="flex-container">
-        <form action="/index" method="get">
-          <input type="text" placeholder="Search (zip code, organization, street, etc.)" name="search">
-          <button type="submit"><i class="fa fa-search"></i></button>
+        <form action="/search" method="get">
+            <input type="text" placeholder="Search (zip code, organization, street, etc.)" name="search" id="search-bar">
+            <button type="submit" id="search-bar"><i class="fa fa-search"></i></button>
+            <button type="button" id="filter-button" style="margin-left: auto;"><i class="fa fa-filter"></i></button>
+            {% include 'filter.html' %}
         </form>
-        <button id="filter-button" style="margin-left: auto;"><i class="fa fa-filter"></i></button>
     </div>
-    {% include 'filter.html' %}
-    {% for offering in offerings %}
-    <hr>
-    <div class="offering flex-container">
-        <img class="offering-logo" src="{{ offering.get_photo_url() }}" alt="">
-        <div class="offering-info">
-            <p>{{ offering.get_title() }}</p>
-            <p>{{ offering.get_street() }}</p>
-            <p>{{ offering.get_daysf() }}</p>
-            <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
-        </div>
-    </div>
-    {% endfor %}
+    <div id="results-list"></div>
 </body>
 </html>

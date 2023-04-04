@@ -19,6 +19,8 @@ _DATABASE_URL_ = config('DB_URL')
 #-----------------------------------------------------------------------
 
 def find_offerings(filter):
+    search_term = '%' + filter[0] + '%'
+    sort_by = filter[1]
     try:
         engine = sqlalchemy.create_engine('postgresql://',
             creator=lambda: psycopg2.connect(_DATABASE_URL_))
@@ -29,11 +31,12 @@ def find_offerings(filter):
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
-                .filter(Organization.street.ilike(f'%{filter}%') |
-                        Offering.off_desc.ilike(f'%{filter}%') |
-                        Offering.title.ilike(f'%{filter}%') |
-                        Organization.zip_code.ilike(f'%{filter}%') |
-                        Organization.org_name.ilike(f'%{filter}%'))
+                .filter(Organization.street.ilike(search_term) |
+                        Offering.off_desc.ilike(search_term) |
+                        Offering.title.ilike(search_term) |
+                        Organization.zip_code.ilike(search_term) |
+                        Organization.org_name.ilike(search_term))
+                # .order_by(sort_by)
 
             # execute the query and return the results
             offerings = []

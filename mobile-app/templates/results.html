@@ -1,0 +1,12 @@
+{% for offering in offerings %}
+<hr>
+<div class="offering flex-container">
+    <img class="offering-logo" src="{{ offering.get_photo_url() }}" alt="">
+    <div class="offering-info">
+        <p>{{ offering.get_title() }}</p>
+        <p>{{ offering.get_street() }}</p>
+        <p>{{ offering.get_daysf() }}</p>
+        <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
+    </div>
+</div>
+{% endfor %}
