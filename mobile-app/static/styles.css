@@ -8,3 +8,7 @@ h1 {
     font-family: serif;
     text-align: center;
 }
+
+p {
+    margin-bottom: .1em;
+}

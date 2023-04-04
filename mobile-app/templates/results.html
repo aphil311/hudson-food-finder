@@ -1,9 +1,11 @@
 <!-- structure of an offering in the list -->
 {% for offering in offerings %}
 <hr>
-<div class="offering flex-container">
-    <img class="offering-logo" src="{{ offering.get_photo_url() }}" alt="">
-    <div class="offering-info">
+<div class="row">
+    <div class="col-auto">
+        <img class="offering-logo" src="{{ offering.get_photo_url() }}" alt="">
+    </div>
+    <div class="col">
         <p>{{ offering.get_title() }}</p>
         <p>{{ offering.get_street() }}</p>
         <p>{{ offering.get_daysf() }}</p>
