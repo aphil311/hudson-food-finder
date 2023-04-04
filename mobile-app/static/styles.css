@@ -1,12 +1,14 @@
+/* css flexbox */
 .flex-container {
     display: flex;
-  }
+}
 
 .offering-logo {
     width: 100px;
     height: 100px;
     margin: 10px;
 }
+
 h1 {
     font-family: serif;
     text-align: center;
