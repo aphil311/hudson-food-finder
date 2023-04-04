@@ -41,6 +41,7 @@ function setup() {
   search();
   $("#filter-button").on("click", toggle);
   $("#search-bar").on("keyup", search);
+  $("input:radio[name ='sort']").on("change", search);
 }
 
 // runs setup when document is ready
