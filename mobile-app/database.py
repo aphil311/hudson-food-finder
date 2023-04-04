@@ -35,8 +35,8 @@ def find_offerings(filter):
                         Offering.off_desc.ilike(search_term) |
                         Offering.title.ilike(search_term) |
                         Organization.zip_code.ilike(search_term) |
-                        Organization.org_name.ilike(search_term))
-                # .order_by(sort_by)
+                        Organization.org_name.ilike(search_term)) \
+                .order_by(sqlalchemy.text(sort_by))
 
             # execute the query and return the results
             offerings = []

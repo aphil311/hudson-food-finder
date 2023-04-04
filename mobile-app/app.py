@@ -20,7 +20,7 @@ app = flask.Flask(__name__, template_folder='templates',
 @app.route('/index')
 @app.route('/')
 def index():
-    offerings = database.find_offerings(('', 'Offering.title'))
+    offerings = database.find_offerings(('', 'offerings.title'))
     html_code = flask.render_template('index.html', offerings=offerings)
     return flask.make_response(html_code)
 

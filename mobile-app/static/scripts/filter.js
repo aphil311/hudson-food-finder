@@ -3,9 +3,12 @@ function handleResponse(response) {
 }
 function search() {
   let searchQuery = $('#search-bar').val();
+  let sortBy = $("input:radio[name ='sort']:checked").val();
+  if (sortBy == undefined) {
+    sortBy = 'offerings.title';
+  }
   searchQuery = encodeURIComponent(searchQuery);
-  let sort = 'Offering.title'
-  let url = './search?search=' + searchQuery + '&sort=' + sort;
+  let url = './search?search=' + searchQuery + '&sort=' + sortBy;
   request = $.ajax({
       url: url,
       type: 'GET',
@@ -18,7 +21,6 @@ function toggle() {
 };
 
 function setup() {
-  console.log('hi');
   $('#filter-view').hide();
   search();
   $('#filter-button').on('click', toggle);
