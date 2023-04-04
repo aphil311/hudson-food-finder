@@ -20,8 +20,7 @@ app = flask.Flask(__name__, template_folder='templates',
 @app.route('/index')
 @app.route('/')
 def index():
-    offerings = database.find_offerings(('', 'offerings.title'))
-    html_code = flask.render_template('index.html', offerings=offerings)
+    html_code = flask.render_template('index.html')
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -30,9 +29,13 @@ def index():
 #-----------------------------------------------------------------------
 @app.route('/search', methods=['GET'])
 def search_results():
+    # Get search term and sort by from query string
     search_term = flask.request.args.get('search')
     sort_by = flask.request.args.get('sort')
+    # Form query and get offerings from database
     query = (search_term, sort_by)
     offerings = database.find_offerings(query)
-    html_code = flask.render_template('results.html', offerings=offerings)
+    # Render template and return response
+    html_code = flask.render_template('results.html',
+        offerings=offerings)
     return flask.make_response(html_code)

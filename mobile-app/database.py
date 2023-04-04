@@ -18,13 +18,22 @@ from schema import Offering, Organization, Ownership
 _DATABASE_URL_ = config('DB_URL')
 #-----------------------------------------------------------------------
 
+#-----------------------------------------------------------------------
+# find_offerings()
+# Returns a list of offerings based on the search term and sort by
+# parameters
+# Parameters: filter - a tuple containing the search term and sort by
+# Returns: a list of offerings
+#-----------------------------------------------------------------------
 def find_offerings(filter):
     search_term = '%' + filter[0] + '%'
     sort_by = filter[1]
     try:
+        # connect to the database
         engine = sqlalchemy.create_engine('postgresql://',
             creator=lambda: psycopg2.connect(_DATABASE_URL_))
         with sqlalchemy.orm.Session(engine) as session:
+            # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
                 Offering.start_time, Offering.end_time) \
@@ -39,8 +48,8 @@ def find_offerings(filter):
                 .order_by(sqlalchemy.text(sort_by))
 
             # execute the query and return the results
-            offerings = []
             results = query.all()
+            offerings = []
             for row in results:
                 offerings.append(offmod.Offering(row))
             return offerings
@@ -48,6 +57,7 @@ def find_offerings(filter):
         print(ex, file=sys.stderr)
         return None
 
+# Test function
 def main():
     find_offerings('')
 

@@ -1,22 +1,26 @@
 <!DOCTYPE html>
+<!-- icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="/static/styles.css">
+<!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- css / js -->
+<link rel="stylesheet" href="/static/styles.css">
 <script src="../static/scripts/filter.js"></script>
 <html>
 <head>
     <title>Hudson County Food Finder</title>
 </head>
 <body>
+    <!-- will replace with logo -->
     <a href="/"><h1>Hudson County <br> Food Finder</h1></a>
+    <!-- control panel -->
     <div class="flex-container">
-        <form action="/search" method="get">
-            <input type="text" placeholder="Search (zip code, organization, street, etc.)" name="search" id="search-bar">
-            <button type="submit" id="search-bar"><i class="fa fa-search"></i></button>
-            <button type="button" id="filter-button" style="margin-left: auto;"><i class="fa fa-filter"></i></button>
-            {% include 'filter.html' %}
-        </form>
+        <input type="text" placeholder="Search (zip code, organization, street, etc.)" name="search" id="search-bar">
+        <button type="submit" id="search-bar"><i class="fa fa-search"></i></button>
+        <button type="button" id="filter-button" style="margin-left: auto;"><i class="fa fa-filter"></i></button>
     </div>
+    {% include 'filter.html' %}
+    <!-- results of query go here -->
     <div id="results-list"></div>
 </body>
 </html>
