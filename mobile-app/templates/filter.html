@@ -2,14 +2,14 @@
 <div id="filter-view">
     <details>
         <summary>Sort by</summary>
-        <input type="radio" id="sort-by-name" name="sort" value="offerings.title">
-        <label for="sort-by-name">Name</label><br>
-        <input type="radio" id="sort-by-days" name="sort" value="offerings.init_date">
-        <label for="sort-by-days">Days</label><br>
-        <input type="radio" id="sort-by-start-time" name="sort" value="offerings.start_time">
-        <label for="sort-by-start-time">Start Time</label><br>
-        <input type="radio" id="sort-by-end-time" name="sort" value="offerings.end_time">
-        <label for="sort-by-end-time">End Time</label><br>
+        <input class="form-check-input" type="radio" id="sort-by-name" name="sort" value="offerings.title">
+        <label class="form-check-label" for="sort-by-name">Name</label><br>
+        <input class="form-check-input" type="radio" id="sort-by-days" name="sort" value="offerings.init_date">
+        <label class="form-check-label" for="sort-by-days">Days</label><br>
+        <input class="form-check-input" type="radio" id="sort-by-start-time" name="sort" value="offerings.start_time">
+        <label class="form-check-label" for="sort-by-start-time">Start Time</label><br>
+        <input class="form-check-input" type="radio" id="sort-by-end-time" name="sort" value="offerings.end_time">
+        <label class="form-check-label" for="sort-by-end-time">End Time</label><br>
         <!-- commented out code for distance sort until we can figure out location -->
         <!-- <input type="radio" id="sort-by-distance" name="sort" value="distance">
         <label for="sort-by-distance">Distance</label><br> -->
@@ -42,10 +42,8 @@
     </details>
     <details>
         <summary>Hours Open</summary>
-        <input type="number" id="start-time" name="start-time" placeholder="HH"> :
-        <input type="number" id="end-time" name="end-time" placeholder="MM"> to
-        <input type="number" id="start-time" name="start-time" placeholder="HH"> :
-        <input type="number" id="end-time" name="end-time" placeholder="MM">
+        <input type="time" id="start-time" name="start-time" placeholder="HH"> to
+        <input type="time" id="start-time" name="start-time" placeholder="HH">
     </details>
     <details>
         <summary>People Served</summary>

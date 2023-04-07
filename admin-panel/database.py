@@ -83,15 +83,16 @@ def find_offerings(filter):
     stmt_str += 'offerings.group_served = '
     stmt_str += 'people_groups.group_id AND '
     # Allow for search by organization name
-    stmt_str += 'organizations.org_name LIKE %s'
+    stmt_str += 'organizations.org_name ILIKE %s'
 
     # Execute query
     table = query(stmt_str, filter)
 
     # create offering objects and put them in a list
     offerings = []
-    for row in table:
-        offerings.append(offmod.Offering(row))
+    if table is not None:
+        for row in table:
+            offerings.append(offmod.Offering(row))
     return offerings
 
 #-----------------------------------------------------------------------

@@ -1,13 +1,21 @@
-<div class="flex-container">
-    <form action="">
-      <input type="text" placeholder="Search.." name="search">
-      <button type="submit"><i class="fa fa-search"></i></button>
-    </form>
-    <button><i class="fa fa-filter"></i></button>
-    <button onclick="window.location.href='./upload';">
+<div class="row">
+  <div class="col">
+    <input class="form-control" id="search-bar" type="text" placeholder="Search.." name="search">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary"><i class="fa fa-filter"></i></button>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary" onclick="window.location.href='./upload';">
       <i class="fa fa-upload"></i>
     </button>
-    <button onclick="window.location.href='./download';">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary" onclick="window.location.href='./download';">
       <i class="fa fa-download"></i>
     </button>
+  </div>
 </div>

@@ -27,6 +27,16 @@ def index():
         offerings=offerings)
     return flask.make_response(html_code)
 
+
+@app.route('/search', methods=['GET'])
+def search():
+    search_query = flask.request.args.get('search')
+    search_query = '%' + search_query + '%'
+    offerings = database.find_offerings((search_query,))
+    html_code = flask.render_template('admin-table.html',
+        offerings=offerings)
+    return flask.make_response(html_code)
+
 #-----------------------------------------------------------------------
 # upload()
 # Page for uploading a csv file to update the database

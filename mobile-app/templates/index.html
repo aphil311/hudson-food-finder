@@ -21,9 +21,14 @@
     </div>
     <!-- control panel -->
     <div class="container-fluid">
-        <input type="text" placeholder="Search (zip code, organization, street, etc.)" name="search" id="search-bar">
-        <button type="submit" id="search-bar"><i class="fa fa-search"></i></button>
-        <button type="button" id="filter-button" style="margin-left: auto;"><i class="fa fa-filter"></i></button>
+        <div class="row">
+            <div class="col">
+                <input class="form-control" type="text" placeholder="Search (zip code, organization, street, etc.)" name="search" id="search-bar">
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" id="filter-button" style="margin-left: auto;"><i class="fa fa-filter"></i></button>
+            </div>
+        </div>
     </div>
     <div class="container-fluid">
         {% include 'filter.html' %}
