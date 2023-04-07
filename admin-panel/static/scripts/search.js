@@ -25,22 +25,15 @@ function handleResponse(response) {
     });
   }
   
-  // toggles the filter view
-  function toggle() {
-    $("#filter-view").toggle();
-  }
-  
   // sets up the page
   function setup() {
-    $("#filter-view").hide();
     search();
-    $("#filter-button").on("click", toggle);
     $("#search-bar").on("keypress", function(e) {
         if(e.which == 13) {
             search();
         }
     });
-    $("input:radio[name ='sort']").on("change", search);
+    $("#search-btn").on("click", search);
   }
   
   // runs setup when document is ready

@@ -1,21 +1,20 @@
 <div class="row">
-  <div class="col">
-    <input class="form-control" id="search-bar" type="text" placeholder="Search.." name="search">
+  <div class="col-auto">
+    <img class="logo-img" src="../static/img/logo.png" alt="">
   </div>
   <div class="col-auto">
-    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+    <h3>Admin</h3>
+  </div>
+  <div class="col d-flex justify-content-center">
+    <div class="input-group">
+      <input class="form-control" id="search-bar" type="text" placeholder="Search.." name="search">
+      <button class="btn btn-primary" id="search-btn" type="submit"><i class="fa fa-search"></i></button>
+    </div>
   </div>
   <div class="col-auto">
-    <button class="btn btn-outline-secondary"><i class="fa fa-filter"></i></button>
+    <i class="fs-4 bi-patch-question"></i>
   </div>
   <div class="col-auto">
-    <button class="btn btn-outline-secondary" onclick="window.location.href='./upload';">
-      <i class="fa fa-upload"></i>
-    </button>
-  </div>
-  <div class="col-auto">
-    <button class="btn btn-outline-secondary" onclick="window.location.href='./download';">
-      <i class="fa fa-download"></i>
-    </button>
+    <img class="logo-img" id="user-img" src="../static/img/user.jpg" alt="">
   </div>
 </div>
