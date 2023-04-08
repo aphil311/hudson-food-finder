@@ -7,7 +7,7 @@
 
 // sets html of results-list to the response from the server
 function handleResponse(response) {
-    $("#results-table").html(response);
+    $("#current-panel").html(response);
 }
 
 // sends a request to the server with the search query and sort method
@@ -17,7 +17,17 @@ function search() {
   // encode variables for request
   searchQuery = encodeURIComponent(searchQuery);
   // send request to server
-  let url = "./search?search=" + searchQuery
+  let url = "./offerings?search=" + searchQuery
+  request = $.ajax({
+      type: "GET",
+      url: url,
+      success: handleResponse
+  });
+}
+
+function upload() {
+  // send request to server
+  let url = "./upload"
   request = $.ajax({
       type: "GET",
       url: url,

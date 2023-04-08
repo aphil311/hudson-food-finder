@@ -31,13 +31,13 @@ def index():
 # Searches offerings and returns a table of offerings that match the
 # search query
 #-----------------------------------------------------------------------
-@app.route('/search', methods=['GET'])
+@app.route('/offerings', methods=['GET'])
 def search():
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
     # must have a comma at the end of the tuple
     offerings = database.find_offerings((search_query,))
-    html_code = flask.render_template('admin-table.html',
+    html_code = flask.render_template('offering-table.html',
         offerings=offerings)
     return flask.make_response(html_code)
 
@@ -64,5 +64,5 @@ def upload_confirmation():
     else:
         message = 'file failed to upload'
     os.remove('static/files/' + file.filename)
-    html_code = flask.render_template('upload.html', message=message)
+    html_code = flask.render_template('index.html', message=message)
     return flask.make_response(html_code)
