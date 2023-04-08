@@ -1,5 +1,14 @@
 <!-- All sort and filter controls -->
-<div id="filter-view">
+<div class="row">
+    <div class="col">
+        <div class="input-group mx-0 my-0">
+            <input class="form-control border-0" type="text" placeholder="Search (zip code, organization, street, etc.)" name="search" id="search-bar">
+            <button type="button" class="btn btn-light" id="filter-button"><i class="fa fa-filter"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 px-3 py-3 mt-3" id="filter-view">
     <details>
         <summary>Sort by</summary>
         <input class="form-check-input" type="radio" id="sort-by-name" name="sort" value="offerings.title">

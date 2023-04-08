@@ -22,16 +22,20 @@ app = flask.Flask(__name__, template_folder='templates',
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
-    offerings = database.find_offerings(('%'))
     html_code = flask.render_template('index.html',
-        offerings=offerings)
+        offerings=None)
     return flask.make_response(html_code)
 
-
+#-----------------------------------------------------------------------
+# search()
+# Searches offerings and returns a table of offerings that match the
+# search query
+#-----------------------------------------------------------------------
 @app.route('/search', methods=['GET'])
 def search():
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
+    # must have a comma at the end of the tuple
     offerings = database.find_offerings((search_query,))
     html_code = flask.render_template('admin-table.html',
         offerings=offerings)

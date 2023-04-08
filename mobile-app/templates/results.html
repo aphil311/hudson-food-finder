@@ -1,12 +1,11 @@
 <!-- structure of an offering in the list -->
-
 <div class="row mt-2">
     {% for offering in offerings %}
     <div class="col-md-6 col-12">
         <div class="card my-2 flex-row">
             <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="">
             <div class="card-body">
-                <p>{{ offering.get_title() }}</p>
+                <h5>{{ offering.get_title() }}</h5>
                 <p>{{ offering.get_street() }}</p>
                 <p>{{ offering.get_daysf() }}</p>
                 <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
