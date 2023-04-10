@@ -1,13 +1,20 @@
-<div class="flex-container">
-    <form action="">
-      <input type="text" placeholder="Search.." name="search">
-      <button type="submit"><i class="fa fa-search"></i></button>
-    </form>
-    <button><i class="fa fa-filter"></i></button>
-    <button onclick="window.location.href='./upload';">
-      <i class="fa fa-upload"></i>
-    </button>
-    <button onclick="window.location.href='./download';">
-      <i class="fa fa-download"></i>
-    </button>
+<div class="row">
+  <div class="col-auto">
+    <img class="logo-img" src="../static/img/logo.png" alt="">
+  </div>
+  <div class="col-auto">
+    <h3>Admin</h3>
+  </div>
+  <div class="col d-flex justify-content-center">
+    <div class="input-group">
+      <input class="form-control" id="search-bar" type="text" placeholder="Search.." name="search">
+      <button class="btn btn-primary" id="search-btn" type="submit"><i class="fa fa-search"></i></button>
+    </div>
+  </div>
+  <div class="col-auto">
+    <i class="fs-4 bi-patch-question"></i>
+  </div>
+  <div class="col-auto">
+    <img class="logo-img" id="user-img" src="../static/img/user.jpg" alt="">
+  </div>
 </div>

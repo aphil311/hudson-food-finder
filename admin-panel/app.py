@@ -22,8 +22,38 @@ app = flask.Flask(__name__, template_folder='templates',
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
-    offerings = database.find_offerings(('%'))
-    html_code = flask.render_template('index.html',
+    html_code = flask.render_template('offerings.html',
+        offerings=None)
+    return flask.make_response(html_code)
+
+#-----------------------------------------------------------------------
+# search()
+# Searches offerings and returns a table of offerings that match the
+# search query
+#-----------------------------------------------------------------------
+@app.route('/organizations', methods=['GET'])
+def searchOrganizations():
+    html_code = flask.render_template('organizations.html')
+    return flask.make_response(html_code)
+
+@app.route('/offerings')
+def offerings():
+    html_code = flask.render_template('offerings.html',
+        offerings=None)
+    return flask.make_response(html_code)
+
+#-----------------------------------------------------------------------
+# search()
+# Searches offerings and returns a table of offerings that match the
+# search query
+#-----------------------------------------------------------------------
+@app.route('/search_offerings', methods=['GET'])
+def searchOfferings():
+    search_query = flask.request.args.get('search')
+    search_query = '%' + search_query + '%'
+    # must have a comma at the end of the tuple
+    offerings = database.find_offerings((search_query,))
+    html_code = flask.render_template('offering-table.html',
         offerings=offerings)
     return flask.make_response(html_code)
 
@@ -37,10 +67,19 @@ def upload():
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
+# download()
+# Page for downloading a csv file from the database
+#-----------------------------------------------------------------------
+@app.route('/download')
+def download():
+    html_code = flask.render_template('download.html')
+    return flask.make_response(html_code)
+
+#-----------------------------------------------------------------------
 # upload_confirmation()
 # Page for confirming the upload of a csv file to update the database
 #-----------------------------------------------------------------------
-@app.route('/upload', methods=['POST'])
+@app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
     file = flask.request.files['file']
     file.save('static/files/' + file.filename)

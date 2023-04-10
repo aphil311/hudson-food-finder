@@ -1,10 +1,14 @@
-.flex-container {
-    display: flex;
-}
 th {
     text-align: left;
     padding: 0 5px;
 }
 td {
     padding: 0 5px;
+}
+.logo-img {
+    width: 2.26rem;
+    height: 2.26rem;
+}
+#user-img {
+    border-radius: 50%;
 }

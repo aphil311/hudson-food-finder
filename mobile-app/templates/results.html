@@ -1,13 +1,16 @@
 <!-- structure of an offering in the list -->
-{% for offering in offerings %}
-<hr>
-<div class="offering flex-container">
-    <img class="offering-logo" src="{{ offering.get_photo_url() }}" alt="">
-    <div class="offering-info">
-        <p>{{ offering.get_title() }}</p>
-        <p>{{ offering.get_street() }}</p>
-        <p>{{ offering.get_daysf() }}</p>
-        <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
+<div class="row mt-2">
+    {% for offering in offerings %}
+    <div class="col-md-6 col-12">
+        <div class="card my-2 flex-row">
+            <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="">
+            <div class="card-body">
+                <h5>{{ offering.get_title() }}</h5>
+                <p>{{ offering.get_street() }}</p>
+                <p>{{ offering.get_daysf() }}</p>
+                <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
+            </div>
+        </div>
     </div>
+    {% endfor %}
 </div>
-{% endfor %}
