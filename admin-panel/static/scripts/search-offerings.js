@@ -11,13 +11,13 @@ function handleResponse(response) {
 }
 
 // sends a request to the server with the search query and sort method
-function search() {
+function searchOfferings() {
   // get variables from inputs
   let searchQuery = $("#search-bar").val();
   // encode variables for request
   searchQuery = encodeURIComponent(searchQuery);
   // send request to server
-  let url = "./offerings?search=" + searchQuery
+  let url = "./search_offerings?search=" + searchQuery
   request = $.ajax({
       type: "GET",
       url: url,
@@ -27,14 +27,14 @@ function search() {
 
 // sets up the page
 function setup() {
-  search();
+  searchOfferings();
   $("#search-bar").on("keypress", function(e) {
       // 13 is *nearly* always the enter key
       if(e.which == 13) {
           search();
       }
   });
-  $("#search-btn").on("click", search);
+  $("#search-btn").on("click", searchOfferings);
 }
 
 // runs setup when document is ready

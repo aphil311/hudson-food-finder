@@ -22,7 +22,7 @@ app = flask.Flask(__name__, template_folder='templates',
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
-    html_code = flask.render_template('index.html',
+    html_code = flask.render_template('offerings.html',
         offerings=None)
     return flask.make_response(html_code)
 
@@ -31,8 +31,24 @@ def index():
 # Searches offerings and returns a table of offerings that match the
 # search query
 #-----------------------------------------------------------------------
-@app.route('/offerings', methods=['GET'])
-def search():
+@app.route('/organizations', methods=['GET'])
+def searchOrganizations():
+    html_code = flask.render_template('organizations.html')
+    return flask.make_response(html_code)
+
+@app.route('/offerings')
+def offerings():
+    html_code = flask.render_template('offerings.html',
+        offerings=None)
+    return flask.make_response(html_code)
+
+#-----------------------------------------------------------------------
+# search()
+# Searches offerings and returns a table of offerings that match the
+# search query
+#-----------------------------------------------------------------------
+@app.route('/search_offerings', methods=['GET'])
+def searchOfferings():
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
     # must have a comma at the end of the tuple
