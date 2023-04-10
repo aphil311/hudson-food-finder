@@ -25,16 +25,6 @@ function search() {
   });
 }
 
-function upload() {
-  // send request to server
-  let url = "./upload"
-  request = $.ajax({
-      type: "GET",
-      url: url,
-      success: handleResponse
-  });
-}
-
 // sets up the page
 function setup() {
   search();

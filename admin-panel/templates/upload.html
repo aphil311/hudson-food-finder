@@ -2,8 +2,19 @@
 <p>Upload</p>
 <hr>
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" id="file">
-    <input type="submit" value="Upload" name="submit">
+    <label for="organizations-group" class="form-label">Upload organizations</label>
+    <div class="input-group w-75" id="organizations-group">
+        <input class="form-control" type="file" name="file" id="file">
+        <button class="btn btn-primary" type="submit" value="Upload" name="submit">Upload</button>
+    </div> 
+</form>
+<br>
+<form action="/upload-offerings" method="post" enctype="multipart/form-data">
+    <label for="upload-group" class="form-label">Upload offerings</label>
+    <div class="input-group w-75" id="offerings-group">
+        <input class="form-control" type="file" name="file" id="file">
+        <button class="btn btn-primary" type="submit" value="Upload" name="submit">Upload</button>
+    </div> 
 </form>
 <p>{{ message }}</p>
 <a href="/">Return Home</a>

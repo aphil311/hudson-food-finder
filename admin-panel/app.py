@@ -51,10 +51,19 @@ def upload():
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
+# download()
+# Page for downloading a csv file from the database
+#-----------------------------------------------------------------------
+@app.route('/download')
+def download():
+    html_code = flask.render_template('download.html')
+    return flask.make_response(html_code)
+
+#-----------------------------------------------------------------------
 # upload_confirmation()
 # Page for confirming the upload of a csv file to update the database
 #-----------------------------------------------------------------------
-@app.route('/upload', methods=['POST'])
+@app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
     file = flask.request.files['file']
     file.save('static/files/' + file.filename)
@@ -64,5 +73,5 @@ def upload_confirmation():
     else:
         message = 'file failed to upload'
     os.remove('static/files/' + file.filename)
-    html_code = flask.render_template('index.html', message=message)
+    html_code = flask.render_template('upload.html', message=message)
     return flask.make_response(html_code)
