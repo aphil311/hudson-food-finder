@@ -17,7 +17,12 @@ class Offering:
     #-------------------------------------------------------------------
     def __init__(self, properties):
         self._photo_url = properties[0]
+        if self._photo_url == None:
+            self._photo_url = './static/img/fallback.png'
         self._title = properties[1]
+        if self._title == '':
+            print (properties[6])
+            self._title = properties[6]
         self._street = properties[2]
         # should think deeply about how to implement this
         temp = properties[3].split('-')
@@ -31,10 +36,16 @@ class Offering:
                 print('Error: invalid day value in database',
                       file=sys.stderr)
                 self._days.append(None)
-        temp = properties[4].split(':')
-        self._start_time = time(int(temp[0]), int(temp[1]))
-        temp = properties[5].split(':')
-        self._end_time = time(int(temp[0]), int(temp[1]))
+        if (properties[4]):
+            temp = properties[4].split(':')
+            self._start_time = time(int(temp[0]), int(temp[1]))
+        else:
+            self._start_time = time(0, 0)
+        if  (properties[5]):
+            temp = properties[5].split(':')
+            self._end_time = time(int(temp[0]), int(temp[1]))
+        else:
+            self._end_time = time(23, 59)
 
     #-------------------------------------------------------------------
     # getter methods

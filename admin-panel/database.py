@@ -182,7 +182,6 @@ def bulk_update(filename):
                     ins_off += '%s, %s, %s)'
                     ins_off_inputs = []
                     for cell in row[ORG_CUTOFF:SERVICE_CUTOFF]:
-                        print(cell)
                         ins_off_inputs.append(cell)
                     ins_off_inputs.append(service_id)
                     ins_off_inputs.append(group_id)
@@ -206,4 +205,4 @@ def bulk_update(filename):
 
 if __name__ == '__main__':
     print('testing database.py')
-    bulk_update('test2.csv')
+    bulk_update('input-sample.csv')
