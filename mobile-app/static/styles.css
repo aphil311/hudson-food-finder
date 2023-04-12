@@ -15,6 +15,6 @@ p {
 }
 
 body {
-    background:            linear-gradient(to top, #8EC5FC, #E0C3FC);
+    background: linear-gradient(to top, #8EC5FC, #cafcc3);
     background-attachment: fixed; /*edit*/
 }

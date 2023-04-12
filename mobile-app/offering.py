@@ -21,7 +21,6 @@ class Offering:
             self._photo_url = './static/img/fallback.png'
         self._title = properties[1]
         if self._title == '':
-            print (properties[6])
             self._title = properties[6]
         self._street = properties[2]
         # should think deeply about how to implement this
