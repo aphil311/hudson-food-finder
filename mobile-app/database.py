@@ -36,7 +36,8 @@ def find_offerings(filter):
             # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
-                Offering.start_time, Offering.end_time) \
+                Offering.start_time, Offering.end_time,
+                Organization.org_name) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
