@@ -1,8 +1,7 @@
-<!-- structure of an offering in the list -->
 <div class="row mt-2">
     {% for offering in offerings %}
-    <div class="col-md-6 col-12">
-        <div class="card my-2 flex-row">
+    <div class="col-md-6 col-12 gy-4">
+        <div class="card h-100 flex-row">
             <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="">
             <div class="card-body">
                 <h5>{{ offering.get_title() }}</h5>
@@ -13,4 +12,5 @@
         </div>
     </div>
     {% endfor %}
+
 </div>

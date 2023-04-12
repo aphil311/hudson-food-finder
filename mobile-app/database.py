@@ -9,14 +9,11 @@
 import sys
 import sqlalchemy
 import sqlalchemy.orm
-import psycopg2
-from decouple import config
+import init
 import offering as offmod
 from schema import Offering, Organization, Ownership
 
-#-----------------------------------------------------------------------
-_DATABASE_URL_ = config('DB_URL')
-#-----------------------------------------------------------------------
+engine = init.engine
 
 #-----------------------------------------------------------------------
 # find_offerings()
@@ -30,8 +27,6 @@ def find_offerings(filter):
     sort_by = filter[1]
     try:
         # connect to the database
-        engine = sqlalchemy.create_engine('postgresql://',
-            creator=lambda: psycopg2.connect(_DATABASE_URL_))
         with sqlalchemy.orm.Session(engine) as session:
             # form the query
             query = session.query(Organization.photo_url,
