@@ -39,3 +39,18 @@ def search_results():
     html_code = flask.render_template('results.html',
         offerings=offerings)
     return flask.make_response(html_code)
+
+
+#function that displays more info about each offering when clicked
+
+@app.route('/offering', methods=['GET'])
+def offering():
+    # Get offering from database
+    # offering = database.find_offering(offering_id)
+    # Render template and return response
+    offering = flask.request.args.get('off')
+
+
+
+    html_code = flask.render_template('off_details.html', off = offering)
+    return flask.make_response(html_code)
