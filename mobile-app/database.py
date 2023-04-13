@@ -32,7 +32,7 @@ def find_offerings(filter):
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
                 Offering.start_time, Offering.end_time,
-                Organization.org_name) \
+                Organization.org_name, Offering.off_id) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -49,6 +49,33 @@ def find_offerings(filter):
             for row in results:
                 offerings.append(offmod.Offering(row))
             return offerings
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
+#-----------------------------------------------------------------------
+def get_offering(id):
+    try:
+        # connect to the database
+        with sqlalchemy.orm.Session(engine) as session:
+            # form the query
+            query = session.query(Organization.photo_url,
+                Offering.title, Organization.street, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Organization.org_name, Offering.off_id,
+                Offering.off_desc) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .filter(Offering.off_id == id)
+
+            # execute the query and return the results
+            results = query.all()
+            if results is None:
+                return None
+            else:
+                return offmod.Offering(results[0])
+
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None

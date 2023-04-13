@@ -17,14 +17,15 @@
     <title>Hudson County Food Finder</title>
 </head>
 <body>
+    <div></div>
     <!-- will replace with logo -->
-    <div class="container-fluid">
-        <h1>Hudson County <br> Food Finder</h1>
+    <div class="container-fluid rounded px-5 py-5 mt-5" style="background-color: white; max-width: 970px;"">
+        <h1>{{ offering.get_title() }}</h1>
+        <hr>
+        <p><b>Address: </b>{{ offering.get_street() }}</p>
+        <p><b>Days Open: </b>{{ offering.get_daysf() }}</p>
+        <p><b>Hours: </b>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
+        <p><b>Other details: </b>{{ offering.get_description() }}</p>
     </div>
-
-
-    <h2> Offering: {{off}}</h2>
-    <!-- control panel -->
-    
 </body>
 </html>
