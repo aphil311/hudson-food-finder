@@ -46,6 +46,12 @@ class Offering:
         else:
             self._end_time = time(23, 59)
 
+        self._off_id = properties[7]
+
+        self._description = properties[8]
+        if self._description == None:
+            self._description = ''
+
     #-------------------------------------------------------------------
     # getter methods
     #-------------------------------------------------------------------
@@ -66,6 +72,12 @@ class Offering:
 
     def get_end_time(self):
         return self._end_time
+
+    def get_description(self):
+        return self._description
+
+    def get_off_id(self):
+        return self._off_id
 
     #-------------------------------------------------------------------
     # formatted getter methods

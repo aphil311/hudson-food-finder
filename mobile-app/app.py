@@ -37,3 +37,10 @@ def search_results():
     html_code = flask.render_template('results.html',
         offerings=offerings)
     return flask.make_response(html_code)
+
+@app.route('/offerings', methods=['GET'])
+def offering():
+    off_id = flask.request.args.get('id')
+    offering = database.get_offering(off_id)
+    html_code = flask.render_template('off_details.html', offering=offering)
+    return flask.make_response(html_code)

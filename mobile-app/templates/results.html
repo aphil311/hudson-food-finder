@@ -8,9 +8,9 @@
                 <p>{{ offering.get_street() }}</p>
                 <p>{{ offering.get_daysf() }}</p>
                 <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
+                <a href="./offerings?id={{ offering.get_off_id() }}">More details</a>
             </div>
         </div>
     </div>
     {% endfor %}
-
 </div>
