@@ -31,7 +31,7 @@ function setup() {
   $("#search-bar").on("keypress", function(e) {
       // 13 is *nearly* always the enter key
       if(e.which == 13) {
-          search();
+          searchOfferings();
       }
   });
   $("#search-btn").on("click", searchOfferings);
