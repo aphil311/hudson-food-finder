@@ -1,24 +1,16 @@
 <div class="row mt-2">
-
-
     {% for offering in offerings %}
-
-        {% set hrefString = "/offering?off=" + offering.get_title() %}
-
     <div class="col-md-6 col-12 gy-4">
         <div class="card h-100 flex-row">
-
             <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="">
-            
-
             <div class="card-body">
-                <h5> <a href= {{hrefString}}>{{ offering.get_title() }}</a></h5>
+                <h5>{{ offering.get_title() }}</h5>
                 <p>{{ offering.get_street() }}</p>
                 <p>{{ offering.get_daysf() }}</p>
                 <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
+                <a href="./offerings?id={{ offering.get_off_id() }}">More details</a>
             </div>
         </div>
     </div>
     {% endfor %}
-
 </div>
