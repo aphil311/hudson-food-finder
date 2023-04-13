@@ -33,7 +33,8 @@ def index():
 #-----------------------------------------------------------------------
 @app.route('/organizations', methods=['GET'])
 def searchOrganizations():
-    html_code = flask.render_template('organizations.html')
+    organizations = database.find_organizations()
+    html_code = flask.render_template('organizations.html', organizations=organizations)
     return flask.make_response(html_code)
 
 @app.route('/offerings')

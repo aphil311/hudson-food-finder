@@ -11,6 +11,7 @@ import csv
 import psycopg2
 from decouple import config
 import offering as offmod
+import organization as orgmod
 
 #-----------------------------------------------------------------------
 _DATABASE_URL_ = config('DB_URL')
@@ -94,6 +95,27 @@ def find_offerings(filter):
         for row in table:
             offerings.append(offmod.Offering(row))
     return offerings
+
+#-----------------------------------------------------------------------
+# find_offerings()
+#-----------------------------------------------------------------------
+def find_organizations():
+    # SELECT
+    stmt_str = 'SELECT organizations.org_name, '
+    stmt_str += 'organizations.phone, organizations.website, '
+    stmt_str += 'organizations.street, organizations.zip_code '
+    # FROM
+    stmt_str += 'FROM organizations'
+
+    # Execute query
+    table = query(stmt_str, filter)
+
+    # create offering objects and put them in a list
+    organizations = []
+    if table is not None:
+        for row in table:
+            organizations.append(orgmod.Organization(row))
+    return organizations
 
 #-----------------------------------------------------------------------
 # bulk_update()
