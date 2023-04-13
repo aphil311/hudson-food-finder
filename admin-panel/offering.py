@@ -24,6 +24,8 @@ class Offering:
     def __init__(self, properties):
         self._org = properties[0]
         self._title = properties[1]
+        if self._title == '':
+            self._title = self._org
 
         # convert days_open from a string to a list of booleans
         temp = properties[2].split('-')
@@ -39,15 +41,25 @@ class Offering:
                 self._days_open.append(None)
 
         # convert start_time and end_time from strings to time objects
-        temp = properties[3].split(':')
-        self._start_time = time(int(temp[0]), int(temp[1]))
-        temp = properties[4].split(':')
-        self._end_time = time(int(temp[0]), int(temp[1]))
+        if properties[3]:
+            temp = properties[3].split(':')
+            self._start_time = time(int(temp[0]), int(temp[1]))
+        else:
+            self._start_time = time(0, 0)
+        if properties[4]:
+            temp = properties[4].split(':')
+            self._end_time = time(int(temp[0]), int(temp[1]))
+        else:
+            self._end_time = time(23, 59)
 
         # convert init_date and close_date from strings to date objects
-        temp = properties[5].split('-')
-        self._init_date = date(int(temp[2]), int(temp[0]),
-            int(temp[1]))
+        if properties[5]:
+            temp = properties[5].split('-')
+            self._init_date = date(int(temp[2]), int(temp[0]),
+                int(temp[1]))
+        else:
+            self._init_date = date(1, 1, date.MAX_YEAR)
+
         if properties[6]:
             temp = properties[6].split('-')
             self._close_date = date(int(temp[2]), int(temp[0]),
