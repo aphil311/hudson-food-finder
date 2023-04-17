@@ -9,10 +9,10 @@
 import os
 import flask
 import database
+import init
 
 #-----------------------------------------------------------------------
-app = flask.Flask(__name__, template_folder='templates',
-    static_folder='static')
+app = init.app
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
