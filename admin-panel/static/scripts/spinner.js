@@ -5,16 +5,17 @@
 // filtering of the search results. Also can toggle the filter view.
 //----------------------------------------------------------------------
 
-// sets html of results-list to the response from the server
-function submitFile() {
+// shows the spinner and hides the upload button
+function showSpinner() {
     $("#spinner").show();
-    $("form").submit();
 }
 
 // sets up the page
 function setup() {
     $("#spinner").hide();
-    $("#submit-btn").on("click", submitFile);
+    $("#file-upload").on("submit", function() {
+        showSpinner();
+    });
 }
 
 // runs setup when document is ready

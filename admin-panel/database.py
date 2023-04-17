@@ -156,6 +156,7 @@ def bulk_update(filename):
                         ins_org_inputs = []
                         org_name = row[0]
                         ins_org_inputs.append(org_name)
+                        print(org_name)
                         for cell in row[1:ORG_CUTOFF]:
                             ins_org_inputs.append(cell)
                         exe_stmt(ins_org, ins_org_inputs)
