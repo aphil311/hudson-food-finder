@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS organizations;
 CREATE TABLE organizations (
 org_id SERIAL PRIMARY KEY,
-org_name TEXT, 
+org_name TEXT,
 phone TEXT,
 website TEXT,
 photo_url TEXT,
@@ -17,13 +17,13 @@ off_id SERIAL PRIMARY KEY,
 title TEXT,
 days_open TEXT,
 days_desc TEXT,
-start_time TEXT,
-end_time TEXT,
+start_time TIME DEFAULT '00:00:00',
+end_time TIME DEFAULT '23:59:00',
 init_date TEXT,
 close_date TEXT,
 off_service INT,
 group_served INT,
-off_desc TEXT);
+off_desc TEXT DEFAULT '');
 -- 
 DROP TABLE IF EXISTS zip_codes;
 CREATE TABLE zip_codes (
@@ -69,13 +69,13 @@ VALUES
 ('Monthly Food Pantry', 'F-F-T-F-F-F-F', 'Third Friday of the month', 
 '7:30', '12:00', '03-26-2023',
 NULL, 1, 3, 'description'),
-('United Passiac Organization', 'F-T-T-T-T-T-F', NULL, '15:30', '19:00', '03-26-2023',
+('United Passiac Organization', 'F-T-T-T-T-T-F', NULL, '15:30:00', '19:00:00', '03-26-2023',
 '07-01-2023', 1, 2, 'description'),
-('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '17:00', '22:00', '03-26-2023',
+('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '17:00:00', '22:00:00', '03-26-2023',
 '06-01-2023', 2, 4, 'description'),
-('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '12:00', '23:59', '03-26-2023',
+('Elijahs Promise', 'F-T-T-T-T-T-F', NULL, '12:00:00', '23:59:00', '03-26-2023',
 '06-01-2023', 2, 5, 'description'),
-('Boston Public Market', 'T-T-T-T-T-T-T', NULL, '9:00', '17:00', '03-26-2023', 
+('Boston Public Market', 'T-T-T-T-T-T-T', NULL, '9:00:00', '17:00:00', '03-26-2023', 
 NULL, 4, 1, 'description');
 
 INSERT INTO zip_codes (zip_code, city, abr_state) VALUES

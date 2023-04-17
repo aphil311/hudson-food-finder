@@ -36,13 +36,11 @@ class Offering:
                       file=sys.stderr)
                 self._days.append(None)
         if (properties[4]):
-            temp = properties[4].split(':')
-            self._start_time = time(int(temp[0]), int(temp[1]))
+            self._start_time = properties[4]
         else:
             self._start_time = time(0, 0)
         if  (properties[5]):
-            temp = properties[5].split(':')
-            self._end_time = time(int(temp[0]), int(temp[1]))
+            self._end_time = properties[5]
         else:
             self._end_time = time(23, 59)
 

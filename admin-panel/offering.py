@@ -42,13 +42,11 @@ class Offering:
 
         # convert start_time and end_time from strings to time objects
         if properties[3]:
-            temp = properties[3].split(':')
-            self._start_time = time(int(temp[0]), int(temp[1]))
+            self._start_time = properties[3]
         else:
             self._start_time = time(0, 0)
         if properties[4]:
-            temp = properties[4].split(':')
-            self._end_time = time(int(temp[0]), int(temp[1]))
+            self._end_time = properties[4]
         else:
             self._end_time = time(23, 59)
 

@@ -40,8 +40,8 @@ class Offering(Base):
     title = sqlalchemy.Column(sqlalchemy.String)
     days_open = sqlalchemy.Column(sqlalchemy.String)
     days_desc = sqlalchemy.Column(sqlalchemy.String)
-    start_time = sqlalchemy.Column(sqlalchemy.String)
-    end_time = sqlalchemy.Column(sqlalchemy.String)
+    start_time = sqlalchemy.Column(sqlalchemy.Time)
+    end_time = sqlalchemy.Column(sqlalchemy.Time)
     init_date = sqlalchemy.Column(sqlalchemy.String)
     close_date = sqlalchemy.Column(sqlalchemy.String)
     off_service = sqlalchemy.Column(sqlalchemy.Integer,

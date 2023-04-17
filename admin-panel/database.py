@@ -154,8 +154,10 @@ def bulk_update(filename):
                         ins_org += 'zip_code) VALUES (%s, %s, %s, %s, '
                         ins_org += '%s)'
                         ins_org_inputs = []
-                        for cell in row[0:ORG_CUTOFF]:
-                            print(cell)
+                        org_name = row[0]
+                        ins_org_inputs.append(org_name)
+                        print(org_name)
+                        for cell in row[1:ORG_CUTOFF]:
                             ins_org_inputs.append(cell)
                         exe_stmt(ins_org, ins_org_inputs)
                         res = query(sel_orgid, sel_orgid_inputs)
@@ -203,11 +205,18 @@ def bulk_update(filename):
                     ins_off += 'VALUES (%s, %s, %s, %s, %s, %s, %s, '
                     ins_off += '%s, %s, %s)'
                     ins_off_inputs = []
+                    # if no offering title, use organization name
+                    if row[ORG_CUTOFF] == '':
+                        row[ORG_CUTOFF] = org_name
                     for cell in row[ORG_CUTOFF:SERVICE_CUTOFF]:
+                        if cell == '':
+                            cell = None
                         ins_off_inputs.append(cell)
                     ins_off_inputs.append(service_id)
                     ins_off_inputs.append(group_id)
                     for cell in row[GROUP_CUTOFF+1:]:
+                        if cell == '':
+                            cell = None
                         ins_off_inputs.append(cell)
                     exe_stmt(ins_off, ins_off_inputs)
 
