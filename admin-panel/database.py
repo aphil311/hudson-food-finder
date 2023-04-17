@@ -10,12 +10,15 @@ import sys
 import csv
 import psycopg2
 from decouple import config
+import sqlalchemy
 import offering as offmod
 import organization as orgmod
+import init
+from schema import Offering, Organization, Ownership, Service, PeopleGroup
 
-#-----------------------------------------------------------------------
+engine = init.engine
+
 _DATABASE_URL_ = config('DB_URL')
-#-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 # query()
@@ -61,40 +64,30 @@ def exe_stmt(stmt_str, args):
 # Returns: a list of offering objects
 #-----------------------------------------------------------------------
 def find_offerings(filter):
-    # SELECT
-    stmt_str = 'SELECT organizations.org_name, '
-    stmt_str += 'offerings.title, offerings.days_open, '
-    stmt_str += 'offerings.start_time, '
-    stmt_str += 'offerings.end_time, '
-    stmt_str += 'offerings.init_date, '
-    stmt_str += 'offerings.close_date, '
-    stmt_str += 'services.service_type, '
-    stmt_str += 'people_groups.people_group, '
-    stmt_str += 'offerings.off_desc '
-    # FROM
-    stmt_str += 'FROM org_ownership, offerings, '
-    stmt_str += 'organizations, services, '
-    stmt_str += 'people_groups '
-    # WHERE
-    stmt_str += 'WHERE org_ownership.org_id = '
-    stmt_str += 'organizations.org_id AND '
-    stmt_str += 'org_ownership.off_id = offerings.off_id AND '
-    stmt_str += 'offerings.off_service = '
-    stmt_str += 'services.service_id AND '
-    stmt_str += 'offerings.group_served = '
-    stmt_str += 'people_groups.group_id AND '
-    # Allow for search by organization name
-    stmt_str += 'organizations.org_name ILIKE %s'
-
-    # Execute query
-    table = query(stmt_str, filter)
-
-    # create offering objects and put them in a list
-    offerings = []
-    if table is not None:
-        for row in table:
-            offerings.append(offmod.Offering(row))
-    return offerings
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.org_name,
+                Offering.title, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Offering.init_date, Offering.close_date,
+                Service.service_type, PeopleGroup.people_group,
+                Offering.off_desc) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .join(Service) \
+                .join(PeopleGroup) \
+                .filter(Organization.org_name.ilike(filter))
+            
+            results = query.all()
+            offerings = []
+            for row in results:
+                offerings.append(offmod.Offering(row))
+            return offerings
+        
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
 
 #-----------------------------------------------------------------------
 # find_offerings()
