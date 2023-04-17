@@ -1,12 +1,18 @@
 {% include 'head.html' %}
+<script src="../static/scripts/spinner.js"></script>
 <p>Upload</p>
 <hr>
-<form action="/upload-offerings" method="post" enctype="multipart/form-data">
+<form id="file-upload" action="/upload-offerings" method="post" enctype="multipart/form-data">
     <label for="upload-group" class="form-label">Upload offerings</label>
-    <div class="input-group w-75" id="offerings-group">
+    <div id="group" class="input-group w-75" id="offerings-group">
         <input class="form-control" type="file" name="file" id="file">
-        <button class="btn btn-primary" type="submit" value="Upload" name="submit">Upload</button>
-    </div> 
+        <button id="submit-btn" class="btn btn-primary" type="submit" value="Upload" name="submit">Upload</button>
+    </div>
 </form>
+<div id="spinner">
+    <p>Your file is uploading!</p>
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+</div>
 <p>{{ message }}</p>
 {% include 'foot.html' %}

@@ -23,7 +23,7 @@ init_date TEXT,
 close_date TEXT,
 off_service INT,
 group_served INT,
-off_desc TEXT);
+off_desc TEXT DEFAULT '');
 -- 
 DROP TABLE IF EXISTS zip_codes;
 CREATE TABLE zip_codes (
