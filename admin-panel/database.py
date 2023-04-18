@@ -15,46 +15,10 @@ from sqlalchemy import text
 import offering as offmod
 import organization as orgmod
 import init
-from schema import Offering, Organization, Ownership, Service, PeopleGroup
+from schema import Offering, Organization
+from schema import Ownership, Service, PeopleGroup
 
 engine = init.engine
-
-_DATABASE_URL_ = config('DB_URL')
-
-#-----------------------------------------------------------------------
-# query()
-# Opens a connection to the database and executes a SQL query
-# Parameters: stmt_str - a string containing a SQL statement
-#             args - a list containing the arguments to use with the
-#                    SQL statement
-# Returns: results of the query as a table
-#-----------------------------------------------------------------------
-def query(stmt_str, args):
-    try:
-        with psycopg2.connect(_DATABASE_URL_) as connection:
-            with contextlib.closing(connection.cursor()) as cursor:
-                cursor.execute(stmt_str, args)
-                table = cursor.fetchall()
-                return table
-    except Exception as ex:
-        print(ex, file=sys.stderr)
-        return None
-
-#-----------------------------------------------------------------------
-# exe_stmt()
-# Opens a connection to the database and executes a SQL statement
-# Parameters: stmt_str - a string containing a SQL statement
-#             args - a list containing the arguments to use with the
-#                    SQL statement
-# Returns: none
-#-----------------------------------------------------------------------
-def exe_stmt(stmt_str, args):
-    try:
-        with psycopg2.connect(_DATABASE_URL_) as connection:
-            with contextlib.closing(connection.cursor()) as cursor:
-                cursor.execute(stmt_str, args)
-    except Exception as ex:
-        print(ex, file=sys.stderr)
 
 #-----------------------------------------------------------------------
 # find_offerings()
@@ -126,26 +90,39 @@ def bulk_update(filename):
     # exe_stmt('TRUNCATE organizations RESTART IDENTITY CASCADE', ())
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            session.execute(text('TRUNCATE offerings RESTART IDENTITY CASCADE'))
-            session.execute(text('TRUNCATE org_ownership RESTART IDENTITY CASCADE'))
-            session.execute(text('TRUNCATE organizations RESTART IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE offerings RESTART '
+                'IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE org_ownership RESTART '
+                'IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE organizations RESTART '
+                'IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE services RESTART '
+                'IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE people_groups RESTART '
+                'IDENTITY CASCADE'))
+            
             with open(filename, 'r', encoding='utf-8') as csv_file:
                 csv_reader = list(csv.DictReader(csv_file))
-                line_count = 1
+                organizations = 0
+                offerings = 0
+                services = 0
+                groups = 0
                 # TODO: organization counter for efficiency
                 for row in csv_reader:
                     # query org_id based on name, if not there then
                     # add it
                     query = session.query(Organization.org_id) \
-                        .filter(Organization.org_name.ilike(row.get('Organization Name')))
+                        .filter(Organization.org_name.ilike(
+                        row.get('Organization Name')))
                     res = query.first()
                     # if organization not in database, add it, else
                     # save the org_id
                     if not res:
+                        organizations += 1
                         insert_stmt = text('INSERT INTO organizations '
-                            '(org_name, phone, website, street, zip_code) '
-                            'VALUES (:org_name, :phone, :website, :street, '
-                            ':zip_code)')
+                            '(org_name, phone, website, street, '
+                            'zip_code) VALUES (:org_name, :phone, '
+                            ':website, :street, :zip_code)')
                         session.execute(insert_stmt, {
                             'org_name': row.get('Organization Name'),
                             'phone': row.get('Phone Number'),
@@ -153,19 +130,18 @@ def bulk_update(filename):
                             'street': row.get('Street'),
                             'zip_code': row.get('Zip Code')
                         })
-                        # get the org_id of the organization we just
-                        # added
-                        query = session.query(Organization.org_id) \
-                            .filter(Organization.org_name.ilike(row.get('Organization Name')))
-                        res = query.first()
-                    org_id = res[0]
+                        org_id = organizations
+                    else:
+                        org_id = res[0]
 
                     # get service and group ids from database
                     query = session.query(Service.service_id) \
-                        .filter(Service.service_type.ilike(row.get('Service')))
+                        .filter(Service.service_type.ilike(
+                        row.get('Service')))
                     res = query.first()
                     # if service not in database, add it
                     if not res:
+                        services += 1
                         insert_stmt = text('INSERT INTO services '
                             '(service_type) VALUES (:service_type)')
                         session.execute(insert_stmt, {
@@ -174,23 +150,29 @@ def bulk_update(filename):
                         # get the service_id of the service we just
                         # added
                         query = session.query(Service.service_id) \
-                            .filter(Service.service_type.ilike(row.get('Service')))
-                        res = query.first()
-                    service_id = res[0]
+                            .filter(Service.service_type.ilike(
+                            row.get('Service')))
+                        service_id = services
+                    else:
+                        service_id = res[0]
                     
                     # repeat for group
                     query = session.query(PeopleGroup.group_id) \
-                        .filter(PeopleGroup.people_group.ilike(row.get('People Served')))
+                        .filter(PeopleGroup.people_group.ilike(
+                        row.get('People Served')))
                     if not res:
+                        groups += 1
                         insert_stmt = text('INSERT INTO people_groups '
                             '(people_group) VALUES (:people_group)')
                         session.execute(insert_stmt, {
                             'people_group': row.get('People Served')
                         })
                         query = session.query(PeopleGroup.group_id) \
-                            .filter(PeopleGroup.people_group.ilike(row.get('People Served')))
-                        res = query.first()
-                    group_id = res[0]
+                            .filter(PeopleGroup.people_group.ilike(
+                            row.get('People Served')))
+                        group_id = groups
+                    else:
+                        group_id = res[0]
                     
                     # add offering to database
                     ins_off_stmt = text('INSERT INTO offerings '
@@ -198,8 +180,8 @@ def bulk_update(filename):
                         'end_time, init_date, close_date, off_service, '
                         'group_served, off_desc) VALUES '
                         '(:title, :days_open, :days_desc, :start_time, '
-                        ':end_time, :init_date, :close_date, :off_service, '
-                        ':group_served, :off_desc)')
+                        ':end_time, :init_date, :close_date, '
+                        ':off_service, :group_served, :off_desc)')
                     # if no offering title, use organization name
                     if row.get('Title') == '':
                         row['Title'] = row.get('Organization Name')
@@ -219,15 +201,15 @@ def bulk_update(filename):
                         'group_served': group_id,
                         'off_desc': row.get('Description')
                     })
+                    offerings += 1
 
                     # add organization ownership to database
                     own_ins_stmt = text('INSERT INTO org_ownership '
                         '(org_id, off_id) VALUES (:org_id, :off_id)')
                     session.execute(own_ins_stmt, {
                         'org_id': org_id,
-                        'off_id': line_count
+                        'off_id': offerings
                     })
-                    line_count += 1
             session.commit()
     except Exception as ex:
         print(ex, file=sys.stderr)
