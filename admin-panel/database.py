@@ -11,6 +11,7 @@ import csv
 import psycopg2
 from decouple import config
 import sqlalchemy
+from sqlalchemy import text
 import offering as offmod
 import organization as orgmod
 import init
@@ -118,110 +119,116 @@ def find_organizations():
 # Returns: 0 if successful, 1 if not
 #-----------------------------------------------------------------------
 def bulk_update(filename):
-    ORG_CUTOFF = 5
-    SERVICE_CUTOFF = 12
-    GROUP_CUTOFF = 13
     # Truncate tables so we can insert new data
     # comment out for testing
-    exe_stmt('TRUNCATE offerings RESTART IDENTITY CASCADE', ())
-    exe_stmt('TRUNCATE org_ownership RESTART IDENTITY CASCADE', ())
-    exe_stmt('TRUNCATE organizations RESTART IDENTITY CASCADE', ())
+    # exe_stmt('TRUNCATE offerings RESTART IDENTITY CASCADE', ())
+    # exe_stmt('TRUNCATE org_ownership RESTART IDENTITY CASCADE', ())
+    # exe_stmt('TRUNCATE organizations RESTART IDENTITY CASCADE', ())
     try:
-        with open(filename, 'r', encoding='utf-8') as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
-            for row in csv_reader:
-                # skip header row
-                if line_count != 0:
-                    sel_orgid_inputs = []
-                    sel_orgid = 'SELECT org_id FROM organizations '
-                    sel_orgid += 'WHERE org_name = %s'
-                    for cell in row[:1]:
-                        sel_orgid_inputs.append(cell)
-                    res = query(sel_orgid, sel_orgid_inputs)
+        with sqlalchemy.orm.Session(engine) as session:
+            session.execute(text('TRUNCATE offerings RESTART IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE org_ownership RESTART IDENTITY CASCADE'))
+            session.execute(text('TRUNCATE organizations RESTART IDENTITY CASCADE'))
+            with open(filename, 'r', encoding='utf-8') as csv_file:
+                csv_reader = list(csv.DictReader(csv_file))
+                line_count = 1
+                # TODO: organization counter for efficiency
+                for row in csv_reader:
+                    # query org_id based on name, if not there then
+                    # add it
+                    query = session.query(Organization.org_id) \
+                        .filter(Organization.org_name.ilike(row.get('Organization Name')))
+                    res = query.first()
                     # if organization not in database, add it, else
                     # save the org_id
                     if not res:
-                        ins_org = 'INSERT INTO organizations '
-                        ins_org += '(org_name, phone, website, street, '
-                        ins_org += 'zip_code) VALUES (%s, %s, %s, %s, '
-                        ins_org += '%s)'
-                        ins_org_inputs = []
-                        org_name = row[0]
-                        ins_org_inputs.append(org_name)
-                        print(org_name)
-                        for cell in row[1:ORG_CUTOFF]:
-                            ins_org_inputs.append(cell)
-                        exe_stmt(ins_org, ins_org_inputs)
-                        res = query(sel_orgid, sel_orgid_inputs)
-                    org_id = res[0][0]
+                        insert_stmt = text('INSERT INTO organizations '
+                            '(org_name, phone, website, street, zip_code) '
+                            'VALUES (:org_name, :phone, :website, :street, '
+                            ':zip_code)')
+                        session.execute(insert_stmt, {
+                            'org_name': row.get('Organization Name'),
+                            'phone': row.get('Phone Number'),
+                            'website': row.get('Website'),
+                            'street': row.get('Street'),
+                            'zip_code': row.get('Zip Code')
+                        })
+                        # get the org_id of the organization we just
+                        # added
+                        query = session.query(Organization.org_id) \
+                            .filter(Organization.org_name.ilike(row.get('Organization Name')))
+                        res = query.first()
+                    org_id = res[0]
 
                     # get service and group ids from database
-                    sel_serviceid_inputs = []
-                    sel_serviceid_inputs.append(row[SERVICE_CUTOFF])
-                    sel_serviceid = 'SELECT service_id FROM services '
-                    sel_serviceid += 'WHERE service_type = %s'
-                    service_id = query(sel_serviceid,
-                        sel_serviceid_inputs)
+                    query = session.query(Service.service_id) \
+                        .filter(Service.service_type.ilike(row.get('Service')))
+                    res = query.first()
                     # if service not in database, add it
-                    if not service_id:
-                        ins_service = 'INSERT INTO services '
-                        ins_service += '(service_type) VALUES (%s)'
-                        exe_stmt(ins_service, sel_serviceid_inputs)
-                        service_id = query(sel_serviceid,
-                            sel_serviceid_inputs)
-
-                    service_id = service_id[0][0]
+                    if not res:
+                        insert_stmt = text('INSERT INTO services '
+                            '(service_type) VALUES (:service_type)')
+                        session.execute(insert_stmt, {
+                            'service_type': row.get('Service')
+                        })
+                        # get the service_id of the service we just
+                        # added
+                        query = session.query(Service.service_id) \
+                            .filter(Service.service_type.ilike(row.get('Service')))
+                        res = query.first()
+                    service_id = res[0]
                     
                     # repeat for group
-                    sel_groupid_inputs = []
-                    sel_groupid_inputs.append(row[GROUP_CUTOFF])
-                    sel_groupid = 'SELECT group_id FROM people_groups '
-                    sel_groupid += 'WHERE people_group = %s'
-                    group_id = query(sel_groupid, sel_groupid_inputs)
-                    # if group not in database, add it
-                    if not group_id:
-                        ins_group = 'INSERT INTO people_groups '
-                        ins_group += '(people_group) VALUES (%s)'
-                        exe_stmt(ins_group, sel_groupid_inputs)
-                        group_id = query(sel_groupid,
-                            sel_groupid_inputs)
-                    
-                    group_id = group_id[0][0]
+                    query = session.query(PeopleGroup.group_id) \
+                        .filter(PeopleGroup.people_group.ilike(row.get('People Served')))
+                    if not res:
+                        insert_stmt = text('INSERT INTO people_groups '
+                            '(people_group) VALUES (:people_group)')
+                        session.execute(insert_stmt, {
+                            'people_group': row.get('People Served')
+                        })
+                        query = session.query(PeopleGroup.group_id) \
+                            .filter(PeopleGroup.people_group.ilike(row.get('People Served')))
+                        res = query.first()
+                    group_id = res[0]
                     
                     # add offering to database
-                    ins_off = 'INSERT INTO offerings '
-                    ins_off += '(title, days_open, days_desc, '
-                    ins_off += 'start_time, end_time, init_date, '
-                    ins_off += 'close_date, off_service, '
-                    ins_off += 'group_served, off_desc)'
-                    ins_off += 'VALUES (%s, %s, %s, %s, %s, %s, %s, '
-                    ins_off += '%s, %s, %s)'
-                    ins_off_inputs = []
+                    ins_off_stmt = text('INSERT INTO offerings '
+                        '(title, days_open, days_desc, start_time, '
+                        'end_time, init_date, close_date, off_service, '
+                        'group_served, off_desc) VALUES '
+                        '(:title, :days_open, :days_desc, :start_time, '
+                        ':end_time, :init_date, :close_date, :off_service, '
+                        ':group_served, :off_desc)')
                     # if no offering title, use organization name
-                    if row[ORG_CUTOFF] == '':
-                        row[ORG_CUTOFF] = org_name
-                    for cell in row[ORG_CUTOFF:SERVICE_CUTOFF]:
-                        if cell == '':
-                            cell = None
-                        ins_off_inputs.append(cell)
-                    ins_off_inputs.append(service_id)
-                    ins_off_inputs.append(group_id)
-                    for cell in row[GROUP_CUTOFF+1:]:
-                        if cell == '':
-                            cell = None
-                        ins_off_inputs.append(cell)
-                    exe_stmt(ins_off, ins_off_inputs)
+                    if row.get('Title') == '':
+                        row['Title'] = row.get('Organization Name')
+                    # replace empty cells with None
+                    for key in row:
+                        if row[key] == '':
+                            row[key] = None
+                    session.execute(ins_off_stmt, {
+                        'title': row.get('Title'),
+                        'days_open': row.get('Days'),
+                        'days_desc': row.get('Day Description'),
+                        'start_time': row.get('Start Time'),
+                        'end_time': row.get('End Time'),
+                        'init_date': row.get('Start Date'),
+                        'close_date': row.get('End Date'),
+                        'off_service': service_id,
+                        'group_served': group_id,
+                        'off_desc': row.get('Description')
+                    })
 
-                    # match offering to organization
-                    ins_own = 'INSERT INTO org_ownership '
-                    ins_own += '(org_id, off_id) VALUES (%s, %s)'
-                    ins_own_inputs = []
-                    ins_own_inputs.append(org_id)
-                    ins_own_inputs.append(line_count)
-                    exe_stmt(ins_own, ins_own_inputs)
-                # go to next line in csv
-                line_count += 1
+                    # add organization ownership to database
+                    own_ins_stmt = text('INSERT INTO org_ownership '
+                        '(org_id, off_id) VALUES (:org_id, :off_id)')
+                    session.execute(own_ins_stmt, {
+                        'org_id': org_id,
+                        'off_id': line_count
+                    })
+                    line_count += 1
+            session.commit()
     except Exception as ex:
         print(ex, file=sys.stderr)
         return 1
