@@ -93,22 +93,22 @@ def find_offerings(filter):
 # find_offerings()
 #-----------------------------------------------------------------------
 def find_organizations():
-    # SELECT
-    stmt_str = 'SELECT organizations.org_name, '
-    stmt_str += 'organizations.phone, organizations.website, '
-    stmt_str += 'organizations.street, organizations.zip_code '
-    # FROM
-    stmt_str += 'FROM organizations'
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.org_name,
+                Organization.phone, Organization.website,
+                Organization.street, Organization.zip_code)
+            results = query.all()
 
-    # Execute query
-    table = query(stmt_str, filter)
+            organizations = []
+            if results is not None:
+                for row in results:
+                    organizations.append(orgmod.Organization(row))
+            return organizations
 
-    # create offering objects and put them in a list
-    organizations = []
-    if table is not None:
-        for row in table:
-            organizations.append(orgmod.Organization(row))
-    return organizations
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
 
 #-----------------------------------------------------------------------
 # bulk_update()
