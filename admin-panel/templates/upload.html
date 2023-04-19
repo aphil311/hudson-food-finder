@@ -13,6 +13,11 @@
     <p>Your file is uploading!</p>
     <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
+    </div>
 </div>
-<p>{{ message }}</p>
+{% if messages %}
+    <div class="container-fluid">
+        <p>{% for message in messages %}{{ message }}<br>{% endfor %}</p>
+    </div>
+{% endif %}
 {% include 'foot.html' %}

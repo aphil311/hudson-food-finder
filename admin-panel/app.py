@@ -84,11 +84,13 @@ def download():
 def upload_confirmation():
     file = flask.request.files['file']
     file.save('static/files/' + file.filename)
-    status = database.bulk_update('static/files/' + file.filename)
-    if status == 0:
-        message = 'file successfully uploaded'
-    else:
-        message = 'file failed to upload'
+    status, messages = database.bulk_update('static/files/' + file.filename)
+    if status != 0:
+        print('cry')
+    elif status != 1:
+        print('cry more')
+    elif status != 2:
+        print('cry even more')
     os.remove('static/files/' + file.filename)
-    html_code = flask.render_template('upload.html', message=message)
+    html_code = flask.render_template('upload.html', messages=messages)
     return flask.make_response(html_code)

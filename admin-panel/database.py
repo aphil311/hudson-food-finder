@@ -119,6 +119,7 @@ def find_organizations():
 # Returns: 0 if successful, 1 if not
 #-----------------------------------------------------------------------
 def bulk_update(filename):
+    error_messages = []
     try:
         with sqlalchemy.orm.Session(engine) as session:
             session.execute(text('TRUNCATE offerings RESTART '
@@ -136,8 +137,8 @@ def bulk_update(filename):
                 csv_reader = list(csv.DictReader(csv_file))
                 val = validate_file(csv_reader)
                 if val != 0:
-                    print('Error: ' + str(val), file=sys.stderr)
-                    return 1
+                    return (2, ['File failed to upload due to the '
+                        'error: ' + str(val)])
                 days_regex = re.compile(
                     r'^[TF]-[TF]-[TF]-[TF]-[TF]-[TF]-[TF]$')
                 time_regex = re.compile(
@@ -149,13 +150,13 @@ def bulk_update(filename):
                 offerings = 0
                 services = 0
                 groups = 0
-                # TODO: organization counter for efficiency
                 for row in csv_reader:
                     val = validate_row(row, days_regex, time_regex,
                         date_regex)
                     if val != 0:
-                        print('Error on row ' + str(csv_reader.index(row)
-                            + 1) + ': ' + str(val), file=sys.stderr)
+                        error_str = 'Error on row ' + str(
+                            csv_reader.index(row) + 1) + ': ' + str(val)
+                        error_messages.append(error_str)
                         continue
                     # query org_id based on name, if not there then
                     # add it
@@ -203,7 +204,7 @@ def bulk_update(filename):
                         service_id = services
                     else:
                         service_id = res[0]
-                    
+
                     # repeat for group
                     query = session.query(PeopleGroup.group_id) \
                         .filter(PeopleGroup.people_group.ilike(
@@ -262,8 +263,10 @@ def bulk_update(filename):
             session.commit()
     except Exception as ex:
         print(ex, file=sys.stderr)
-        return 1
-    return 0
+        return (1, ['File failed to upload due to an internal error.'])
+    error_messages.append('Successfully added ' + str(offerings) + 
+        ' offerings!')
+    return (0, error_messages)
 
 if __name__ == '__main__':
     print('testing database.py')
