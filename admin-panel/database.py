@@ -5,11 +5,9 @@
 # Authors: Aidan Phillips, Yousef Amin
 #-----------------------------------------------------------------------
 
-import contextlib
 import sys
+import re
 import csv
-import psycopg2
-from decouple import config
 import sqlalchemy
 from sqlalchemy import text
 import offering as offmod
@@ -19,6 +17,44 @@ from schema import Offering, Organization
 from schema import Ownership, Service, PeopleGroup
 
 engine = init.engine
+
+def validate_file(csv_reader):
+    # check if file is empty
+    if csv_reader is None:
+        return 'File is empty'
+    # check if file has correct number of columns
+    if len(csv_reader[0]) != 15:
+        return 'File does not have the 15 required columns'
+    # check if file has correct column names
+    for key in csv_reader[0].keys():
+        if key not in ['Organization', 'Phone Number', 'Website', 
+            'Street', 'Zip Code', 'Title', 'Days', 'Day Description',
+            'Start Time', 'End Time', 'Start Date', 'End Date',
+            'Service', 'People Served', 'Description']:
+            return 'Column name \"' + key + '\" does not match template'
+    return 0
+
+def validate_row(row, days, time, date):
+    # days should be formatted correctly
+    if not days.match(row.get('Days')):
+        return 'Days column not properly formatted'
+    # start time should be formatted correctly or not exist
+    if row.get('Start Time') != '' and not time.match(
+        row.get('Start Time')):
+        return 'Start time not properly formatted'
+    # end time should be formatted correctly or not exist
+    if row.get('End Time') != '' and not time.match(
+        row.get('End Time')):
+        return 'End time not properly formatted'
+    # start date should be formatted correctly or not exist
+    if row.get('Start Date') != '' and not date.match(
+        row.get('Start Date')):
+        return 'Start date not properly formatted'
+    # end date should be formatted correctly or not exist
+    if row.get('End Date') != '' and not date.match(
+        row.get('End Date')):
+        return 'End date not properly formatted'
+    return 0
 
 #-----------------------------------------------------------------------
 # find_offerings()
@@ -83,11 +119,6 @@ def find_organizations():
 # Returns: 0 if successful, 1 if not
 #-----------------------------------------------------------------------
 def bulk_update(filename):
-    # Truncate tables so we can insert new data
-    # comment out for testing
-    # exe_stmt('TRUNCATE offerings RESTART IDENTITY CASCADE', ())
-    # exe_stmt('TRUNCATE org_ownership RESTART IDENTITY CASCADE', ())
-    # exe_stmt('TRUNCATE organizations RESTART IDENTITY CASCADE', ())
     try:
         with sqlalchemy.orm.Session(engine) as session:
             session.execute(text('TRUNCATE offerings RESTART '
@@ -103,17 +134,34 @@ def bulk_update(filename):
             
             with open(filename, 'r', encoding='utf-8') as csv_file:
                 csv_reader = list(csv.DictReader(csv_file))
+                val = validate_file(csv_reader)
+                if val != 0:
+                    print('Error: ' + str(val), file=sys.stderr)
+                    return 1
+                days_regex = re.compile(
+                    r'^[TF]-[TF]-[TF]-[TF]-[TF]-[TF]-[TF]$')
+                time_regex = re.compile(
+                    r'^0?([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+                date_regex = re.compile(
+                    r'^(1[0-2]|0?[1-9])-(3[01]|[12][0-9]|0?[1-9])-'
+                    '[0-9]{4}$')
                 organizations = 0
                 offerings = 0
                 services = 0
                 groups = 0
                 # TODO: organization counter for efficiency
                 for row in csv_reader:
+                    val = validate_row(row, days_regex, time_regex,
+                        date_regex)
+                    if val != 0:
+                        print('Error on row ' + str(csv_reader.index(row)
+                            + 1) + ': ' + str(val), file=sys.stderr)
+                        continue
                     # query org_id based on name, if not there then
                     # add it
                     query = session.query(Organization.org_id) \
                         .filter(Organization.org_name.ilike(
-                        row.get('Organization Name')))
+                        row.get('Organization')))
                     res = query.first()
                     # if organization not in database, add it, else
                     # save the org_id
@@ -124,7 +172,7 @@ def bulk_update(filename):
                             'zip_code) VALUES (:org_name, :phone, '
                             ':website, :street, :zip_code)')
                         session.execute(insert_stmt, {
-                            'org_name': row.get('Organization Name'),
+                            'org_name': row.get('Organization'),
                             'phone': row.get('Phone Number'),
                             'website': row.get('Website'),
                             'street': row.get('Street'),
@@ -184,7 +232,7 @@ def bulk_update(filename):
                         ':off_service, :group_served, :off_desc)')
                     # if no offering title, use organization name
                     if row.get('Title') == '':
-                        row['Title'] = row.get('Organization Name')
+                        row['Title'] = row.get('Organization')
                     # replace empty cells with None
                     for key in row:
                         if row[key] == '':
@@ -210,6 +258,7 @@ def bulk_update(filename):
                         'org_id': org_id,
                         'off_id': offerings
                     })
+
             session.commit()
     except Exception as ex:
         print(ex, file=sys.stderr)
