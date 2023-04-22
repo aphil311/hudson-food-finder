@@ -52,14 +52,14 @@ class Offering:
 
         # convert init_date and close_date from strings to date objects
         if properties[5]:
-            temp = properties[5].split('-')
+            temp = properties[5].split('/')
             self._init_date = date(int(temp[2]), int(temp[0]),
                 int(temp[1]))
         else:
             self._init_date = date(1, 1, date.MAX_YEAR)
 
         if properties[6]:
-            temp = properties[6].split('-')
+            temp = properties[6].split('/')
             self._close_date = date(int(temp[2]), int(temp[0]),
                 int(temp[1]))
         else:
