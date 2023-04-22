@@ -71,7 +71,7 @@ This project can be run locally by running `python runserver.py <port>` and navi
 ## Roadmap
 
 - [X] **Prototype**
-- [ ] **Alpha**
+- [X] **Alpha**
 - [ ] **Beta**
 - [ ] **Final**
 
