@@ -18,3 +18,11 @@ body {
     background: linear-gradient(to top, #8EC5FC, #cafcc3);
     background-attachment: fixed; /*edit*/
 }
+
+.background-img{
+    width:100px;
+    height:100px; 
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
