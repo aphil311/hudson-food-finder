@@ -240,6 +240,14 @@ def bulk_update(filename):
                     for key in row:
                         if row[key] == '':
                             row[key] = None
+                    # switch dates to postgres format
+                    # YYYY-MM-DD
+                    if row.get('Start Date'):
+                        temp = row.get('Start Date').split('/')
+                        row['Start Date'] = temp[2] + '-' + str(temp[0]).zfill(2) + '-' + str(temp[1]).zfill(2)
+                    if row.get('End Date'):
+                        temp = row.get('End Date').split('/')
+                        row['End Date'] = temp[2] + '-' + str(temp[0]).zfill(2) + '-' + str(temp[1]).zfill(2)
                     session.execute(ins_off_stmt, {
                         'title': row.get('Title'),
                         'days_open': row.get('Days'),
