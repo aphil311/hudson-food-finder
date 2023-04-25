@@ -23,14 +23,14 @@ def validate_file(csv_reader):
     if csv_reader is None:
         return 'File is empty'
     # check if file has correct number of columns
-    if len(csv_reader[0]) != 15:
-        return 'File does not have the 15 required columns'
+    if len(csv_reader[0]) != 16:
+        return 'File does not have the 16 required columns'
     # check if file has correct column names
     for key in csv_reader[0].keys():
         if key not in ['Organization', 'Phone Number', 'Website', 
-            'Street', 'Zip Code', 'Title', 'Days', 'Day Description',
-            'Start Time', 'End Time', 'Start Date', 'End Date',
-            'Service', 'People Served', 'Description']:
+            'Photo URL', 'Street', 'Zip Code', 'Title', 'Days',
+            'Day Description', 'Start Time', 'End Time', 'Start Date',
+            'End Date', 'Service', 'People Served', 'Description']:
             return 'Column name \"' + key + '\" does not match template'
     return 0
 
@@ -144,7 +144,7 @@ def bulk_update(filename):
                 time_regex = re.compile(
                     r'^0?([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
                 date_regex = re.compile(
-                    r'^(1[0-2]|0?[1-9])-(3[01]|[12][0-9]|0?[1-9])-'
+                    r'^(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/'
                     '[0-9]{4}$')
                 organizations = 0
                 offerings = 0
@@ -169,15 +169,17 @@ def bulk_update(filename):
                     if not res:
                         organizations += 1
                         insert_stmt = text('INSERT INTO organizations '
-                            '(org_name, phone, website, street, '
-                            'zip_code) VALUES (:org_name, :phone, '
-                            ':website, :street, :zip_code)')
+                            '(org_name, phone, website, photo_url, '
+                            'street, zip_code) VALUES (:org_name, '
+                            ':phone, :website, :photo_url, :street, '
+                            ':zip_code)')
                         session.execute(insert_stmt, {
                             'org_name': row.get('Organization'),
                             'phone': row.get('Phone Number'),
                             'website': row.get('Website'),
                             'street': row.get('Street'),
-                            'zip_code': row.get('Zip Code')
+                            'zip_code': row.get('Zip Code'),
+                            'photo_url': row.get('Photo URL')
                         })
                         org_id = organizations
                     else:
@@ -238,6 +240,14 @@ def bulk_update(filename):
                     for key in row:
                         if row[key] == '':
                             row[key] = None
+                    # switch dates to postgres format
+                    # YYYY-MM-DD
+                    if row.get('Start Date'):
+                        temp = row.get('Start Date').split('/')
+                        row['Start Date'] = temp[2] + '-' + str(temp[0]).zfill(2) + '-' + str(temp[1]).zfill(2)
+                    if row.get('End Date'):
+                        temp = row.get('End Date').split('/')
+                        row['End Date'] = temp[2] + '-' + str(temp[0]).zfill(2) + '-' + str(temp[1]).zfill(2)
                     session.execute(ins_off_stmt, {
                         'title': row.get('Title'),
                         'days_open': row.get('Days'),

@@ -52,16 +52,11 @@ class Offering:
 
         # convert init_date and close_date from strings to date objects
         if properties[5]:
-            temp = properties[5].split('-')
-            self._init_date = date(int(temp[2]), int(temp[0]),
-                int(temp[1]))
+            self._init_date = properties[5]
         else:
-            self._init_date = date(1, 1, date.MAX_YEAR)
-
+            self._init_date = date(1, 1, 1)
         if properties[6]:
-            temp = properties[6].split('-')
-            self._close_date = date(int(temp[2]), int(temp[0]),
-                int(temp[1]))
+            self._close_date = properties[6]
         else:
             self._close_date = date(1, 1, 1)
 
@@ -108,6 +103,8 @@ class Offering:
     def get_end_datef(self):
         if self._close_date == date(1, 1, 1):
             return 'indefinite'
+        if type(self._close_date) == str:
+            print(self._close_date)
         return self._close_date.strftime('%m/%d/%y')
 
     def get_days_openf(self):
