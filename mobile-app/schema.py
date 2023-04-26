@@ -68,7 +68,7 @@ class ZipCode(Base):
 class Service(Base):
     __tablename__ = 'services'
     service_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    service_name = sqlalchemy.Column(sqlalchemy.String)
+    service_type = sqlalchemy.Column(sqlalchemy.String)
 
 #-----------------------------------------------------------------------
 # Ownership
