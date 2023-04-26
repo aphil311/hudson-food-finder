@@ -17,7 +17,7 @@ class Offering:
     #-------------------------------------------------------------------
     def __init__(self, properties):
         self._photo_url = properties[0]
-        if self._photo_url == None:
+        if self._photo_url == '':
             self._photo_url = './static/img/fallback.png'
         self._title = properties[1]
         if self._title == '':
