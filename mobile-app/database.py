@@ -26,8 +26,7 @@ engine = init.engine
 def find_offerings(filter):
     search_term = '%' + filter[0] + '%'
     sort_by = filter[1]
-    service_name_1 = 'Shelter'
-    service_name_2 = 'Food Pantry'
+    services = filter[2]
     try:
         # connect to the database
         with sqlalchemy.orm.Session(engine) as session:
@@ -46,8 +45,7 @@ def find_offerings(filter):
                         Organization.zip_code.ilike(search_term) |
                         Organization.org_name.ilike(search_term)) \
                 .filter((Service.service_id == Offering.off_service) &
-                        ((Service.service_type.ilike(service_name_1)) |
-                        (Service.service_type.ilike(service_name_2)))) \
+                        (Service.service_type.in_(services))) \
                 .order_by(sqlalchemy.text(sort_by))
 
             # execute the query and return the results

@@ -18,11 +18,23 @@ function search() {
   if (sortBy === undefined) {
     sortBy = "offerings.title";
   }
+  let services = [];
+  $.each($("input:checkbox[name ='service']:checked"), function() {
+    services.push($(this).val());
+  });
+  if (services.length === 0) {
+    $.each($("input:checkbox[name ='service']:not(:checked)"), function() {
+      services.push($(this).val());
+    });
+  }
   // encode variables for request
   searchQuery = encodeURIComponent(searchQuery);
   sortBy = encodeURIComponent(sortBy);
   // send request to server
   let url = "./search?search=" + searchQuery + "&sort=" + sortBy;
+  for (let i = 0; i < services.length; i++) {
+    url += "&service=" + encodeURIComponent(services[i]);
+  }
   request = $.ajax({
       type: "GET",
       url: url,
@@ -41,7 +53,8 @@ function setup() {
   search();
   $("#filter-button").on("click", toggle);
   $("#search-bar").on("keyup", search);
-  $("input:radio[name ='sort']").on("change", search);
+  $("input:radio[name='sort']").on("change", search);
+  $("input:checkbox").on("change", search);
 }
 
 // runs setup when document is ready
