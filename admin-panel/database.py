@@ -243,6 +243,12 @@ def bulk_update(filename):
                     for key in row:
                         if row[key] == '':
                             row[key] = None
+                    # use default values for start and end time
+                    if row.get('Start Time') == None:
+                        row['Start Time'] = '00:00'
+                    if row.get('End Time') == None:
+                        row['End Time'] = '23:59'
+                    
                     # switch dates to postgres format
                     # YYYY-MM-DD
                     if row.get('Start Date'):
