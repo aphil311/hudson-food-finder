@@ -18,15 +18,15 @@
         <input class="form-check-input" type="radio" id="sort-by-end-time" name="sort" value="offerings.end_time">
         <label class="form-check-label" for="sort-by-end-time">End Time</label><br>
     </details>
+    {% if services %}
     <details>
         <summary>Primary Service</summary>
-        <input type="checkbox" id="food-pantry" name="service" value="Shelter">
-        <label for="food-pantry">Shelter</label><br>
-        <input type="checkbox" id="soup-kitchen" name="service" value="Soup Kitchen">
-        <label for="soup-kitchen">Soup Kitchen</label><br>
-        <input type="checkbox" id="groceries" name="service" value="Food Pantry">
-        <label for="groceries">Food Pantry</label><br>
+        {% for service in services %}
+            <input type="checkbox" id="{{ service }}" name="service" value="{{ service }}">
+            <label for="{{ service }}">{{ service }}</label><br>
+        {% endfor %}
     </details>
+    {% endif %}
     <details>
         <summary>Days Open</summary>
         <input type="checkbox" id="sunday" name="sunday" value="sunday">

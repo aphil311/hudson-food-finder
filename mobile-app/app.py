@@ -18,7 +18,8 @@ app = init.app
 @app.route('/index')
 @app.route('/')
 def index():
-    html_code = flask.render_template('index.html')
+    services = database.get_services()
+    html_code = flask.render_template('index.html', services=services)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------

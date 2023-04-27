@@ -85,9 +85,32 @@ def get_offering(id):
         print(ex, file=sys.stderr)
         return None
 
+def get_services():
+    try:
+        # connect to the database
+        with sqlalchemy.orm.Session(engine) as session:
+            # form the query
+            query = session.query(Service.service_type) \
+                .distinct() \
+                .filter(Service.service_type != '') \
+                .order_by(Service.service_type)
+
+            # execute the query and return the results
+            results = query.all()
+            services = []
+            for row in results:
+                services.append(row[0])
+            return services
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
 # Test function
 def main():
-    find_offerings('')
+    # find_offerings('')
+    services = get_services()
+    for service in services:
+        print(service.service_type)
 
 if __name__ == '__main__':
     main()
