@@ -18,7 +18,14 @@ app = init.app
 @app.route('/index')
 @app.route('/')
 def index():
-    html_code = flask.render_template('index.html')
+    services = database.get_services()
+    if len(services) == 1:
+        services = None
+    groups = database.get_groups()
+    if len(groups) == 1:
+        groups = None
+    html_code = flask.render_template('index.html', services=services,
+        groups=groups)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -30,8 +37,13 @@ def search_results():
     # Get search term and sort by from query string
     search_term = flask.request.args.get('search')
     sort_by = flask.request.args.get('sort')
+    services = flask.request.args.getlist('service')
+    days = flask.request.args.get('days')
+    times = (flask.request.args.get('start_time'), 
+        flask.request.args.get('end_time'))
+    groups = flask.request.args.getlist('group')
     # Form query and get offerings from database
-    query = (search_term, sort_by)
+    query = (search_term, sort_by, services, days, times, groups)
     offerings = database.find_offerings(query)
     # Render template and return response
     html_code = flask.render_template('results.html',

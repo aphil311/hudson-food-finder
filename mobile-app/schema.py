@@ -46,7 +46,8 @@ class Offering(Base):
     close_date = sqlalchemy.Column(sqlalchemy.String)
     off_service = sqlalchemy.Column(sqlalchemy.Integer,
         sqlalchemy.ForeignKey('services.service_id'))
-    group_served = sqlalchemy.Column(sqlalchemy.Integer)
+    group_served = sqlalchemy.Column(sqlalchemy.Integer,
+        sqlalchemy.ForeignKey('people_groups.group_id'))
     off_desc = sqlalchemy.Column(sqlalchemy.String)
     ownerships = sqlalchemy.orm.relationship("Ownership",
         back_populates="offering")
@@ -68,7 +69,16 @@ class ZipCode(Base):
 class Service(Base):
     __tablename__ = 'services'
     service_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    service_name = sqlalchemy.Column(sqlalchemy.String)
+    service_type = sqlalchemy.Column(sqlalchemy.String)
+
+#-----------------------------------------------------------------------
+# Groups
+# Represents a group in the database
+#-----------------------------------------------------------------------
+class Group(Base):
+    __tablename__ = 'people_groups'
+    group_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    people_group = sqlalchemy.Column(sqlalchemy.String)
 
 #-----------------------------------------------------------------------
 # Ownership

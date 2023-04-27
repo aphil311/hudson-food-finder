@@ -12,6 +12,7 @@ import sqlalchemy.orm
 import init
 import offering as offmod
 from schema import Offering, Organization, Ownership
+from schema import Service, Group
 
 engine = init.engine
 
@@ -25,6 +26,11 @@ engine = init.engine
 def find_offerings(filter):
     search_term = '%' + filter[0] + '%'
     sort_by = filter[1]
+    services = filter[2]
+    days = filter[3]
+    print(days)
+    times = filter[4]
+    groups = filter[5]
     try:
         # connect to the database
         with sqlalchemy.orm.Session(engine) as session:
@@ -42,6 +48,13 @@ def find_offerings(filter):
                         Offering.title.ilike(search_term) |
                         Organization.zip_code.ilike(search_term) |
                         Organization.org_name.ilike(search_term)) \
+                .filter((Service.service_id == Offering.off_service) &
+                        (Service.service_type.in_(services))) \
+                .filter(Offering.days_open.like(days)) \
+                .filter((Offering.start_time >= times[0]) &
+                        (Offering.end_time <= times[1])) \
+                .filter((Group.group_id == Offering.group_served) &
+                        (Group.people_group.in_(groups))) \
                 .order_by(sqlalchemy.text(sort_by))
 
             # execute the query and return the results
@@ -81,9 +94,55 @@ def get_offering(id):
         print(ex, file=sys.stderr)
         return None
 
+def get_services():
+    try:
+        # connect to the database
+        with sqlalchemy.orm.Session(engine) as session:
+            # form the query
+            query = session.query(Service.service_type) \
+                .distinct() \
+                .filter(Service.service_type != '') \
+                .order_by(Service.service_type)
+
+            # execute the query and return the results
+            results = query.all()
+            services = []
+            for row in results:
+                services.append(row[0])
+            return services
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
+def get_groups():
+    try:
+        # connect to the database
+        with sqlalchemy.orm.Session(engine) as session:
+            # form the query
+            query = session.query(Group.people_group) \
+                .distinct() \
+                .filter(Group.people_group != '') \
+                .order_by(Group.people_group)
+
+            # execute the query and return the results
+            results = query.all()
+            groups = []
+            for row in results:
+                groups.append(row[0])
+            return groups
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
 # Test function
 def main():
-    find_offerings('')
+    # find_offerings('')
+    services = get_services()
+    for service in services:
+        print(service)
+    groups = get_groups()
+    for group in groups:
+        print(group)
 
 if __name__ == '__main__':
     main()
