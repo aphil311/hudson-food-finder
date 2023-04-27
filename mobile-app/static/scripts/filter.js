@@ -37,6 +37,19 @@ function search() {
   for (let i = 0; i < services.length; i++) {
     url += "&service=" + encodeURIComponent(services[i]);
   }
+
+  // deal with times
+  startTime = $("#start-time").val();
+  if (startTime === "") {
+    startTime = "00:00";
+  }
+  endTime = $("#end-time").val();
+  if (endTime === "") {
+    endTime = "23:59";
+  }
+  url += "&start_time=" + encodeURIComponent(startTime);
+  url += "&end_time=" + encodeURIComponent(endTime);
+
   // deal with groups
   let groups = [];
   $.each($("input:checkbox[name ='group']:checked"), function() {

@@ -27,7 +27,8 @@ def find_offerings(filter):
     search_term = '%' + filter[0] + '%'
     sort_by = filter[1]
     services = filter[2]
-    groups = filter[3]
+    times = filter[3]
+    groups = filter[4]
     try:
         # connect to the database
         with sqlalchemy.orm.Session(engine) as session:
@@ -47,6 +48,8 @@ def find_offerings(filter):
                         Organization.org_name.ilike(search_term)) \
                 .filter((Service.service_id == Offering.off_service) &
                         (Service.service_type.in_(services))) \
+                .filter((Offering.start_time >= times[0]) &
+                        (Offering.end_time <= times[1])) \
                 .filter((Group.group_id == Offering.group_served) &
                         (Group.people_group.in_(groups))) \
                 .order_by(sqlalchemy.text(sort_by))
