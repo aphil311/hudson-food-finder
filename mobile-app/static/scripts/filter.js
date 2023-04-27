@@ -18,6 +18,13 @@ function search() {
   if (sortBy === undefined) {
     sortBy = "offerings.title";
   }
+  // encode variables for request
+  searchQuery = encodeURIComponent(searchQuery);
+  sortBy = encodeURIComponent(sortBy);
+  // send request to server
+  let url = "./search?search=" + searchQuery + "&sort=" + sortBy;
+
+  // deal with services
   let services = [];
   $.each($("input:checkbox[name ='service']:checked"), function() {
     services.push($(this).val());
@@ -27,13 +34,21 @@ function search() {
       services.push($(this).val());
     });
   }
-  // encode variables for request
-  searchQuery = encodeURIComponent(searchQuery);
-  sortBy = encodeURIComponent(sortBy);
-  // send request to server
-  let url = "./search?search=" + searchQuery + "&sort=" + sortBy;
   for (let i = 0; i < services.length; i++) {
     url += "&service=" + encodeURIComponent(services[i]);
+  }
+  // deal with groups
+  let groups = [];
+  $.each($("input:checkbox[name ='group']:checked"), function() {
+    groups.push($(this).val());
+  });
+  if (groups.length === 0) {
+    $.each($("input:checkbox[name ='group']:not(:checked)"), function() {
+      groups.push($(this).val());
+    });
+  }
+  for (let i = 0; i < groups.length; i++) {
+    url += "&group=" + encodeURIComponent(groups[i]);
   }
   request = $.ajax({
       type: "GET",

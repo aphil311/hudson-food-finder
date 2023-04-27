@@ -38,8 +38,9 @@ def search_results():
     search_term = flask.request.args.get('search')
     sort_by = flask.request.args.get('sort')
     services = flask.request.args.getlist('service')
+    groups = flask.request.args.getlist('group')
     # Form query and get offerings from database
-    query = (search_term, sort_by, services)
+    query = (search_term, sort_by, services, groups)
     offerings = database.find_offerings(query)
     # Render template and return response
     html_code = flask.render_template('results.html',
