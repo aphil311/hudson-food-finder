@@ -12,7 +12,7 @@ import sqlalchemy.orm
 import init
 import offering as offmod
 from schema import Offering, Organization, Ownership
-from schema import Service
+from schema import Service, Group
 
 engine = init.engine
 
@@ -105,12 +105,35 @@ def get_services():
         print(ex, file=sys.stderr)
         return None
 
+def get_groups():
+    try:
+        # connect to the database
+        with sqlalchemy.orm.Session(engine) as session:
+            # form the query
+            query = session.query(Group.people_group) \
+                .distinct() \
+                .filter(Group.people_group != '') \
+                .order_by(Group.people_group)
+
+            # execute the query and return the results
+            results = query.all()
+            groups = []
+            for row in results:
+                groups.append(row[0])
+            return groups
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
 # Test function
 def main():
     # find_offerings('')
     services = get_services()
     for service in services:
-        print(service.service_type)
+        print(service)
+    groups = get_groups()
+    for group in groups:
+        print(group)
 
 if __name__ == '__main__':
     main()
