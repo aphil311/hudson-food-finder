@@ -28,7 +28,6 @@ def find_offerings(filter):
     sort_by = filter[1]
     services = filter[2]
     days = filter[3]
-    print(days)
     times = filter[4]
     groups = filter[5]
     try:

@@ -19,11 +19,7 @@ app = init.app
 @app.route('/')
 def index():
     services = database.get_services()
-    if len(services) == 1:
-        services = None
     groups = database.get_groups()
-    if len(groups) == 1:
-        groups = None
     html_code = flask.render_template('index.html', services=services,
         groups=groups)
     return flask.make_response(html_code)

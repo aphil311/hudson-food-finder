@@ -35,6 +35,9 @@ def validate_file(csv_reader):
     return 0
 
 def validate_row(row, days, time, date):
+    # for key in row.keys():
+    #     if row.get(key):
+    #         row[key] = row.get(key).strip()
     # days should be formatted correctly
     if not days.match(row.get('Days')):
         return 'Days column not properly formatted'

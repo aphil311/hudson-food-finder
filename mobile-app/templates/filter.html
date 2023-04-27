@@ -19,7 +19,11 @@
         <label class="form-check-label" for="sort-by-end-time">End Time</label><br>
     </details>
     {% if services %}
-    <details>
+    <details
+    {% if services|length <= 1 %}
+    class = "d-none"
+    {% endif %}
+    >
         <summary>Primary Service</summary>
         <div class="form-check">
             {% for service in services %}
@@ -50,8 +54,11 @@
             <input class="form-control" type="time" id="end-time" name="end-time">
         </div>
     </details>
-    {% if groups %}
-    <details>
+    <details 
+    {% if groups|length <= 1 %}
+    class = "d-none"
+    {% endif %}
+    >
         <summary>People Served</summary>
         <div class="form-check">
             {% for group in groups %}
@@ -60,5 +67,4 @@
             {% endfor %}
         </div>
     </details>
-    {% endif %}
 </div>
