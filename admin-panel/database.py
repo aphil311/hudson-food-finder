@@ -35,6 +35,9 @@ def validate_file(csv_reader):
     return 0
 
 def validate_row(row, days, time, date):
+    for key in row.keys():
+        if row.get(key):
+            row[key] = row.get(key).strip()
     # days should be formatted correctly
     if not days.match(row.get('Days')):
         return 'Days column not properly formatted'
@@ -240,6 +243,12 @@ def bulk_update(filename):
                     for key in row:
                         if row[key] == '':
                             row[key] = None
+                    # use default values for start and end time
+                    if row.get('Start Time') == None:
+                        row['Start Time'] = '00:00'
+                    if row.get('End Time') == None:
+                        row['End Time'] = '23:59'
+                    
                     # switch dates to postgres format
                     # YYYY-MM-DD
                     if row.get('Start Date'):
@@ -276,6 +285,7 @@ def bulk_update(filename):
         return (1, ['File failed to upload due to an internal error.'])
     error_messages.append('Successfully added ' + str(offerings) + 
         ' offerings!')
+
     return (0, error_messages)
 
 if __name__ == '__main__':
