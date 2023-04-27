@@ -50,6 +50,18 @@ function search() {
   url += "&start_time=" + encodeURIComponent(startTime);
   url += "&end_time=" + encodeURIComponent(endTime);
 
+  // deal with days
+  let days = "";
+  $.each($("input:checkbox[name ='day']"), function() {
+    if ($(this).is(":checked")) {
+      days += "T-";
+    } else {
+      days += "_-";
+    }
+  });
+  days = days.slice(0, -1);
+  url += "&days=" + encodeURIComponent(days);
+
   // deal with groups
   let groups = [];
   $.each($("input:checkbox[name ='group']:checked"), function() {
