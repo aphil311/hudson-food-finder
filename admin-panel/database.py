@@ -319,19 +319,52 @@ def update_row(offering_id, inputs):
         with sqlalchemy.orm.session.Session(engine) as session:
             # update offerings
             offering = session.query(Offering).filter_by(off_id=offering_id).first()
-            if inputs['title'] != '':
-                setattr(offering, 'title', inputs['title'])
+            setattr(offering, 'title', inputs['title'])
             setattr(offering, 'days_open', inputs['days_open'])
             setattr(offering, 'start_time', inputs['start_time'])
             setattr(offering, 'end_time', inputs['end_time'])
             setattr(offering, 'init_date', inputs['start_date'])
             setattr(offering, 'close_date', inputs['end_date'])
-            # if inputs['service'] != '':
-            #     setattr(offering, 'off_service', inputs['service'])
-            # if inputs['group'] != '':
-            #     setattr(offering, 'group_served', inputs['group'])
-            if inputs['description'] != '':
-                setattr(offering, 'off_desc', inputs['description'])
+
+            query = session.query(Service.service_id) \
+                    .filter(Service.service_type.like(
+                    inputs['service']))
+            res = query.first()
+            if not res:
+                # insert new service
+                insert_stmt = text('INSERT INTO services '
+                    '(service_type) VALUES (:service_type)')
+                session.execute(insert_stmt, {
+                    'service_type': inputs['service']
+                })
+                # get the service_id of the service we just
+                # added
+                service_id = session.query(Service).count()
+                setattr(offering, 'off_service', service_id)
+            else:
+                service_id = res[0]
+                setattr(offering, 'off_service', service_id)
+
+            query = session.query(PeopleGroup.group_id) \
+                    .filter(PeopleGroup.people_group.like(
+                    inputs['group']))
+            res = query.first()
+            if not res:
+                # insert new service
+                insert_stmt = text('INSERT INTO people_groups '
+                    '(people_group) VALUES (:group)')
+                session.execute(insert_stmt, {
+                    'group': inputs['group']
+                })
+                # get the service_id of the service we just
+                # added
+                group_id = session.query(PeopleGroup).count()
+                setattr(offering, 'group_served', group_id)
+            else:
+                group_id = res[0]
+                setattr(offering, 'group_served', group_id)
+
+            setattr(offering, 'off_desc', inputs['description'])
             session.commit()
     except Exception as ex:
         print(ex, file=sys.stderr)
