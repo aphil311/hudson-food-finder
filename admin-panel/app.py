@@ -78,10 +78,12 @@ def download():
 
 @app.route('/download-csv')
 def download_csv():
+    # makes the file
     status = database.get_csv()
     if status == 0:
         # success : return csv in static/files
         csv = open('static/files/output.csv').read()
+        os.remove('static/files/output.csv')
         return flask.Response(
             csv,
             mimetype="text/csv",

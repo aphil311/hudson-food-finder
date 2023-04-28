@@ -120,6 +120,7 @@ def get_csv():
         with sqlalchemy.orm.Session(engine) as session:
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
+                Organization.photo_url,
                 Organization.street, Organization.zip_code,
                 Offering.title, Offering.days_open,
                 Offering.start_time, Offering.end_time,
@@ -135,9 +136,9 @@ def get_csv():
             with open ('static/files/output.csv', 'w', encoding='utf-8') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow(['Organization', 'Phone Number',
-                    'Website', 'Street', 'Zip Code', 'Title', 'Days',
-                    'Start Time', 'End Time', 'Start Date', 'End Date',
-                    'Service', 'People Served', 'Description'])
+                    'Website', 'Photo URL', 'Street', 'Zip Code', 'Title', 'Days',
+                    'Day Description', 'Start Time', 'End Time', 'Start Date',
+                    'End Date', 'Service', 'People Served', 'Description'])
                 for row in results:
                     csv_writer.writerow(row)
                 return 0
