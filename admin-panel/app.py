@@ -58,6 +58,12 @@ def searchOfferings():
         offerings=offerings)
     return flask.make_response(html_code)
 
+@app.route('/edit-offering', methods=['GET'])
+def edit():
+    offering_id = flask.request.args.get('id')
+    html_code = flask.render_template('edit-offering.html', offering=offering_id)
+    return flask.make_response(html_code)
+
 #-----------------------------------------------------------------------
 # upload()
 # Page for uploading a csv file to update the database
