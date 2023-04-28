@@ -9,7 +9,7 @@
         <input type="hidden" name="id" value="{{ offering.get_id() }}">
         <div class="input-group mb-3">
             <span class="input-group-text">Title</span>
-            <input type="text" name="title" class="form-control" placeholder="{{ offering.get_title() }}">
+            <input type="text" name="title" class="form-control" value="{{ offering.get_title() }}">
         </div>
         <div class="input-group mb-3" data-toggle="buttons">
             <span class="input-group-text">Days Open</span>
@@ -40,15 +40,15 @@
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Service</span>
-            <input type="text" name="service" class="form-control" placeholder="{{ offering.get_service() }}">
+            <input type="text" name="service" class="form-control" value="{{ offering.get_service() }}">
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Group Served</span>
-            <input type="text" name="group" class="form-control" placeholder="{{ offering.get_people_group() }}">
+            <input type="text" name="group" class="form-control" value="{{ offering.get_people_group() }}">
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Description</span>
-            <input type="text" name="description" class="form-control" placeholder="{{ offering.get_description() }}">
+            <input type="text" name="description" class="form-control" value="{{ offering.get_description() }}">
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
