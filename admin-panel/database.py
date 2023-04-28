@@ -113,6 +113,40 @@ def find_organizations():
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
+    
+
+def get_csv():
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.org_name,
+                Organization.phone, Organization.website,
+                Organization.photo_url,
+                Organization.street, Organization.zip_code,
+                Offering.title, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Offering.init_date, Offering.close_date,
+                Service.service_type, PeopleGroup.people_group,
+                Offering.off_desc) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .join(Service) \
+                .join(PeopleGroup)
+            results = query.all()
+            with open ('static/files/output.csv', 'w', encoding='utf-8') as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerow(['Organization', 'Phone Number',
+                    'Website', 'Photo URL', 'Street', 'Zip Code', 'Title', 'Days',
+                    'Day Description', 'Start Time', 'End Time', 'Start Date',
+                    'End Date', 'Service', 'People Served', 'Description'])
+                for row in results:
+                    csv_writer.writerow(row)
+                return 0
+                    
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return 1
+
 
 def get_offering(off_id):
     try:
