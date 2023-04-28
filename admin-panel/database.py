@@ -314,6 +314,28 @@ def bulk_update(filename):
 
     return (0, error_messages)
 
+def update_row(offering_id, inputs):
+    try:
+        with sqlalchemy.orm.session.Session(engine) as session:
+            # update offerings
+            offering = session.query(Offering).filter_by(off_id=offering_id).first()
+            if inputs['title'] != '':
+                setattr(offering, 'title', inputs['title'])
+            setattr(offering, 'days_open', inputs['days_open'])
+            setattr(offering, 'start_time', inputs['start_time'])
+            setattr(offering, 'end_time', inputs['end_time'])
+            setattr(offering, 'init_date', inputs['start_date'])
+            setattr(offering, 'close_date', inputs['end_date'])
+            # if inputs['service'] != '':
+            #     setattr(offering, 'off_service', inputs['service'])
+            # if inputs['group'] != '':
+            #     setattr(offering, 'group_served', inputs['group'])
+            if inputs['description'] != '':
+                setattr(offering, 'off_desc', inputs['description'])
+            session.commit()
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+
 if __name__ == '__main__':
     print('testing database.py')
     bulk_update('input-sample.csv')
