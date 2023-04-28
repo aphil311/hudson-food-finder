@@ -61,7 +61,8 @@ def searchOfferings():
 @app.route('/edit-offering', methods=['GET'])
 def edit():
     offering_id = flask.request.args.get('id')
-    html_code = flask.render_template('edit-offering.html', offering=offering_id)
+    offering = database.get_offering(offering_id)
+    html_code = flask.render_template('edit-offering.html', offering=offering)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------

@@ -75,7 +75,7 @@ def find_offerings(filter):
                 Offering.start_time, Offering.end_time,
                 Offering.init_date, Offering.close_date,
                 Service.service_type, PeopleGroup.people_group,
-                Offering.off_desc) \
+                Offering.off_desc, Offering.off_id) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -110,6 +110,32 @@ def find_organizations():
                     organizations.append(orgmod.Organization(row))
             return organizations
 
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
+def get_offering(off_id):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.org_name,
+                Offering.title, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Offering.init_date, Offering.close_date,
+                Service.service_type, PeopleGroup.people_group,
+                Offering.off_desc, Offering.off_id) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .join(Service) \
+                .join(PeopleGroup) \
+                .filter(Offering.off_id == off_id)
+            
+            results = query.all()
+            if results is not None:
+                return offmod.Offering(results[0])
+            else:
+                return None
+        
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None

@@ -16,7 +16,7 @@
     </tr>
     {% for offering in offerings %}
     <tr>
-        <td><a class="icon-link" href="edit-offering?id=6969"><i class="bi fa-lg bi-pencil-square"></i></a></td>
+        <td><a class="icon-link" href="edit-offering?id={{ offering.get_id() }}"><i class="bi fa-lg bi-pencil-square"></i></a></td>
         <td>{{ offering.get_org() }}</td>
         <td>{{ offering.get_title() }}</td>
         <td>{{ offering.get_days_openf() }}</td>
