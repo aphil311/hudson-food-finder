@@ -63,10 +63,13 @@ class Offering:
         self._service = properties[7]
         self._people_group = properties[8]
         self._description = properties[9]
+        self._id = properties[10]
 
     #-------------------------------------------------------------------
     # getter methods
     #-------------------------------------------------------------------
+    def get_id(self):
+        return self._id
     def get_org(self):
         return self._org
     def get_title(self):

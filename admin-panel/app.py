@@ -58,6 +58,41 @@ def searchOfferings():
         offerings=offerings)
     return flask.make_response(html_code)
 
+@app.route('/edit-offering', methods=['GET'])
+def edit():
+    offering_id = flask.request.args.get('id')
+    offering = database.get_offering(offering_id)
+    html_code = flask.render_template('edit-offering.html', offering=offering)
+    return flask.make_response(html_code)
+
+@app.route('/send-update', methods=['POST'])
+def send_update():
+    new_data = {}
+    new_data['title'] = flask.request.form.get('title')
+    days_array = [False, False, False, False, False, False, False]
+    days_open = flask.request.form.getlist('days-open')
+    for day in days_open:
+        days_array[int(day)] = True
+    days_open_str = ''
+    for day in days_array:
+        if day:
+            days_open_str += 'T-'
+        else:
+            days_open_str += 'F-'
+    days_open_str = days_open_str[:-1]
+    new_data['days_open'] = days_open_str
+    new_data['start_time'] = flask.request.form.get('start-time')
+    new_data['end_time'] = flask.request.form.get('end-time')
+    new_data['start_date'] = flask.request.form.get('start-date')
+    new_data['end_date'] = flask.request.form.get('end-date')
+    new_data['service'] = flask.request.form.get('service')
+    new_data['group'] = flask.request.form.get('group')
+    new_data['description'] = flask.request.form.get('description')
+
+    offering_id = flask.request.form.get('id')
+    database.update_row(offering_id, new_data)
+    return flask.redirect('/offerings')
+
 #-----------------------------------------------------------------------
 # upload()
 # Page for uploading a csv file to update the database

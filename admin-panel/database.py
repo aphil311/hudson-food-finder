@@ -75,7 +75,7 @@ def find_offerings(filter):
                 Offering.start_time, Offering.end_time,
                 Offering.init_date, Offering.close_date,
                 Service.service_type, PeopleGroup.people_group,
-                Offering.off_desc) \
+                Offering.off_desc, Offering.off_id) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -110,6 +110,32 @@ def find_organizations():
                     organizations.append(orgmod.Organization(row))
             return organizations
 
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
+def get_offering(off_id):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.org_name,
+                Offering.title, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Offering.init_date, Offering.close_date,
+                Service.service_type, PeopleGroup.people_group,
+                Offering.off_desc, Offering.off_id) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .join(Service) \
+                .join(PeopleGroup) \
+                .filter(Offering.off_id == off_id)
+            
+            results = query.all()
+            if results is not None:
+                return offmod.Offering(results[0])
+            else:
+                return None
+        
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
@@ -287,6 +313,61 @@ def bulk_update(filename):
         ' offerings!')
 
     return (0, error_messages)
+
+def update_row(offering_id, inputs):
+    try:
+        with sqlalchemy.orm.session.Session(engine) as session:
+            # update offerings
+            offering = session.query(Offering).filter_by(off_id=offering_id).first()
+            setattr(offering, 'title', inputs['title'])
+            setattr(offering, 'days_open', inputs['days_open'])
+            setattr(offering, 'start_time', inputs['start_time'])
+            setattr(offering, 'end_time', inputs['end_time'])
+            setattr(offering, 'init_date', inputs['start_date'])
+            setattr(offering, 'close_date', inputs['end_date'])
+
+            query = session.query(Service.service_id) \
+                    .filter(Service.service_type.like(
+                    inputs['service']))
+            res = query.first()
+            if not res:
+                # insert new service
+                insert_stmt = text('INSERT INTO services '
+                    '(service_type) VALUES (:service_type)')
+                session.execute(insert_stmt, {
+                    'service_type': inputs['service']
+                })
+                # get the service_id of the service we just
+                # added
+                service_id = session.query(Service).count()
+                setattr(offering, 'off_service', service_id)
+            else:
+                service_id = res[0]
+                setattr(offering, 'off_service', service_id)
+
+            query = session.query(PeopleGroup.group_id) \
+                    .filter(PeopleGroup.people_group.like(
+                    inputs['group']))
+            res = query.first()
+            if not res:
+                # insert new service
+                insert_stmt = text('INSERT INTO people_groups '
+                    '(people_group) VALUES (:group)')
+                session.execute(insert_stmt, {
+                    'group': inputs['group']
+                })
+                # get the service_id of the service we just
+                # added
+                group_id = session.query(PeopleGroup).count()
+                setattr(offering, 'group_served', group_id)
+            else:
+                group_id = res[0]
+                setattr(offering, 'group_served', group_id)
+
+            setattr(offering, 'off_desc', inputs['description'])
+            session.commit()
+    except Exception as ex:
+        print(ex, file=sys.stderr)
 
 if __name__ == '__main__':
     print('testing database.py')

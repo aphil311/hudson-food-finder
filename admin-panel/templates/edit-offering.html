@@ -1,0 +1,56 @@
+{% include 'head.html' %}
+<p>Edit Offering: {{ offering.get_title() }}</p>
+<hr>
+<!-- forn where each field has its current values as a placeholder -->
+
+<div class="form-group">
+    <form action="/send-update" method="post">
+        <!-- hidden input with id -->
+        <input type="hidden" name="id" value="{{ offering.get_id() }}">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Title</span>
+            <input type="text" name="title" class="form-control" value="{{ offering.get_title() }}">
+        </div>
+        <div class="input-group mb-3" data-toggle="buttons">
+            <span class="input-group-text">Days Open</span>
+            <!-- checkboxes for each day of the week -->
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="0" class="form-check-input" {% if offering.get_days_open()[0] %} checked {% endif %} autocomplete="off"> Sunday</label>
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="1" class="form-check-input" {% if offering.get_days_open()[1] %} checked {% endif %} autocomplete="off"> Monday</label>
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="2" class="form-check-input" {% if offering.get_days_open()[2] %} checked {% endif %} autocomplete="off"> Tuesday</label>
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="3" class="form-check-input" {% if offering.get_days_open()[3] %} checked {% endif %} autocomplete="off"> Wednesday</label>
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="4" class="form-check-input" {% if offering.get_days_open()[4] %} checked {% endif %} autocomplete="off"> Thursday</label>
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="5" class="form-check-input" {% if offering.get_days_open()[5] %} checked {% endif %} autocomplete="off"> Friday</label>
+            <label class="btn btn-outline-secondary form-check-label"><input type="checkbox" name="days-open" value="6" class="form-check-input" {% if offering.get_days_open()[6] %} checked {% endif %} autocomplete="off"> Saturday</label>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Start Time</span>
+            <input type="time" name="start-time" class="form-control" value="{{ offering.get_start_time() }}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">End Time</span>
+            <input type="time" name="end-time" class="form-control" value="{{ offering.get_end_time() }}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Start Date</span>
+            <input type="date" name="start-date" class="form-control" value="{{ offering.get_init_date() }}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">End Date</span>
+            <input type="date" name="end-date" class="form-control" value="{{ offering.get_close_date() }}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Service</span>
+            <input type="text" name="service" class="form-control" value="{{ offering.get_service() }}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Group Served</span>
+            <input type="text" name="group" class="form-control" value="{{ offering.get_people_group() }}">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Description</span>
+            <input type="text" name="description" class="form-control" value="{{ offering.get_description() }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+{% include 'foot.html' %}
