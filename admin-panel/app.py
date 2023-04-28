@@ -76,6 +76,23 @@ def download():
     html_code = flask.render_template('download.html')
     return flask.make_response(html_code)
 
+@app.route('/download-csv')
+def download_csv():
+    status = database.get_csv()
+    if status == 0:
+        # success : return csv in static/files
+        csv = open('static/files/output.csv').read()
+        return flask.Response(
+            csv,
+            mimetype="text/csv",
+            headers={"Content-disposition":
+                    "attachment; filename=offerings.csv"})
+    else:
+        # failure : return error message
+        return flask.Response(
+            'Error: could not download csv',
+            mimetype="text/html")
+
 #-----------------------------------------------------------------------
 # upload_confirmation()
 # Page for confirming the upload of a csv file to update the database
