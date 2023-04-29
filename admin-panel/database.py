@@ -6,15 +6,17 @@
 #-----------------------------------------------------------------------
 
 import sys
+import os
 import re
 import csv
 import sqlalchemy
 from sqlalchemy import text
 import offering as offmod
 import organization as orgmod
-import init
+import config.init as init
 from schema import Offering, Organization
 from schema import Ownership, Service, PeopleGroup
+from config.definitions import ROOT_DIR
 
 engine = init.engine
 
@@ -133,7 +135,9 @@ def get_csv():
                 .join(Service) \
                 .join(PeopleGroup)
             results = query.all()
-            with open ('static/files/output.csv', 'w', encoding='utf-8') as csv_file:
+            file_path = os.path.join(ROOT_DIR, 'static',
+                'files', 'output.csv')
+            with open (file_path, 'w', encoding='utf-8') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow(['Organization', 'Phone Number',
                     'Website', 'Photo URL', 'Street', 'Zip Code', 'Title', 'Days',

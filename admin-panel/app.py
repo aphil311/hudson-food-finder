@@ -9,7 +9,8 @@
 import os
 import flask
 import database
-import init
+import config.init as init
+from config.definitions import ROOT_DIR
 
 #-----------------------------------------------------------------------
 app = init.app
@@ -116,9 +117,11 @@ def download_csv():
     # makes the file
     status = database.get_csv()
     if status == 0:
+        file_path = os.path.join(ROOT_DIR, 'static',
+            'files', 'output.csv')
         # success : return csv in static/files
-        csv = open('static/files/output.csv').read()
-        os.remove('static/files/output.csv')
+        csv = open(file_path).read()
+        os.remove(file_path)
         return flask.Response(
             csv,
             mimetype="text/csv",
@@ -137,14 +140,11 @@ def download_csv():
 @app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
     file = flask.request.files['file']
-    file.save('static/files/' + file.filename)
-    status, messages = database.bulk_update('static/files/' + file.filename)
+    file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
+    print(file_path)
+    file.save(file_path)
+    status, messages = database.bulk_update(file_path)
     if status != 0:
         print('cry')
-    elif status != 1:
-        print('cry more')
-    elif status != 2:
-        print('cry even more')
-    os.remove('static/files/' + file.filename)
     html_code = flask.render_template('upload.html', messages=messages)
     return flask.make_response(html_code)
