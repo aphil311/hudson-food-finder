@@ -72,7 +72,7 @@ This project can be run locally by running `python runserver.py <port>` and navi
 
 - [X] **Prototype**
 - [X] **Alpha**
-- [ ] **Beta**
+- [X] **Beta**
 - [ ] **Final**
 
 
