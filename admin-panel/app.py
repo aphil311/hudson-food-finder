@@ -140,11 +140,11 @@ def download_csv():
 @app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
     file = flask.request.files['file']
-    file_path = os.path.join(ROOT_DIR, 'static', 'files', file.filename)
+    file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
+    print(file_path)
     file.save(file_path)
     status, messages = database.bulk_update(file_path)
     if status != 0:
         print('cry')
-    os.remove(file_path)
     html_code = flask.render_template('upload.html', messages=messages)
     return flask.make_response(html_code)
