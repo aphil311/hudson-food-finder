@@ -40,6 +40,24 @@ csp = {
 # Talisman(app)
 #-----------------------------------------------------------------------
 
+# Routes for authentication 
+
+@app.route('/login', methods=['GET'])
+def login():
+    return auth.login()
+
+
+@app.route('/login/callback', methods=['GET'])
+def callback():
+    return auth.callback()
+
+
+def authorize(username):
+    if not database.is_authorized(username):
+        html_code = 'You are not authorized to use this application.'
+        response = flask.make_response(html_code)
+        flask.abort(response)
+
 #-----------------------------------------------------------------------
 # index()
 # Home page for the admin panel - shows all offerings in a table with
@@ -47,6 +65,9 @@ csp = {
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('offerings.html',
         offerings=None)
     return flask.make_response(html_code)
@@ -58,12 +79,18 @@ def index():
 #-----------------------------------------------------------------------
 @app.route('/organizations', methods=['GET'])
 def searchOrganizations():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     organizations = database.find_organizations()
     html_code = flask.render_template('organizations.html', organizations=organizations)
     return flask.make_response(html_code)
 
 @app.route('/offerings')
 def offerings():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('offerings.html',
         offerings=None)
     return flask.make_response(html_code)
@@ -75,6 +102,9 @@ def offerings():
 #-----------------------------------------------------------------------
 @app.route('/search_offerings', methods=['GET'])
 def searchOfferings():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
     # must have a comma at the end of the tuple
@@ -85,6 +115,9 @@ def searchOfferings():
 
 @app.route('/edit-offering', methods=['GET'])
 def edit():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     offering_id = flask.request.args.get('id')
     offering = database.get_offering(offering_id)
     html_code = flask.render_template('edit-offering.html', offering=offering)
@@ -92,6 +125,9 @@ def edit():
 
 @app.route('/send-update', methods=['POST'])
 def send_update():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     new_data = {}
     new_data['title'] = flask.request.form.get('title')
     days_array = [False, False, False, False, False, False, False]
@@ -124,6 +160,9 @@ def send_update():
 #-----------------------------------------------------------------------
 @app.route('/upload')
 def upload():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('upload.html', message='')
     return flask.make_response(html_code)
 
@@ -133,11 +172,17 @@ def upload():
 #-----------------------------------------------------------------------
 @app.route('/download')
 def download():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('download.html')
     return flask.make_response(html_code)
 
 @app.route('/download-csv')
 def download_csv():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     # makes the file
     status = database.get_csv()
     if status == 0:
@@ -163,6 +208,9 @@ def download_csv():
 #-----------------------------------------------------------------------
 @app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     file = flask.request.files['file']
     file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
     print(file_path)

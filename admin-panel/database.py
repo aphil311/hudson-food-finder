@@ -18,7 +18,30 @@ from schema import Offering, Organization
 from schema import Ownership, Service, PeopleGroup
 from config.definitions import ROOT_DIR
 
+#-----------------------------------------------------------------------
+_database_url = os.getenv("DB_URL")
+Base = sqlalchemy.ext.declarative.declarative_base()
+
+class AuthorizedUser(Base):
+    __tablename__ = 'authorizedusers'
+    username = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
+
 engine = init.engine
+
+def is_authorized(username):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(AuthorizedUser) \
+                .filter(AuthorizedUser.username==username)
+            try:
+                query.one()
+                return True
+            except sqlalchemy.exc.NoResultFound:
+                return False
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
 
 def validate_file(csv_reader):
     # check if file is empty
