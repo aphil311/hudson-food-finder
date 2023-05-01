@@ -11,9 +11,33 @@ import flask
 import database
 import config.init as init
 from config.definitions import ROOT_DIR
+from flask_talisman import Talisman
+from decouple import config
+import flask_wtf.csrf
 
 #-----------------------------------------------------------------------
 app = init.app
+app.secret_key = config('APP_KEY')
+flask_wtf.csrf.CSRFProtect(app)
+
+csp = {
+    'default-src': [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'stackpath.bootstrapcdn.com',
+        'code.jquery.com',
+        'cdn.jsdelivr.net',
+        'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css',
+        'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js',
+        'cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css',
+        'cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+        'cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+        '/static/styles.css',
+        'cdnjs.cloudflare.com/'
+    ]
+}
+# talisman = Talisman(app, content_security_policy=csp)
+# Talisman(app)
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
