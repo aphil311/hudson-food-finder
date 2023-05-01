@@ -50,8 +50,8 @@ def find_offerings(filter):
                 .filter((Service.service_id == Offering.off_service) &
                         (Service.service_type.in_(services))) \
                 .filter(Offering.days_open.like(days)) \
-                .filter((Offering.start_time >= times[0]) &
-                        (Offering.end_time <= times[1])) \
+                .filter((Offering.start_time < times[1]) &
+                        (Offering.end_time > times[0])) \
                 .filter((Group.group_id == Offering.group_served) &
                         (Group.people_group.in_(groups))) \
                 .order_by(sqlalchemy.text(sort_by))
