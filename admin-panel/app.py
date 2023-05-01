@@ -10,11 +10,54 @@ import os
 import flask
 import database
 import config.init as init
+import auth
 from config.definitions import ROOT_DIR
+from flask_talisman import Talisman
+from decouple import config
+import flask_wtf.csrf
 
 #-----------------------------------------------------------------------
 app = init.app
+app.secret_key = config('APP_KEY')
+flask_wtf.csrf.CSRFProtect(app)
+
+csp = {
+    'default-src': [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'stackpath.bootstrapcdn.com',
+        'code.jquery.com',
+        'cdn.jsdelivr.net',
+        'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css',
+        'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js',
+        'cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css',
+        'cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+        'cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+        '/static/styles.css',
+        'cdnjs.cloudflare.com/'
+    ]
+}
+# talisman = Talisman(app, content_security_policy=csp)
+# Talisman(app)
 #-----------------------------------------------------------------------
+
+# Routes for authentication 
+
+@app.route('/login', methods=['GET'])
+def login():
+    return auth.login()
+
+
+@app.route('/login/callback', methods=['GET'])
+def callback():
+    return auth.callback()
+
+
+def authorize(username):
+    if not database.is_authorized(username):
+        html_code = 'You are not authorized to use this application.'
+        response = flask.make_response(html_code)
+        flask.abort(response)
 
 #-----------------------------------------------------------------------
 # index()
@@ -23,6 +66,9 @@ app = init.app
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('offerings.html',
         offerings=None)
     return flask.make_response(html_code)
@@ -34,12 +80,18 @@ def index():
 #-----------------------------------------------------------------------
 @app.route('/organizations', methods=['GET'])
 def searchOrganizations():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     organizations = database.find_organizations()
     html_code = flask.render_template('organizations.html', organizations=organizations)
     return flask.make_response(html_code)
 
 @app.route('/offerings')
 def offerings():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('offerings.html',
         offerings=None)
     return flask.make_response(html_code)
@@ -51,6 +103,9 @@ def offerings():
 #-----------------------------------------------------------------------
 @app.route('/search_offerings', methods=['GET'])
 def searchOfferings():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
     # must have a comma at the end of the tuple
@@ -61,6 +116,9 @@ def searchOfferings():
 
 @app.route('/edit-offering', methods=['GET'])
 def edit():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     offering_id = flask.request.args.get('id')
     offering = database.get_offering(offering_id)
     html_code = flask.render_template('edit-offering.html', offering=offering)
@@ -68,6 +126,9 @@ def edit():
 
 @app.route('/send-update', methods=['POST'])
 def send_update():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     new_data = {}
     new_data['title'] = flask.request.form.get('title')
     days_array = [False, False, False, False, False, False, False]
@@ -100,6 +161,9 @@ def send_update():
 #-----------------------------------------------------------------------
 @app.route('/upload')
 def upload():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('upload.html', message='')
     return flask.make_response(html_code)
 
@@ -109,11 +173,17 @@ def upload():
 #-----------------------------------------------------------------------
 @app.route('/download')
 def download():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     html_code = flask.render_template('download.html')
     return flask.make_response(html_code)
 
 @app.route('/download-csv')
 def download_csv():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     # makes the file
     status = database.get_csv()
     if status == 0:
@@ -139,6 +209,9 @@ def download_csv():
 #-----------------------------------------------------------------------
 @app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
+    # authenticate user
+    username = auth.authenticate()
+    authorize(username)
     file = flask.request.files['file']
     file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
     print(file_path)
