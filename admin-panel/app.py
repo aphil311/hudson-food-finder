@@ -10,6 +10,7 @@ import os
 import flask
 import database
 import config.init as init
+import auth
 from config.definitions import ROOT_DIR
 from flask_talisman import Talisman
 from decouple import config

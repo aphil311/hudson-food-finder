@@ -3,6 +3,7 @@
 <p>Upload</p>
 <hr>
 <form id="file-upload" action="/upload-offerings" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label for="upload-group" class="form-label">Upload offerings</label>
     <div id="group" class="input-group w-75" id="offerings-group">
         <input class="form-control" type="file" name="file" id="file">
