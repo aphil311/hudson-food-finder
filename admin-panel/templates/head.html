@@ -17,6 +17,21 @@
     <title>Hudson County Food Finder</title>
 </head>
 <body>
+    <script src="../static/scripts/search-offerings.js"></script>
+    <script>
+        // sets up the page
+        function setup() {
+            $("#search-bar").on("keypress", function(e) {
+                // 13 is *nearly* always the enter key
+                if(e.which == 13) {
+                    searchOfferings();
+                }
+            });
+            $("#search-btn").on("click", searchOfferings);
+        }
+        // runs setup when document is ready
+        $(document).ready(setup);
+    </script>
     <div class="container-fluid p-3">
         {% include 'button-panel.html' %}
         <div class="row flex-nowrap">

@@ -24,18 +24,3 @@ function searchOfferings() {
       success: handleResponse
   });
 }
-
-// sets up the page
-function setup() {
-  searchOfferings();
-  $("#search-bar").on("keypress", function(e) {
-      // 13 is *nearly* always the enter key
-      if(e.which == 13) {
-          searchOfferings();
-      }
-  });
-  $("#search-btn").on("click", searchOfferings);
-}
-
-// runs setup when document is ready
-$(document).ready(setup);
