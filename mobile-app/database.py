@@ -28,6 +28,20 @@ def find_offerings(filter):
     sort_by = filter[1]
     services = filter[2]
     days = filter[3]
+    day_query = []
+    # query tamplate
+    template = '_-_-_-_-_-_-_'
+    term = 'offerings.days_open LIKE ('
+    # split days into a list where each day is a separate element
+    days = days.split('-')
+    for x in range(len(days)):
+        if days[x] == 'T':
+            temp = term + "'" + template[:x*2] + 'T' + template[x*2+1:] + "')"
+            day_query.append(sqlalchemy.text(temp))
+
+    if len(day_query) == 0:
+        day_query.append(sqlalchemy.text(term + "'_-_-_-_-_-_-_')"))
+
     times = filter[4]
     groups = filter[5]
     try:
@@ -49,7 +63,7 @@ def find_offerings(filter):
                         Organization.org_name.ilike(search_term)) \
                 .filter((Service.service_id == Offering.off_service) &
                         (Service.service_type.in_(services))) \
-                .filter(Offering.days_open.like(days)) \
+                .filter(sqlalchemy.or_(*day_query)) \
                 .filter((Offering.start_time < times[1]) &
                         (Offering.end_time > times[0])) \
                 .filter((Group.group_id == Offering.group_served) &
