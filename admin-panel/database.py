@@ -42,6 +42,17 @@ def is_authorized(username):
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
+# add email to the AuthorizedUser table
+def authorize_email(email):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            session.add(AuthorizedUser(username=email))
+            session.commit()
+            return True
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
 
 def validate_file(csv_reader):
     # check if file is empty

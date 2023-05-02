@@ -15,6 +15,7 @@ from config.definitions import ROOT_DIR
 from flask_talisman import Talisman
 from decouple import config
 import flask_wtf.csrf
+import re
 
 #-----------------------------------------------------------------------
 app = init.app
@@ -37,7 +38,7 @@ csp = {
         'cdnjs.cloudflare.com/'
     ]
 }
-# talisman = Talisman(app, content_security_policy=csp)
+talisman = Talisman(app, content_security_policy=csp)
 # Talisman(app)
 #-----------------------------------------------------------------------
 
@@ -69,8 +70,13 @@ def index():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
+
+    picture = flask.session.get('picture')
+
+    print(flask.session.get('name'))
+    print(picture)
     html_code = flask.render_template('offerings.html',
-        offerings=None)
+        offerings=None, picture = picture)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -84,6 +90,7 @@ def searchOrganizations():
     username = auth.authenticate()
     authorize(username)
     organizations = database.find_organizations()
+
     html_code = flask.render_template('organizations.html', organizations=organizations)
     return flask.make_response(html_code)
 
@@ -92,8 +99,14 @@ def offerings():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
+
+
+
+
     html_code = flask.render_template('offerings.html',
         offerings=None)
+    
+
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -221,3 +234,49 @@ def upload_confirmation():
         print('cry')
     html_code = flask.render_template('upload.html', messages=messages)
     return flask.make_response(html_code)
+
+#-----------------------------------------------------------------------
+# upload_confirmation()
+# Page for confirming the upload of a csv file to update the database
+#-----------------------------------------------------------------------
+@app.route('/authorize-users', methods = ['GET'])
+def auth_panel():
+    username = auth.authenticate()
+    authorize(username)
+
+    html_code = flask.render_template('auth-users.html')
+    return flask.make_response(html_code)
+
+@app.route('/auth-finished', methods = ['POST'])
+def auth_complete():
+    username = auth.authenticate()
+    authorize(username)
+
+    email = flask.request.form.get('email')
+
+    # Faulty email submitted
+    if not re.match("[^@]+@[^@]+\.[^@]+", email):
+        completion_string = 'Invalid email submitted, please enter a valid email address \
+        email: ' + email
+    # Email is in database already
+    elif database.is_authorized(email):
+        completion_string = 'User ' + email + ' is already authorized'
+    # Email is not in database and is valid - needs to be authorized
+    else: 
+        database.authorize_email(email)
+        print(email)
+        completion_string = 'User ' + email + ' has successfully been authorized'
+    
+
+    html_code = flask.render_template('auth-finished.html', 
+                                        completion_string = completion_string)
+    return flask.make_response(html_code)
+
+
+
+
+
+
+
+
+
