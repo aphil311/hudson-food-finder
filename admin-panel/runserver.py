@@ -35,7 +35,7 @@ def main():
 
 
     try:
-        hcff.app.run(host='0.0.0.0', port = PORT, debug = True, 
+        hcff.app.run(host='localhost', port = PORT, debug = True, 
             ssl_context = ('cert.pem', 'key.pem'))
     except Exception as ex:
         print(ex, file=sys.stderr)
