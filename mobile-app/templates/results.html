@@ -5,10 +5,11 @@
             <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="">
             <div class="card-body">
                 <h5>{{ offering.get_title() }}</h5>
-                <p>{{ offering.get_street() }}</p>
+                <address><p>{{ offering.get_street() }}, {{ offering.get_zipcode() }}</p></address>
                 <p>{{ offering.get_daysf() }}</p>
                 <p>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
                 <a href="./offerings?id={{ offering.get_off_id() }}">More details</a>
+                <script src="../static/scripts/convertaddress.js"></script>
             </div>
         </div>
     </div>

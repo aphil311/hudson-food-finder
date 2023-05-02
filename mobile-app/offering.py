@@ -50,6 +50,8 @@ class Offering:
         if self._description == None:
             self._description = ''
 
+        self._zipcode = properties[9]
+
     #-------------------------------------------------------------------
     # getter methods
     #-------------------------------------------------------------------
@@ -76,6 +78,9 @@ class Offering:
 
     def get_off_id(self):
         return self._off_id
+
+    def get_zipcode(self):
+        return self._zipcode
 
     #-------------------------------------------------------------------
     # formatted getter methods

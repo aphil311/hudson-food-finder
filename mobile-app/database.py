@@ -38,7 +38,7 @@ def find_offerings(filter):
                 Offering.title, Organization.street, Offering.days_open,
                 Offering.start_time, Offering.end_time,
                 Organization.org_name, Offering.off_id,
-                Offering.off_desc) \
+                Offering.off_desc, Organization.zip_code) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -76,7 +76,7 @@ def get_offering(id):
                 Offering.title, Organization.street, Offering.days_open,
                 Offering.start_time, Offering.end_time,
                 Organization.org_name, Offering.off_id,
-                Offering.off_desc) \
+                Offering.off_desc, Organization.zip_code) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
