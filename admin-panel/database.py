@@ -53,6 +53,20 @@ def authorize_email(email):
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
+    
+# remove email from the AuthorizedUser table
+def deauthorize_email(email):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            session.query(AuthorizedUser) \
+                .filter(AuthorizedUser.username==email) \
+                .delete()
+            session.commit()
+            return True
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
 
 def validate_file(csv_reader):
     # check if file is empty

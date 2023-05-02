@@ -35,7 +35,8 @@ csp = {
         'cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
         'cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
         '/static/styles.css',
-        'cdnjs.cloudflare.com/'
+        'cdnjs.cloudflare.com/',
+        'https://lh3.googleusercontent.com/a/'
     ]
 }
 talisman = Talisman(app, content_security_policy=csp)
@@ -99,13 +100,8 @@ def offerings():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
-
-
-
-
     html_code = flask.render_template('offerings.html',
         offerings=None)
-    
 
     return flask.make_response(html_code)
 
@@ -272,6 +268,30 @@ def auth_complete():
                                         completion_string = completion_string)
     return flask.make_response(html_code)
 
+
+@app.route('/auth-removed', methods = ['POST'])
+def auth_removed():
+    username = auth.authenticate()
+    authorize(username)
+
+    email = flask.request.form.get('email')
+
+    # Faulty email submitted
+    if not re.match("[^@]+@[^@]+\.[^@]+", email):
+        completion_string = 'Invalid email submitted, please enter a valid email address \
+        email: ' + email
+    # Email is not in database already
+    elif (database.is_authorized(email) == False):
+        completion_string = 'User ' + email + ' is not  authorized'
+    # Email is in database and is valid - and needs to be DE-AUTHORIZED
+    else: 
+        database.deauthorize_email(email)
+        print(email)
+        completion_string = 'User ' + email + ' has successfully been de-authorized'
+    
+    html_code = flask.render_template('auth-finished.html', 
+                                        completion_string = completion_string)
+    return flask.make_response(html_code)
 
 
 
