@@ -1,0 +1,30 @@
+{% include 'head.html' %}
+<div>
+    <p> 
+        Check the box to give user associated with the inputed email access to all organizations.
+        Please check for typos before submitting.
+    </p>
+    <!--
+        Form that when submitted the inputed email with be in database
+    -->
+    <form action = "/auth-finished" method = "POST"> 
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <p> 
+        Check the box to REMOVE access to all organizations for the user associated with the inputed email.
+    </p>
+    <form action = "/auth-removed" method = "POST"> 
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+        <input type="submit" value="Submit">
+    </form>
+
+</div>
+
+
+{% include 'foot.html' %}
