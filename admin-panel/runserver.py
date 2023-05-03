@@ -26,9 +26,7 @@ def main():
     
     parser = argparse.ArgumentParser(
         description='The admin panel application')
-    parser.add_argument('port', type=int,
-        help='the port at which the server should listen')
-    args = parser.parse_args()
+    parser.parse_args()
 
     if len(sys.argv) != 1:
         print("Usage: " + sys.argv[0], file = sys.stderr)
