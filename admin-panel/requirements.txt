@@ -1,9 +1,11 @@
 Flask
 gunicorn
 SQLAlchemy
-psycopg2
 python-decouple
 requests==2.21.0
 oauthlib==3.0.1
-pyOpenSSL
+pyOpenSSL==23.0.0
 Flask-Login==0.4.1
+flask-talisman
+flask-wtf
+psycopg2
