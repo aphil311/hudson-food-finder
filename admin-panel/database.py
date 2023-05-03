@@ -67,6 +67,21 @@ def deauthorize_email(email):
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
+    
+# get all emails from the AuthorizedUser table
+def get_emails():
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(AuthorizedUser.username)
+            results = query.all()
+            emails = []
+            for row in results:
+                emails.append(row[0])
+            return emails
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
 
 def validate_file(csv_reader):
     # check if file is empty

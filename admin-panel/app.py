@@ -74,8 +74,6 @@ def index():
 
     picture = flask.session.get('picture')
 
-    print(flask.session.get('name'))
-    print(picture)
     html_code = flask.render_template('offerings.html',
         offerings=None, picture = picture)
     return flask.make_response(html_code)
@@ -91,8 +89,8 @@ def searchOrganizations():
     username = auth.authenticate()
     authorize(username)
     organizations = database.find_organizations()
-
-    html_code = flask.render_template('organizations.html', organizations=organizations)
+    picture = flask.session.get('picture')
+    html_code = flask.render_template('organizations.html', organizations=organizations, picture = picture)
     return flask.make_response(html_code)
 
 @app.route('/offerings')
@@ -100,8 +98,9 @@ def offerings():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
+    picture = flask.session.get('picture')
     html_code = flask.render_template('offerings.html',
-        offerings=None)
+        offerings=None, picture = picture)
 
     return flask.make_response(html_code)
 
@@ -173,7 +172,9 @@ def upload():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
-    html_code = flask.render_template('upload.html', message='')
+
+    picture = flask.session.get('picture')
+    html_code = flask.render_template('upload.html', message='', picture = picture)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -185,7 +186,8 @@ def download():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
-    html_code = flask.render_template('download.html')
+    picture = flask.session.get('picture')
+    html_code = flask.render_template('download.html', picture = picture)
     return flask.make_response(html_code)
 
 @app.route('/download-csv')
@@ -228,7 +230,8 @@ def upload_confirmation():
     status, messages = database.bulk_update(file_path)
     if status != 0:
         print('cry')
-    html_code = flask.render_template('upload.html', messages=messages)
+    picture = flask.session.get('picture')
+    html_code = flask.render_template('upload.html', messages=messages, picture = picture)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -239,8 +242,10 @@ def upload_confirmation():
 def auth_panel():
     username = auth.authenticate()
     authorize(username)
-
-    html_code = flask.render_template('auth-users.html')
+    emails = database.get_emails()
+    print (emails)
+    picture = flask.session.get('picture')
+    html_code = flask.render_template('auth-users.html', picture = picture, emails = emails)
     return flask.make_response(html_code)
 
 @app.route('/auth-finished', methods = ['POST'])
@@ -263,9 +268,9 @@ def auth_complete():
         print(email)
         completion_string = 'User ' + email + ' has successfully been authorized'
     
-
+    picture = flask.session.get('picture')
     html_code = flask.render_template('auth-finished.html', 
-                                        completion_string = completion_string)
+                                        completion_string = completion_string, picture = picture)
     return flask.make_response(html_code)
 
 
@@ -289,8 +294,9 @@ def auth_removed():
         print(email)
         completion_string = 'User ' + email + ' has successfully been de-authorized'
     
+    picture = flask.session.get('picture')
     html_code = flask.render_template('auth-finished.html', 
-                                        completion_string = completion_string)
+                                        completion_string = completion_string, picture = picture)
     return flask.make_response(html_code)
 
 

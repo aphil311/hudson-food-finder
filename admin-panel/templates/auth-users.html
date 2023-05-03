@@ -1,7 +1,7 @@
 {% include 'head.html' %}
 <div>
     <p> 
-        Check the box to give user associated with the inputed email access to all organizations.
+        Write the email of the user who you want to give access to all organizations.
         Please check for typos before submitting.
     </p>
     <!--
@@ -14,16 +14,25 @@
         <input type="submit" value="Submit">
     </form>
 
+    <br>
+
     <p> 
-        Check the box to REMOVE access to all organizations for the user associated with the inputed email.
+        Use the drop down menu to REMOVE access to all organizations for the user associated with the inputed email.
     </p>
-    <form action = "/auth-removed" method = "POST"> 
+
+    <br>
+
+
+    <form action = "/auth-removed" method = "POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
+        <select name="email" method="GET" action="/">
+        <option value="{{emails[0]}}" selected>{{emails[0]}}</option>
+            {% for email in emails[1:] %}
+            <option value="{{email}}">{{email}}</option>
+            {% endfor %}
+        </select>
         <input type="submit" value="Submit">
     </form>
-
 </div>
 
 
