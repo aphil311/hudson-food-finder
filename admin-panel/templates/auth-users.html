@@ -1,30 +1,33 @@
 {% include 'head.html' %}
-<div>
-    <p> 
-        Check the box to give user associated with the inputed email access to all organizations.
-        Please check for typos before submitting.
-    </p>
-    <!--
-        Form that when submitted the inputed email with be in database
-    -->
+<p>Authorize Users</p>
+<hr>
+<div class="container-fluid mb-3">
+    <p>Enter an email to authorize a user to access this dashboard.</p>
     <form action = "/auth-finished" method = "POST"> 
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
-        <input type="submit" value="Submit">
+        <div class="input-group">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-floating">
+                <input name="email" type="email" class="form-control" id="email" placeholder="name@example.com">
+                <label for="email">Email address</label>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </div>
     </form>
-
-    <p> 
-        Check the box to REMOVE access to all organizations for the user associated with the inputed email.
-    </p>
-    <form action = "/auth-removed" method = "POST"> 
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
-        <input type="submit" value="Submit">
-    </form>
-
 </div>
 
-
+<div class="container-fluid">
+    <p>Select an email from the dropdown to remove their access to this dashboard.</p>
+    <form action = "/auth-removed" method = "POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="input-group">
+            <select class="form-select" name="email" method="GET" action="/">
+                <option value="{{emails[0]}}" selected>{{emails[0]}}</option>
+                    {% for email in emails[1:] %}
+                    <option value="{{email}}">{{email}}</option>
+                    {% endfor %}
+                </select>
+                <input class="btn btn-primary" type="submit" value="Submit">
+        </div>
+    </form>
+</div>
 {% include 'foot.html' %}
