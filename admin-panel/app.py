@@ -243,7 +243,6 @@ def auth_panel():
     username = auth.authenticate()
     authorize(username)
     emails = database.get_emails()
-    print (emails)
     picture = flask.session.get('picture')
     html_code = flask.render_template('auth-users.html', picture = picture, emails = emails)
     return flask.make_response(html_code)
@@ -291,7 +290,6 @@ def auth_removed():
     # Email is in database and is valid - and needs to be DE-AUTHORIZED
     else: 
         database.deauthorize_email(email)
-        print(email)
         completion_string = 'User ' + email + ' has successfully been de-authorized'
     
     picture = flask.session.get('picture')
