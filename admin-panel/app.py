@@ -235,66 +235,95 @@ def upload_confirmation():
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
-# upload_confirmation()
-# Page for confirming the upload of a csv file to update the database
+# authorize_users()
+# Page for authorizing users to access the database or de-authorizing
 #-----------------------------------------------------------------------
 @app.route('/authorize-users', methods = ['GET'])
-def auth_panel():
+def authorize_users():
+    # verify user is authorized
     username = auth.authenticate()
     authorize(username)
+
+    # get the emails and picture to render the page
     emails = database.get_emails()
     picture = flask.session.get('picture')
-    html_code = flask.render_template('auth-users.html', picture = picture, emails = emails)
+
+    # render the page
+    html_code = flask.render_template('auth-users.html',
+        picture=picture, emails=emails)
     return flask.make_response(html_code)
 
+#-----------------------------------------------------------------------
+# auth_finished()
+# Confirmation page for authorizing users to access the database
+#-----------------------------------------------------------------------
 @app.route('/auth-finished', methods = ['POST'])
-def auth_complete():
+def auth_finished():
+    # verify user is authorized
     username = auth.authenticate()
     authorize(username)
 
+    # get the email we are authorizing
     email = flask.request.form.get('email')
-
+    status = 1      # 1 = success, 2 = failure
     # Faulty email submitted
     if not re.match("[^@]+@[^@]+\.[^@]+", email):
-        completion_string = 'Invalid email submitted, please enter a valid email address \
+        message = 'Invalid email submitted, please enter a valid email address \
         email: ' + email
+        status = 2
     # Email is in database already
     elif database.is_authorized(email):
-        completion_string = 'User ' + email + ' is already authorized'
+        message = 'User ' + email + ' is already authorized'
+        status = 2
     # Email is not in database and is valid - needs to be authorized
     else: 
         database.authorize_email(email)
-        print(email)
-        completion_string = 'User ' + email + ' has successfully been authorized'
-    
+        message = 'User ' + email + ' has successfully been authorized'
+
+    # get the emails and picture to render the page
+    emails = database.get_emails()
     picture = flask.session.get('picture')
-    html_code = flask.render_template('auth-finished.html', 
-                                        completion_string = completion_string, picture = picture)
+
+    # render the page
+    html_code = flask.render_template('auth-finished.html', status=status,
+        message=message, emails=emails, picture=picture)
     return flask.make_response(html_code)
 
-
+#-----------------------------------------------------------------------
+# auth_removed()
+# Confirmation page for de-authorizing users to access the database
+#-----------------------------------------------------------------------
 @app.route('/auth-removed', methods = ['POST'])
 def auth_removed():
+    # verify user is authorized
     username = auth.authenticate()
     authorize(username)
 
+    # get the email we are de-authorizing
     email = flask.request.form.get('email')
-
+    status = 3      # 3 = success, 4 = failure
     # Faulty email submitted
     if not re.match("[^@]+@[^@]+\.[^@]+", email):
-        completion_string = 'Invalid email submitted, please enter a valid email address \
+        message = 'Invalid email submitted, please enter a valid email address \
         email: ' + email
+        status = 4
     # Email is not in database already
     elif (database.is_authorized(email) == False):
-        completion_string = 'User ' + email + ' is not  authorized'
+        message = 'User ' + email + ' is not  authorized'
+        status = 4
     # Email is in database and is valid - and needs to be DE-AUTHORIZED
     else: 
         database.deauthorize_email(email)
-        completion_string = 'User ' + email + ' has successfully been de-authorized'
+        message = 'User ' + email + ' has successfully been de-authorized'
     
+    # get the emails and picture to render the page
+    emails = database.get_emails()
     picture = flask.session.get('picture')
+
+    # render the page
     html_code = flask.render_template('auth-finished.html', 
-                                        completion_string = completion_string, picture = picture)
+        message=message, picture=picture,
+        emails=emails, status=status)
     return flask.make_response(html_code)
 
 
