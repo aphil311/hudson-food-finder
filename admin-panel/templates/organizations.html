@@ -1,13 +1,19 @@
+<!-- generated table for organizations -->
 {% include 'head.html' %}
+
+<!-- header -->
 <p>Organizations</p>
 <hr>
+
 <table class="table table-hover">
+    <!-- header row -->
     <tr>
         <th>Organization</th>
         <th>Phone Number</th>
         <th>Website</th>
         <th>Address</th>
     </tr>
+    <!-- make a new row for each organization -->
     {% for organization in organizations %}
     <tr>
         <td>{{ organization.get_org_name() }}</td>

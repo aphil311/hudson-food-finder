@@ -1,3 +1,5 @@
+<!-- This is always loaded at the top of the screen -->
+
 <div class="row">
   <div class="col-auto">
     <img class="logo-img" src="../static/img/logo.png" alt="">
@@ -5,15 +7,18 @@
   <div class="col-auto">
     <h3>Admin</h3>
   </div>
+  <!-- search bar -->
   <div class="col d-flex justify-content-center">
     <div class="input-group">
       <input class="form-control" id="search-bar" type="text" placeholder="Find an offering" name="search">
       <button class="btn btn-primary" id="search-btn" type="submit"><i class="fa fa-search"></i></button>
     </div>
   </div>
+  <!-- help -->
   <div class="col-auto">
     <i class="fs-4 bi-patch-question"></i>
   </div>
+  <!-- user photo -->
   <div class="col-auto">
     <img class="logo-img" id="user-img" src= "{{ picture }}" alt="" referrerPolicy="no-referrer">
   </div>

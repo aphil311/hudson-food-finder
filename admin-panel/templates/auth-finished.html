@@ -1,16 +1,26 @@
+<!-- This file shows for 5 seconds after adding an authorized user.
+     Displays a status message -->
+
 {% include 'head.html' %}
+
+<!-- Timeout script -->
 <script>
     // wait 5 seconds then redirect to /auth-users
     setTimeout(function() {
         window.location.href = "/authorize-users";
     }, 5000);
 </script>
+
+<!-- header -->
 <p>Authorize Users</p>
 <hr>
+
+<!-- Add a user -->
 <div class="container-fluid mb-3">
     <p>Enter an email to authorize a user to access this dashboard.</p>
     <form action = "/auth-finished" method = "POST"> 
         <div class="input-group">
+            <!-- must send csrf token -->
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-floating">
                 <input name="email" type="email" class="form-control" id="email" placeholder="name@example.com">
@@ -19,6 +29,7 @@
             <input class="btn btn-primary" type="submit" value="Submit">
         </div>
     </form>
+    <!-- notifications -->
     {% if status == 1 %}
     <div class="alert alert-success mt-3" role="alert">
         {{ message }}
@@ -30,20 +41,23 @@
     {% endif %}
 </div>
 
+<!-- delete a user -->
 <div class="container-fluid">
     <p>Select an email from the dropdown to remove their access to this dashboard.</p>
     <form action = "/auth-removed" method = "POST">
+        <!-- must send csrf token -->
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="input-group">
             <select class="form-select" name="email" method="GET" action="/">
                 <option value="{{emails[0]}}" selected>{{emails[0]}}</option>
-                    {% for email in emails[1:] %}
-                    <option value="{{email}}">{{email}}</option>
-                    {% endfor %}
-                </select>
-                <input class="btn btn-primary" type="submit" value="Submit">
+                {% for email in emails[1:] %}
+                <option value="{{email}}">{{email}}</option>
+                {% endfor %}
+            </select>
+            <input class="btn btn-primary" type="submit" value="Submit">
         </div>
     </form>
+    <!-- notifications -->
     {% if status == 3 %}
     <div class="alert alert-success mt-3" role="alert">
         {{ message }}
@@ -54,4 +68,5 @@
     </div>
     {% endif %}
 </div>
+
 {% include 'foot.html' %}

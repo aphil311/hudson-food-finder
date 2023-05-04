@@ -1,14 +1,9 @@
+<!-- OFFERINGS TAB -->
 {% include 'head.html' %}
-<script src="../static/scripts/search-offerings.js"></script>
+
+<!-- search offerings when loaded -->
 <script>
     searchOfferings();
-    $("#search-bar").on("keypress", function(e) {
-        // 13 is *nearly* always the enter key
-        if(e.which == 13) {
-            searchOfferings();
-        }
-    });
-    $("#search-btn").on("click", searchOfferings);
 </script>
 <!-- javascript dynamically handles this div -->
 {% include 'foot.html' %}
