@@ -78,8 +78,9 @@ def index():
     # authenticate user and get picture
     picture = authorize()
 
+    # get all offerings from the database
     organizations = database.find_organizations()
-    
+
     html_code = flask.render_template('offerings.html',
         offerings=None, picture = picture, organizations=organizations)
     return flask.make_response(html_code)
@@ -103,9 +104,8 @@ def offerings():
     # authenticate user
     picture = authorize()
 
+    # get all offerings from the database
     organizations = database.find_organizations()
-    for org in organizations:
-        print(org.get_org_name(), file=sys.stderr)
 
     html_code = flask.render_template('offerings.html',
         offerings=None, picture = picture, organizations=organizations)
