@@ -2,7 +2,7 @@
     {% for offering in offerings %}
     <div class="col-md-6 col-12 gy-4">
         <div class="card h-100 flex-row">
-            <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="">
+            <img class="offering-logo img-fluid" src="{{ offering.get_photo_url() }}" alt="" referrerPolicy="no-referrer">
             <div class="card-body">
                 <h5>{{ offering.get_title() }}</h5>
                 <!-- <address><p>{{ offering.get_street() }}, {{ offering.get_zipcode() }}</p></address> -->
