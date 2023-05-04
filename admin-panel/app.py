@@ -312,7 +312,8 @@ def auth_removed():
         status = 4
     # Can't deathorize admin
     elif(email == 'cgrandin@hcnj.us' or email == 'delma.yorimoto@rutgers.edu'
-                                    or email == 'cadams-griffin@hcnj.us'):
+        or email == 'cadams-griffin@hcnj.us' or email == 'yousefamin800@gmail.com'
+        or email == 'zainahmed1956@gmail.com' or email == 'aidantphil21@gmail.com'):
         message = 'Cannot deauthorize admin'
         status = 4
     # Email is in database and is valid - and needs to be DE-AUTHORIZED
