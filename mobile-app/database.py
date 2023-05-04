@@ -77,7 +77,6 @@ def find_offerings(filter):
             results = query.all()
             offerings = []
             for row in results:
-                print(row)
                 offerings.append(offmod.Offering(row))
             return offerings
     except Exception as ex:
