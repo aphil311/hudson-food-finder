@@ -3,7 +3,34 @@
 
 <!-- search offerings when loaded -->
 <script>
+    // sends a request to the server with the search query and sort method
+    function filterOfferings() {
+        // get variables from inputs
+        let searchQuery = $("select").val();
+        // encode variables for request
+        searchQuery = encodeURIComponent(searchQuery);
+        // send request to server
+        let url = "./search_offerings?search=" + searchQuery
+        request = $.ajax({
+            type: "GET",
+            url: url,
+            success: handleResponse
+        });
+    }
     searchOfferings();
 </script>
+<!-- header -->
+<p>Offerings</p>
+<hr>
+
+<select class="">
+    <option value="%" selected>All</option>
+    {% for organization in organizations %}
+        <option>{{ organization.get_org_name() }}</option>
+    {% endfor %}
+</select>
+
+<!-- rendered by js -->
+<div id="current-panel"></div>
 <!-- javascript dynamically handles this div -->
 {% include 'foot.html' %}
