@@ -166,7 +166,8 @@ def find_organizations():
         with sqlalchemy.orm.Session(engine) as session:
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
-                Organization.street, Organization.zip_code)
+                Organization.street, Organization.zip_code,
+                Organization.org_id)
             results = query.all()
 
             organizations = []

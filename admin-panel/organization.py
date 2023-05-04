@@ -6,8 +6,6 @@
 # Represents an offering in the database
 #-----------------------------------------------------------------------
 
-import sys
-
 #-----------------------------------------------------------------------
 # Organization class
 # Represents an organization in the database
@@ -25,6 +23,7 @@ class Organization:
         self._website = properties[2]
         self._street = properties[3]
         self._zip_code = properties[4]
+        self._id = properties[5]
 
     #-------------------------------------------------------------------
     # getter methods
@@ -40,3 +39,6 @@ class Organization:
 
     def get_street(self):
         return self._street
+    
+    def get_id(self):
+        return self._id

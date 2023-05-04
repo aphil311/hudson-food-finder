@@ -38,6 +38,7 @@
                 }
             });
             $("#search-btn").on("click", searchOfferings);
+            $("select").on("change", filterOfferings);
         }
         // runs setup when document is ready
         $(document).ready(setup);
@@ -48,4 +49,4 @@
         {% include 'button-panel.html' %}
         <div class="row flex-nowrap">
             {% include 'side-panel.html' %}
-            <div class="col py-3" id="current-panel">
+            <div class="col py-3">
