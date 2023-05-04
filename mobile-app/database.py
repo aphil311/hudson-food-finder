@@ -50,7 +50,7 @@ def find_offerings(filter):
             # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
-                Offering.start_time, Offering.end_time,
+                Offering.days_desc, Offering.start_time, Offering.end_time,
                 Organization.org_name, Offering.off_id,
                 Offering.off_desc, Organization.zip_code) \
                 .select_from(Organization) \
