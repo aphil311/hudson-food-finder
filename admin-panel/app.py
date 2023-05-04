@@ -19,9 +19,10 @@ import re
 
 #-----------------------------------------------------------------------
 app = init.app
+
+# security stuff -------------------------------------------------------
 app.secret_key = config('APP_KEY')
 flask_wtf.csrf.CSRFProtect(app)
-
 csp = {
     'default-src': [
         '\'self\'',
@@ -29,37 +30,42 @@ csp = {
         'stackpath.bootstrapcdn.com',
         'code.jquery.com',
         'cdn.jsdelivr.net',
-        'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css',
+        'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/'
+            'bootstrap.min.css',
         'cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js',
-        'cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.2/font/bootstrap-icons.css',
+        'cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.2/font/'
+            'bootstrap-icons.css',
         'cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-        'cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+        'cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/'
+            'font-awesome.min.css',
         '/static/styles.css',
         'cdnjs.cloudflare.com/',
         'https://lh3.googleusercontent.com/a/'
     ]
 }
 talisman = Talisman(app, content_security_policy=csp)
-# Talisman(app)
+
 #-----------------------------------------------------------------------
-
-# Routes for authentication 
-
-@app.route('/login', methods=['GET'])
-def login():
-    return auth.login()
-
-
-@app.route('/login/callback', methods=['GET'])
-def callback():
-    return auth.callback()
-
-
-def authorize(username):
+# authorize()
+# Checks if the user is authorized to use the admin panel
+#-----------------------------------------------------------------------
+def authorize(username=None):
+    username = auth.authenticate()
     if not database.is_authorized(username):
         html_code = 'You are not authorized to use this application.'
         response = flask.make_response(html_code)
         flask.abort(response)
+    else:
+        return flask.session.get('picture')
+
+# routes for login -----------------------------------------------------
+@app.route('/login', methods=['GET'])
+def login():
+    return auth.login()
+
+@app.route('/login/callback', methods=['GET'])
+def callback():
+    return auth.callback()
 
 #-----------------------------------------------------------------------
 # index()
@@ -68,11 +74,8 @@ def authorize(username):
 #-----------------------------------------------------------------------
 @app.route('/')
 def index():
-    # authenticate user
-    username = auth.authenticate()
-    authorize(username)
-
-    picture = flask.session.get('picture')
+    # authenticate user and get picture
+    picture = authorize()
 
     html_code = flask.render_template('offerings.html',
         offerings=None, picture = picture)
@@ -86,19 +89,17 @@ def index():
 @app.route('/organizations', methods=['GET'])
 def searchOrganizations():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    picture = authorize()
+
     organizations = database.find_organizations()
-    picture = flask.session.get('picture')
     html_code = flask.render_template('organizations.html', organizations=organizations, picture = picture)
     return flask.make_response(html_code)
 
 @app.route('/offerings')
 def offerings():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
-    picture = flask.session.get('picture')
+    picture = authorize()
+
     html_code = flask.render_template('offerings.html',
         offerings=None, picture = picture)
 
@@ -112,8 +113,8 @@ def offerings():
 @app.route('/search_offerings', methods=['GET'])
 def searchOfferings():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    authorize()
+
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
     # must have a comma at the end of the tuple
@@ -125,8 +126,8 @@ def searchOfferings():
 @app.route('/edit-offering', methods=['GET'])
 def edit():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    authorize()
+
     offering_id = flask.request.args.get('id')
     offering = database.get_offering(offering_id)
     html_code = flask.render_template('edit-offering.html', offering=offering)
@@ -135,8 +136,8 @@ def edit():
 @app.route('/send-update', methods=['POST'])
 def send_update():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    authorize()
+
     new_data = {}
     new_data['title'] = flask.request.form.get('title')
     days_array = [False, False, False, False, False, False, False]
@@ -170,10 +171,8 @@ def send_update():
 @app.route('/upload')
 def upload():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    picture = authorize()
 
-    picture = flask.session.get('picture')
     html_code = flask.render_template('upload.html', message='', picture = picture)
     return flask.make_response(html_code)
 
@@ -184,17 +183,16 @@ def upload():
 @app.route('/download')
 def download():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
-    picture = flask.session.get('picture')
+    picture = authorize()
+
     html_code = flask.render_template('download.html', picture = picture)
     return flask.make_response(html_code)
 
 @app.route('/download-csv')
 def download_csv():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    authorize()
+
     # makes the file
     status = database.get_csv()
     if status == 0:
@@ -221,8 +219,8 @@ def download_csv():
 @app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
     # authenticate user
-    username = auth.authenticate()
-    authorize(username)
+    picture = authorize()
+
     file = flask.request.files.get('file')
     if file:
         file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
@@ -232,7 +230,6 @@ def upload_confirmation():
             print('cry')
     else:
         messages = ['Error: no file uploaded']
-    picture = flask.session.get('picture')
     html_code = flask.render_template('upload.html', messages=messages, picture = picture)
     return flask.make_response(html_code)
 
@@ -243,12 +240,10 @@ def upload_confirmation():
 @app.route('/authorize-users', methods = ['GET'])
 def authorize_users():
     # verify user is authorized
-    username = auth.authenticate()
-    authorize(username)
+    picture = authorize()
 
     # get the emails and picture to render the page
     emails = database.get_emails()
-    picture = flask.session.get('picture')
 
     # render the page
     html_code = flask.render_template('auth-users.html',
@@ -262,8 +257,7 @@ def authorize_users():
 @app.route('/auth-finished', methods = ['POST'])
 def auth_finished():
     # verify user is authorized
-    username = auth.authenticate()
-    authorize(username)
+    picture = authorize()
 
     # get the email we are authorizing
     email = flask.request.form.get('email')
@@ -284,7 +278,6 @@ def auth_finished():
 
     # get the emails and picture to render the page
     emails = database.get_emails()
-    picture = flask.session.get('picture')
 
     # render the page
     html_code = flask.render_template('auth-finished.html', status=status,
@@ -298,8 +291,7 @@ def auth_finished():
 @app.route('/auth-removed', methods = ['POST'])
 def auth_removed():
     # verify user is authorized
-    username = auth.authenticate()
-    authorize(username)
+    picture = authorize()
 
     # get the email we are de-authorizing
     email = flask.request.form.get('email')
@@ -320,18 +312,9 @@ def auth_removed():
     
     # get the emails and picture to render the page
     emails = database.get_emails()
-    picture = flask.session.get('picture')
 
     # render the page
     html_code = flask.render_template('auth-finished.html', 
         message=message, picture=picture,
         emails=emails, status=status)
     return flask.make_response(html_code)
-
-
-
-
-
-
-
-
