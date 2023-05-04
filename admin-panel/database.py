@@ -146,13 +146,34 @@ def find_offerings(filter):
                 .join(Offering) \
                 .join(Service) \
                 .join(PeopleGroup) \
-                .filter(Organization.org_name.ilike(filter))
+                .filter(Organization.org_name.ilike(filter)) \
+                .filter(Offering.close_date > sqlalchemy.func.now())
             
             results = query.all()
             offerings = []
             for row in results:
                 offerings.append(offmod.Offering(row))
-            return offerings
+
+            query = session.query(Organization.org_name,
+                Offering.title, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Offering.init_date, Offering.close_date,
+                Service.service_type, PeopleGroup.people_group,
+                Offering.off_desc, Offering.off_id) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .join(Service) \
+                .join(PeopleGroup) \
+                .filter(Organization.org_name.ilike(filter)) \
+                .filter(Offering.close_date <= sqlalchemy.func.now())
+            
+            results = query.all()
+            expired = []
+            for row in results:
+                expired.append(offmod.Offering(row))
+
+            return offerings, expired
         
     except Exception as ex:
         print(ex, file=sys.stderr)
