@@ -50,12 +50,15 @@ def find_offerings(filter):
             # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
-                Offering.start_time, Offering.end_time,
+                Offering.days_desc, Offering.start_time, Offering.end_time,
                 Organization.org_name, Offering.off_id,
-                Offering.off_desc, Organization.zip_code) \
+                Offering.off_desc, Organization.zip_code, Service.service_type,
+                Group.people_group, Organization.phone, Organization.website) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
+                .join(Service) \
+                .join(Group) \
                 .filter(Organization.street.ilike(search_term) |
                         Offering.off_desc.ilike(search_term) |
                         Offering.title.ilike(search_term) |
@@ -88,12 +91,15 @@ def get_offering(id):
             # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
-                Offering.start_time, Offering.end_time,
+                Offering.days_desc, Offering.start_time, Offering.end_time,
                 Organization.org_name, Offering.off_id,
-                Offering.off_desc, Organization.zip_code) \
+                Offering.off_desc, Organization.zip_code, Service.service_type,
+                Group.people_group, Organization.phone, Organization.website) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
+                .join(Service) \
+                .join(Group) \
                 .filter(Offering.off_id == id)
 
             # execute the query and return the results

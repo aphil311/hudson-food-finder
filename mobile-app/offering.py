@@ -21,7 +21,7 @@ class Offering:
             self._photo_url = './static/img/fallback.png'
         self._title = properties[1]
         if self._title == '':
-            self._title = properties[6]
+            self._title = properties[7]
         self._street = properties[2]
         # should think deeply about how to implement this
         temp = properties[3].split('-')
@@ -35,22 +35,27 @@ class Offering:
                 print('Error: invalid day value in database',
                       file=sys.stderr)
                 self._days.append(None)
-        if (properties[4]):
-            self._start_time = properties[4]
+        self._days_desc = properties[4]
+        if (properties[5]):
+            self._start_time = properties[5]
         else:
             self._start_time = time(0, 0)
         if  (properties[5]):
-            self._end_time = properties[5]
+            self._end_time = properties[6]
         else:
             self._end_time = time(23, 59)
 
-        self._off_id = properties[7]
+        self._off_id = properties[8]
 
-        self._description = properties[8]
+        self._description = properties[9]
         if self._description == None:
             self._description = ''
 
-        self._zipcode = properties[9]
+        self._zipcode = properties[10]
+        self._service = properties[11]
+        self._group = properties[12]
+        self._phone = properties[13]
+        self._website = properties[14]
 
     #-------------------------------------------------------------------
     # getter methods
@@ -81,6 +86,18 @@ class Offering:
 
     def get_zipcode(self):
         return self._zipcode
+    
+    def get_service(self):
+        return self._service
+    
+    def get_group(self):
+        return self._group
+    
+    def get_phone(self):
+        return self._phone
+    
+    def get_website(self):
+        return self._website
 
     #-------------------------------------------------------------------
     # formatted getter methods
@@ -92,17 +109,20 @@ class Offering:
         return self._end_time.strftime('%-I:%M %p')
 
     def get_daysf(self):
-        if self._days == [True, True, True, True, True, True, True]:
-            return 'Open every day'
-        if self._days == [False, True, True, True, True, True, False]:
-            return 'Open on weekdays'
-        if self._days == [True, False, False, False, False, False,
-            True]:
-            return 'Open on weekends'
-        days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-                'Thursday', 'Friday', 'Saturday']
-        result = ''
-        for i in range(7):
-            if self._days[i]:
-                result += days[i] + ', '
-        return 'Open every ' + result[:-2]
+        if self._days_desc:
+            return self._days_desc
+        else:
+            if self._days == [True, True, True, True, True, True, True]:
+                return 'Open every day'
+            if self._days == [False, True, True, True, True, True, False]:
+                return 'Open on weekdays'
+            if self._days == [True, False, False, False, False, False,
+                True]:
+                return 'Open on weekends'
+            days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                    'Thursday', 'Friday', 'Saturday']
+            result = ''
+            for i in range(7):
+                if self._days[i]:
+                    result += days[i] + ', '
+            return 'Open every ' + result[:-2]
