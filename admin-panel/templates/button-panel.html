@@ -1,5 +1,6 @@
 <!-- This is always loaded at the top of the screen -->
 
+<!-- formats the button-panel -->
 <div class="row">
   <div class="col-auto">
     <img class="logo-img" src="../static/img/logo.png" alt="">
@@ -14,10 +15,51 @@
       <button class="btn btn-primary" id="search-btn" type="submit"><i class="fa fa-search"></i></button>
     </div>
   </div>
+
   <!-- help -->
   <div class="col-auto">
-    <i class="fs-4 bi-patch-question"></i>
+    <i class="fs-4 bi-patch-question" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+      <!-- Create a modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- Create a modal dialog -->
+        <div class="modal-dialog">
+          <!-- Create a modal content -->
+          <div class="modal-content">
+            <!-- Create a modal header -->
+            <div class="modal-header">
+              <!-- Create a modal title -->
+              <h5 class="modal-title" id="exampleModalLabel">How to navigate the admin panel:</h5>
+              <!-- Create a close button -->
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Create a modal body -->
+            <div class="modal-body">
+              <!-- Create a modal body text about the admin interface -->
+              <p> In the admin panel, you can view all the offerings, 
+                  add new offerings, and edit existing offerings. </p>
+              <p> Using the left-hand side panel or the search bar, you could 
+                  search for offerings under the various organizations. You could edit
+                  the information of the offering by clicking on the edit button next to
+                  the organization name. If you scroll to the bottom of the page, you could 
+                  view expired listings. </p>
+              <p> Under offerings, you could view various information about organizations like 
+                  their phone number, website, and address. </p>
+              <p> Using the Upload button, you could add new offerings by uploading a CSV file. You
+                  could also download all the offerings that are currently listed by using the Download
+                  button. </p>
+              <p> Lastly, you could authorize or deauthorize users in accessing this panel by 
+                  clicking on the 'Authorize Users' button in the side panel. </p>
+            </div>
+            <!-- Create a modal footer -->
+            <div class="modal-footer">
+              <!-- Create a close button -->
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
+
   <!-- user photo -->
   <div class="col-auto">
     <img class="logo-img" id="user-img" src= "{{ picture }}" alt="" referrerPolicy="no-referrer">
