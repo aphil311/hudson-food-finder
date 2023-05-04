@@ -126,11 +126,12 @@ def searchOfferings():
 @app.route('/edit-offering', methods=['GET'])
 def edit():
     # authenticate user
-    authorize()
+    picture = authorize()
 
     offering_id = flask.request.args.get('id')
     offering = database.get_offering(offering_id)
-    html_code = flask.render_template('edit-offering.html', offering=offering)
+    html_code = flask.render_template('edit-offering.html', offering=offering,
+        picture=picture)
     return flask.make_response(html_code)
 
 @app.route('/send-update', methods=['POST'])
