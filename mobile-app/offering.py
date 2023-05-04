@@ -52,6 +52,10 @@ class Offering:
             self._description = ''
 
         self._zipcode = properties[10]
+        self._service = properties[11]
+        self._group = properties[12]
+        self._phone = properties[13]
+        self._website = properties[14]
 
     #-------------------------------------------------------------------
     # getter methods
@@ -82,6 +86,18 @@ class Offering:
 
     def get_zipcode(self):
         return self._zipcode
+    
+    def get_service(self):
+        return self._service
+    
+    def get_group(self):
+        return self._group
+    
+    def get_phone(self):
+        return self._phone
+    
+    def get_website(self):
+        return self._website
 
     #-------------------------------------------------------------------
     # formatted getter methods

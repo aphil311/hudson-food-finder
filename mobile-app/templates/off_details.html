@@ -25,8 +25,10 @@
         <p><b>Address: </b>{{ offering.get_street() }}</p>
         <p><b>Days Open: </b>{{ offering.get_daysf() }}</p>
         <p><b>Hours: </b>{{ offering.get_start_timef() }} until {{ offering.get_end_timef() }}</p>
-        <p><b>Map View: <address> </b>{{ offering.get_street() }}, {{ offering.get_zipcode() }}</p> </address>
+        {% if offering.get_description() %}
         <p><b>Other details: </b>{{ offering.get_description() }}</p>
+        {% endif %}
+        <p><b>Map View: <address> </b>{{ offering.get_street() }}, {{ offering.get_zipcode() }}</p> </address>
     </div>
 
     <!-- creates an embedded map -->
