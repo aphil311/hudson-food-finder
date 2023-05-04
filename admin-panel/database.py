@@ -263,7 +263,7 @@ def bulk_update(filename):
             session.execute(text('TRUNCATE people_groups RESTART '
                 'IDENTITY CASCADE'))
             
-            with open(filename, 'r', encoding='latin-1') as csv_file:
+            with open(filename, 'r', encoding='utf-8', errors='ignore') as csv_file:
                 csv_reader = list(csv.DictReader(csv_file))
                 val = validate_file(csv_reader)
                 if val != 0:

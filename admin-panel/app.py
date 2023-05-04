@@ -223,13 +223,15 @@ def upload_confirmation():
     # authenticate user
     username = auth.authenticate()
     authorize(username)
-    file = flask.request.files['file']
-    file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
-    print(file_path)
-    file.save(file_path)
-    status, messages = database.bulk_update(file_path)
-    if status != 0:
-        print('cry')
+    file = flask.request.files.get('file')
+    if file:
+        file_path = os.path.join(ROOT_DIR, 'static', 'files', 'input.csv')
+        file.save(file_path)
+        status, messages = database.bulk_update(file_path)
+        if status != 0:
+            print('cry')
+    else:
+        messages = ['Error: no file uploaded']
     picture = flask.session.get('picture')
     html_code = flask.render_template('upload.html', messages=messages, picture = picture)
     return flask.make_response(html_code)
