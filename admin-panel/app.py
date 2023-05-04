@@ -306,6 +306,15 @@ def auth_removed():
     elif (database.is_authorized(email) == False):
         message = 'User ' + email + ' is not  authorized'
         status = 4
+    # Can't deauthorize yourself
+    elif(email == flask.session.get('email')):
+        message = 'Cannot deauthorize youself'
+        status = 4
+    # Can't deathorize admin
+    elif(email == 'cgrandin@hcnj.us' or email == 'delma.yorimoto@rutgers.edu'
+                                    or email == 'cadams-griffin@hcnj.us'):
+        message = 'Cannot deauthorize admin'
+        status = 4
     # Email is in database and is valid - and needs to be DE-AUTHORIZED
     else: 
         database.deauthorize_email(email)
@@ -313,6 +322,7 @@ def auth_removed():
     
     # get the emails and picture to render the page
     emails = database.get_emails()
+
 
     # render the page
     html_code = flask.render_template('auth-finished.html', 
