@@ -1,5 +1,5 @@
-import flask
 import os
+import flask
 import sqlalchemy
 import psycopg2
 from decouple import config
