@@ -68,6 +68,10 @@ def login():
 def callback():
     return auth.callback()
 
+@app.route('/logoutapp', methods=['GET'])
+def logoutapp():
+    return auth.logoutapp()
+
 #-----------------------------------------------------------------------
 # index()
 # Home page for the admin panel - shows all offerings in a table with
