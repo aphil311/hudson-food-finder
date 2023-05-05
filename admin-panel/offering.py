@@ -101,11 +101,13 @@ class Offering:
         return self._end_time.strftime('%I:%M %p')
 
     def get_start_datef(self):
+        if self._init_date == date(1970, 1, 1):
+            return 'N/A'
         return self._init_date.strftime('%m/%d/%y')
 
     def get_end_datef(self):
-        if self._close_date == date(1, 1, 1):
-            return 'indefinite'
+        if self._close_date == date(9999, 12, 31):
+            return 'N/A'
         if type(self._close_date) == str:
             print(self._close_date)
         return self._close_date.strftime('%m/%d/%y')
