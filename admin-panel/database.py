@@ -147,7 +147,8 @@ def find_offerings(filter):
                 .join(Service) \
                 .join(PeopleGroup) \
                 .filter(Organization.org_name.ilike(filter)) \
-                .filter(Offering.close_date > sqlalchemy.func.now())
+                .filter(Offering.close_date > sqlalchemy.func.now()) \
+                .order_by(Organization.org_name, Offering.title)
             
             results = query.all()
             offerings = []
@@ -188,7 +189,8 @@ def find_organizations():
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
-                Organization.org_id)
+                Organization.org_id) \
+                .order_by(Organization.org_name)
             results = query.all()
 
             organizations = []
@@ -259,6 +261,24 @@ def get_offering(off_id):
             else:
                 return None
         
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
+def get_organization(org_id):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(Organization.org_name,
+                Organization.phone, Organization.website,
+                Organization.street, Organization.zip_code,
+                Organization.org_id) \
+                .filter(Organization.org_id == org_id) \
+
+            results = query.all()
+            if results is not None:
+                return orgmod.Organization(results[0])
+            else:
+                return None
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
@@ -494,6 +514,19 @@ def update_row(offering_id, inputs):
                 setattr(offering, 'group_served', group_id)
 
             setattr(offering, 'off_desc', inputs['description'])
+            session.commit()
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+
+def update_row_org(organization_id, inputs):
+    try:
+        with sqlalchemy.orm.session.Session(engine) as session:
+            organization = session.query(Organization).filter_by(org_id=organization_id).first()
+            setattr(organization, 'org_name', inputs['name'])
+            setattr(organization, 'phone', inputs['phone'])
+            setattr(organization, 'website', inputs['website'])
+            setattr(organization, 'street', inputs['address'])
+
             session.commit()
     except Exception as ex:
         print(ex, file=sys.stderr)

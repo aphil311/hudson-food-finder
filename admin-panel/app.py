@@ -146,6 +146,17 @@ def edit():
         picture=picture)
     return flask.make_response(html_code)
 
+@app.route('/edit-organization', methods=['GET'])
+def edit_organization():
+    # authenticate user
+    picture = authorize()
+
+    organization_id = flask.request.args.get('id')
+    organization = database.get_organization(organization_id)
+    html_code = flask.render_template('edit-organization.html', organization=organization,
+        picture=picture)
+    return flask.make_response(html_code)
+
 @app.route('/send-update', methods=['POST'])
 def send_update():
     # authenticate user
@@ -176,6 +187,21 @@ def send_update():
     offering_id = flask.request.form.get('id')
     database.update_row(offering_id, new_data)
     return flask.redirect('/offerings')
+
+@app.route('/send-update-org', methods=['POST'])
+def send_update_org():
+    # authenticate user
+    authorize()
+
+    new_data = {}
+    new_data['name'] = flask.request.form.get('name')
+    new_data['phone'] = flask.request.form.get('phone')
+    new_data['website'] = flask.request.form.get('website')
+    new_data['address'] = flask.request.form.get('address')
+
+    organization_id = flask.request.form.get('id')
+    database.update_row_org(organization_id, new_data)
+    return flask.redirect('/organizations')
 
 #-----------------------------------------------------------------------
 # upload()

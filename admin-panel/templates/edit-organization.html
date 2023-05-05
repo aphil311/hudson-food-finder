@@ -1,0 +1,41 @@
+<!-- OFFERINGS TAB - edit an offering -->
+{% include 'head.html' %}
+
+<!-- header -->
+<p>Edit Organization: {{ organization.get_org_name() }}</p>
+<hr>
+
+<!-- forn where each field has its current values as a placeholder -->
+<div class="form-group">
+    <form action="/send-update-org" method="post">
+        <!-- hidden input with id -->
+        <input type="hidden" name="id" value="{{ organization.get_id() }}">
+        <!-- must send csrf token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- organization name -->
+        <div class="input-group mb-3">
+            <span class="input-group-text">Organization</span>
+            <input type="text" name="name" class="form-control" value="{{ organization.get_org_name() }}">
+        </div>
+        <!-- phone number -->
+        <div class="input-group mb-3">
+            <span class="input-group-text">Phone Number</span>
+            <input type="text" name="phone" class="form-control" value="{{ organization.get_phone() }}">
+        </div>
+        <!-- website -->
+        <div class="input-group mb-3">
+            <span class="input-group-text">Website</span>
+            <input type="text" name="website" class="form-control" value="{{ organization.get_website() }}">
+        </div>
+        <!-- address -->
+        <div class="input-group mb-3">
+            <span class="input-group-text">Street Address</span>
+            <input type="text" name="address" class="form-control" value="{{ organization.get_street() }}">
+        </div>
+        <!-- submit button -->
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+
+{% include 'foot.html' %}
