@@ -71,6 +71,8 @@ def find_offerings(filter):
                         (Offering.end_time > times[0])) \
                 .filter((Group.group_id == Offering.group_served) &
                         (Group.people_group.in_(groups))) \
+                .filter(Offering.init_date <= sqlalchemy.func.now()) \
+                .filter(Offering.close_date >= sqlalchemy.func.now()) \
                 .order_by(sqlalchemy.text(sort_by))
 
             # execute the query and return the results

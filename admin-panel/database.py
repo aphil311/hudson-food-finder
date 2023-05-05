@@ -146,13 +146,34 @@ def find_offerings(filter):
                 .join(Offering) \
                 .join(Service) \
                 .join(PeopleGroup) \
-                .filter(Organization.org_name.ilike(filter))
+                .filter(Organization.org_name.ilike(filter)) \
+                .filter(Offering.close_date > sqlalchemy.func.now())
             
             results = query.all()
             offerings = []
             for row in results:
                 offerings.append(offmod.Offering(row))
-            return offerings
+
+            query = session.query(Organization.org_name,
+                Offering.title, Offering.days_open,
+                Offering.start_time, Offering.end_time,
+                Offering.init_date, Offering.close_date,
+                Service.service_type, PeopleGroup.people_group,
+                Offering.off_desc, Offering.off_id) \
+                .select_from(Organization) \
+                .join(Ownership) \
+                .join(Offering) \
+                .join(Service) \
+                .join(PeopleGroup) \
+                .filter(Organization.org_name.ilike(filter)) \
+                .filter(Offering.close_date <= sqlalchemy.func.now())
+            
+            results = query.all()
+            expired = []
+            for row in results:
+                expired.append(offmod.Offering(row))
+
+            return offerings, expired
         
     except Exception as ex:
         print(ex, file=sys.stderr)
@@ -382,9 +403,13 @@ def bulk_update(filename):
                     if row.get('Start Date'):
                         temp = row.get('Start Date').split('/')
                         row['Start Date'] = temp[2] + '-' + str(temp[0]).zfill(2) + '-' + str(temp[1]).zfill(2)
+                    else:
+                        row['Start Date'] = '1970-01-01'
                     if row.get('End Date'):
                         temp = row.get('End Date').split('/')
                         row['End Date'] = temp[2] + '-' + str(temp[0]).zfill(2) + '-' + str(temp[1]).zfill(2)
+                    else:
+                        row['End Date'] = '9999-12-31'
                     session.execute(ins_off_stmt, {
                         'title': row.get('Title'),
                         'days_open': row.get('Days'),

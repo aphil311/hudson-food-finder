@@ -129,9 +129,10 @@ def searchOfferings():
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
     # must have a comma at the end of the tuple
-    offerings = database.find_offerings((search_query,))
+    offerings, expired = database.find_offerings((search_query,))
+
     html_code = flask.render_template('offering-table.html',
-        offerings=offerings)
+        offerings=offerings, expired=expired)
     return flask.make_response(html_code)
 
 @app.route('/edit-offering', methods=['GET'])
