@@ -59,9 +59,23 @@
         </div>
       </div>
   </div>
-
   <!-- user photo -->
   <div class="col-auto">
-    <img class="logo-img" id="user-img" src= "{{ picture }}" alt="" referrerPolicy="no-referrer">
+    <img class="logo-img" id="user-img" src= "{{ picture }}" alt="" referrerPolicy="no-referrer" data-bs-toggle="modal" data-bs-target="#example">
+        <!-- Create a modal -->
+        <div class="modal fade" id="example" tabindex="-1" aria-labelledby="example" aria-hidden="true">
+          <!-- Create a modal dialog -->
+          <div class="modal-dialog">
+            <!-- Create a modal content -->
+            <div class="modal-content">
+                <!-- Create a sign out button -->
+                  <a href="{{url_for('logoutapp')}}" type="button" id="logout" class="btn btn-danger">Sign Out</a>
+                  <!-- <form action="/logoutapp">
+                    <input type="button" value="Logout" class="btn btn-danger" data-bs-dismiss="modal"/>
+                  </form> -->
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
 </div>
