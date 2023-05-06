@@ -103,3 +103,11 @@ class Ownership(Base):
         back_populates="ownerships")
     offering = sqlalchemy.orm.relationship("Offering",
         back_populates="ownerships")
+
+#-----------------------------------------------------------------------
+# AuthorizedUser
+# Represents a user that is authorized to access the admin panel
+#-----------------------------------------------------------------------
+class AuthorizedUser(Base):
+    __tablename__ = 'authorizedusers'
+    username = sqlalchemy.Column(sqlalchemy.String, primary_key=True)

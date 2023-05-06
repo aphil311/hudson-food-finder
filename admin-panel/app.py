@@ -179,7 +179,7 @@ def send_update_off():
 
     # get the offering id and update the offering
     offering_id = flask.request.form.get('id')
-    database.update_row(offering_id, new_data)
+    database.update_off(offering_id, new_data)
 
     # redirect to the offerings page
     return flask.redirect('/offerings')
@@ -238,7 +238,7 @@ def send_update_org():
 
     # get the organization id and update the organization
     organization_id = flask.request.form.get('id')
-    database.update_row_org(organization_id, new_data)
+    database.update_org(organization_id, new_data)
 
     # redirect to the organizations page
     return flask.redirect('/organizations')
