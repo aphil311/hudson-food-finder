@@ -69,7 +69,9 @@
         <!-- Create a modal content -->
         <div class="modal-content">
           <!-- Create a sign out button -->
-          <button onclick="location.href='{{ url_for('logoutapp')}}';" id="logout" class="btn btn-danger">Sign Out</button>
+          {% set logout = url_for('logoutapp') %}
+          {% set onclick = "location.href='" ~ logout ~ "';" %}
+          <button onclick="{{ onclick }}" id="logout" class="btn btn-danger">Sign Out</button>
         </div>
       </div>
     </div>
