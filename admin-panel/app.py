@@ -120,8 +120,34 @@ def search_offerings():
     search_query = '%' + search_query + '%'
     offerings, expired = database.find_offerings((search_query,))
 
+    # get all organizations from the database
+    organizations = database.find_organizations()
+
     # render the template
     html_code = flask.render_template('offering-table.html',
+        offerings=offerings, expired=expired,
+        organizations=organizations)
+    return flask.make_response(html_code)
+
+# filter_offerings() ---------------------------------------------------
+# Filters offerings and returns a table of offerings that match the
+# filter query
+@app.route('/filter_offerings', methods=['GET'])
+def filter_offerings():
+    # authenticate user
+    authorize()
+
+    # get the filter query from the form
+    filter_query = flask.request.args.get('filter')
+
+    # get offerings from the database
+    offerings, expired = database.find_offerings((filter_query,))
+
+    # get all organizations from the database
+    organizations = database.find_organizations()
+
+    # render the template
+    html_code = flask.render_template('raw-table.html',
         offerings=offerings, expired=expired)
     return flask.make_response(html_code)
 

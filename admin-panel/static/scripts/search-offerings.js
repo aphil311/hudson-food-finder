@@ -24,3 +24,4 @@ function searchOfferings() {
       success: handleResponse
   });
 }
+
