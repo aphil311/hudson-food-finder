@@ -30,15 +30,11 @@ class Organization:
     #-------------------------------------------------------------------
     def get_org_name(self):
         return self._org_name
-
     def get_phone(self):
         return self._phone
-
     def get_website(self):
         return self._website
-
     def get_street(self):
         return self._street
-    
     def get_id(self):
         return self._id

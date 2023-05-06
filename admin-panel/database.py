@@ -3,6 +3,7 @@
 #-----------------------------------------------------------------------
 # database.py
 # Authors: Aidan Phillips, Yousef Amin
+# Functions for accessing the database
 #-----------------------------------------------------------------------
 
 import sys

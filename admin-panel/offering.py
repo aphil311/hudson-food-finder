@@ -11,15 +11,15 @@ from datetime import time
 import sys
 
 #-----------------------------------------------------------------------
-# Offering class
+# Offering
 # Represents an offering in the database
 #-----------------------------------------------------------------------
 class Offering:
     #-------------------------------------------------------------------
     # __init__()
     # Constructor for the offering class
-    # Parameters: properties - a list of raw properties pulled directly
-    #                          from the database
+    # Params: properties - a tuple of raw properties pulled directly
+    #           from the database
     #-------------------------------------------------------------------
     def __init__(self, properties):
         self._org = properties[0]
@@ -62,7 +62,10 @@ class Offering:
 
         self._service = properties[7]
         self._people_group = properties[8]
-        self._description = properties[9]
+        if properties[9]:
+            self._description = properties[9]
+        else:
+            self._description = ''
         self._id = properties[10]
 
     #-------------------------------------------------------------------
