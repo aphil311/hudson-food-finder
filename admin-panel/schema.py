@@ -29,6 +29,13 @@ class Organization(Base):
     services = sqlalchemy.Column(sqlalchemy.String)
     ownerships = sqlalchemy.orm.relationship("Ownership",
         back_populates="organization")
+    
+    # Define the many-to-many relationship with AuthorizedUser
+    admin = sqlalchemy.orm.relationship(
+        "AuthorizedUser",
+        secondary="org_admins",
+        back_populates="orgs_owned"
+    )
 
 #-----------------------------------------------------------------------
 # Offering
@@ -109,6 +116,20 @@ class Ownership(Base):
 # Represents a user that is authorized to access the admin panel
 #-----------------------------------------------------------------------
 class AuthorizedUser(Base):
-    __tablename__ = 'authorizedusers'
+    __tablename__ = 'authorized_users'
     username = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
     organization = sqlalchemy.Column(sqlalchemy.String)
+
+    # Define the many-to-many relationship with Organization
+    orgs_owned = sqlalchemy.orm.relationship(
+        "Organization",
+        secondary="org_admins",
+        back_populates="admin"
+    )
+
+# Define the association table for the many-to-many relationship
+org_admins = sqlalchemy.Table(
+    'org_admins', Base.metadata,
+    sqlalchemy.Column('org_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('organizations.org_id')),
+    sqlalchemy.Column('username', sqlalchemy.String, sqlalchemy.ForeignKey('authorized_users.username'))
+)

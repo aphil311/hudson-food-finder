@@ -97,6 +97,28 @@ def get_emails():
         print(ex, file=sys.stderr)
         return None
 
+# get_access() ---------------------------------------------------------
+# Returns the organization that an email has access to
+# Params: email - the email to check
+# Return: the organizations that the email has access to as a tuple
+def get_access(email):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(AuthorizedUser.organization) \
+                .filter(AuthorizedUser.username==email)
+            try:
+                orgs_owned = query.all()
+                orgs = []
+                for row in orgs_owned:
+                    orgs.append(row[0])
+                return tuple(orgs)
+            except sqlalchemy.exc.NoResultFound:
+                return None
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
 #-----------------------------------------------------------------------
 # OFFERING FUNCTIONS
 #-----------------------------------------------------------------------
@@ -637,4 +659,5 @@ def bulk_update(filename):
 
 if __name__ == '__main__':
     print('testing database.py')
-    bulk_update('input-sample.csv')
+    access = get_access('aidantphil21@gmail.com')
+    print (access)

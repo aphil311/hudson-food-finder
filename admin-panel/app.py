@@ -115,11 +115,17 @@ def offerings():
 def search_offerings():
     # authenticate user
     authorize()
+    email = flask.session.get('email')
+    organizations = database.get_access(email)
 
     # form the search query and get offerings from the database
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
-    offerings, expired = database.find_offerings((search_query, '%'))
+    offerings, expired = [], []
+    for org in organizations:
+        off, exp = database.find_offerings((search_query, org))
+        offerings.extend(off)
+        expired.extend(exp)
 
     # get all organizations from the database
     organizations = database.find_organizations()
