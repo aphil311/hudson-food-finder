@@ -6,6 +6,7 @@
 # Main file for generating views for the admin panel web app
 #-----------------------------------------------------------------------
 
+from datetime import date
 import os
 import flask
 import database
@@ -195,7 +196,11 @@ def send_update_off():
     new_data['start_time'] = flask.request.form.get('start-time')
     new_data['end_time'] = flask.request.form.get('end-time')
     new_data['start_date'] = flask.request.form.get('start-date')
+    if not new_data['start_date']:
+        new_data['start_date'] = date(1970, 1, 1)
     new_data['end_date'] = flask.request.form.get('end-date')
+    if not new_data['end_date']:
+        new_data['end_date'] = date(9999, 12, 31)
     new_data['service'] = flask.request.form.get('service')
     new_data['group'] = flask.request.form.get('group')
     new_data['description'] = flask.request.form.get('description')

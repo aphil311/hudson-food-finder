@@ -43,12 +43,20 @@
         <!-- start date -->
         <div class="input-group mb-3">
             <span class="input-group-text">Start Date</span>
-            <input type="date" name="start-date" class="form-control" value="{{ offering.get_init_date() }}">
+            {% set place = offering.get_init_date() %}
+            {% if offering.get_init_date() == offering.get_min_date() %}
+                {% set place = None %}
+            {% endif %}
+            <input type="date" name="start-date" class="form-control" value="{{ place }}">
         </div>
         <!-- end date -->
         <div class="input-group mb-3">
             <span class="input-group-text">End Date</span>
-            <input type="date" name="end-date" class="form-control" value="{{ offering.get_close_date() }}">
+            {% set place = offering.get_close_date() %}
+            {% if offering.get_close_date() == offering.get_max_date() %}
+                {% set place = None %}
+            {% endif %}
+            <input type="date" name="end-date" class="form-control" value="{{ place }}">
         </div>
         <!-- service -->
         <div class="input-group mb-3">
