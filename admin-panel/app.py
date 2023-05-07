@@ -118,7 +118,7 @@ def search_offerings():
     # form the search query and get offerings from the database
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
-    offerings, expired = database.find_offerings((search_query,))
+    offerings, expired = database.find_offerings((search_query, '%'))
 
     # get all organizations from the database
     organizations = database.find_organizations()
@@ -141,7 +141,7 @@ def filter_offerings():
     filter_query = flask.request.args.get('filter')
 
     # get offerings from the database
-    offerings, expired = database.find_offerings((filter_query,))
+    offerings, expired = database.find_offerings(('%', filter_query))
 
     # get all organizations from the database
     organizations = database.find_organizations()

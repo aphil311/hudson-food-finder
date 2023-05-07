@@ -1,4 +1,6 @@
 function handleFilterResponse(response) {
+    //  set search bar to be blank
+    $("#search-bar").val("");
     $("#offerings-table").html(response);
 }
 

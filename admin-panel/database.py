@@ -106,7 +106,9 @@ def get_emails():
 # Return: a tuple of length 2
 #           - the first element is a list of offering
 #           - the second element is a list of expired offerings
-def find_offerings(filter):
+def find_offerings(terms):
+    offering = terms[0]
+    org = terms[1]
     try:
         with sqlalchemy.orm.Session(engine) as session:
             # form the query for non-expired offerings
@@ -121,7 +123,8 @@ def find_offerings(filter):
                 .join(Offering) \
                 .join(Service) \
                 .join(PeopleGroup) \
-                .filter(Organization.org_name.ilike(filter)) \
+                .filter(Offering.title.ilike(offering)) \
+                .filter(Organization.org_name.ilike(org)) \
                 .filter(Offering.close_date > sqlalchemy.func.now()) \
                 .order_by(Organization.org_name, Offering.title)
             
@@ -143,7 +146,8 @@ def find_offerings(filter):
                 .join(Offering) \
                 .join(Service) \
                 .join(PeopleGroup) \
-                .filter(Organization.org_name.ilike(filter)) \
+                .filter(Offering.title.ilike(offering)) \
+                .filter(Organization.org_name.ilike(org)) \
                 .filter(Offering.close_date <= sqlalchemy.func.now())
             
             # get all and put into list of offering objects
