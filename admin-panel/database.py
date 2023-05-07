@@ -468,6 +468,8 @@ def bulk_update(filename):
                 services = 0
                 groups = 0
 
+                group_to_id = {}
+
                 # iterate through each row in the csv file
                 for row in csv_reader:
                     # validate row and skip if invalid
@@ -504,22 +506,20 @@ def bulk_update(filename):
                         service_id = res[0]
 
                     # repeat for group
-                    query = session.query(PeopleGroup.group_id) \
-                        .filter(PeopleGroup.people_group.ilike(
-                        row.get('People Served')))
-                    if not res:
+                    group = row.get('People Served')
+                    # if not in dictionary, add it
+                    group_id = group_to_id.get(group)
+                    if not group_id:
+                        group_to_id[group] = groups + 1
+                        print('Group not in database... adding')
                         groups += 1
+                        # add to db
                         insert_stmt = text('INSERT INTO people_groups '
                             '(people_group) VALUES (:people_group)')
                         session.execute(insert_stmt, {
-                            'people_group': row.get('People Served')
+                            'people_group': group
                         })
-                        query = session.query(PeopleGroup.group_id) \
-                            .filter(PeopleGroup.people_group.ilike(
-                            row.get('People Served')))
                         group_id = groups
-                    else:
-                        group_id = res[0]
 
                     #---------------------------------------------------
                     # Add to organizations table
