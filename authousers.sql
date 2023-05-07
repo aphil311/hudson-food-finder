@@ -7,5 +7,4 @@ CREATE TABLE authorized_users (
 
 INSERT INTO authorized_users (username, organization) VALUES ('zainahmed1956@gmail.com', '%');
 INSERT INTO authorized_users (username, organization) VALUES ('yousefamin800@gmail.com', '%');
-INSERT INTO authorized_users (username, organization) VALUES ('aidantphil21@gmail.com', 'ANGELA CARES');
-INSERT INTO authorized_users (username, organization) VALUES ('aidantphil21@gmail.com', 'HOBOKEN SHELTER');
+INSERT INTO authorized_users (username, organization) VALUES ('aidantphil21@gmail.com', '%');

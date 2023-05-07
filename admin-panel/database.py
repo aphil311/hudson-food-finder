@@ -46,6 +46,26 @@ def is_authorized(username):
         print(ex, file=sys.stderr)
         return None
 
+# is_super_authorized() ------------------------------------------------
+# Checks if a user is authorized to access the admin panel
+# Params: username - the username to check
+# Return: True if authorized, False if not, None if error
+def is_super_authorized(username):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(AuthorizedUser) \
+                .filter(AuthorizedUser.username == username) \
+                .filter(AuthorizedUser.organization == '%')
+            try:
+                query.one()
+                return True
+            except sqlalchemy.exc.NoResultFound:
+                return False
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
 # authorize_email() ----------------------------------------------------
 # Adds an email to the AuthorizedUser table
 # Params: email - the email to add
