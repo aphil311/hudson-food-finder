@@ -457,10 +457,21 @@ def authorize_users():
     emails = database.get_emails()
     organizations = database.find_organizations(email)
 
+    table = []
+
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('SUPER ADMIN',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
+
     # render the page
     html_code = flask.render_template('auth-users.html',
         picture=picture, emails=emails, organizations=organizations,
-        super=True)
+        users=table, super=True)
     return flask.make_response(html_code)
 
 # auth_finished() ------------------------------------------------------
