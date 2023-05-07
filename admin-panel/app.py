@@ -143,9 +143,6 @@ def filter_offerings():
     # get offerings from the database
     offerings, expired = database.find_offerings(('%', filter_query))
 
-    # get all organizations from the database
-    organizations = database.find_organizations()
-
     # render the template
     html_code = flask.render_template('raw-table.html',
         offerings=offerings, expired=expired)
