@@ -284,13 +284,15 @@ def update_off(offering_id, inputs):
 # find_organizations() -------------------------------------------------
 # Gets all organizations from the database
 # Return: a list of organization objects
-def find_organizations():
+def find_organizations(email):
     try:
         with sqlalchemy.orm.Session(engine) as session:
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
                 Organization.org_id) \
+                .filter(Organization.org_name.ilike(AuthorizedUser.organization)) \
+                .filter(AuthorizedUser.username == email) \
                 .order_by(Organization.org_name)
             results = query.all()
 

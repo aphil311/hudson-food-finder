@@ -80,9 +80,10 @@ def logoutapp():
 def index():
     # authenticate user and get picture
     picture = authorize()
+    email = flask.session.get('email')
 
     # get all offerings from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     html_code = flask.render_template('offerings.html',
         offerings=None, picture = picture, organizations=organizations)
@@ -99,9 +100,10 @@ def index():
 def offerings():
     # authenticate user
     picture = authorize()
+    email = flask.session.get('email')
 
     # get all organizations from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     # render the template
     html_code = flask.render_template('offerings.html',
@@ -128,7 +130,7 @@ def search_offerings():
         expired.extend(exp)
 
     # get all organizations from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     # render the template
     html_code = flask.render_template('offering-table.html',
@@ -228,9 +230,10 @@ def send_update_off():
 def search_organizations():
     # authenticate user
     picture = authorize()
+    email = flask.session.get('email')
 
     # get organizations from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     # render the template
     html_code = flask.render_template('organizations.html',
