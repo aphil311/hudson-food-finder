@@ -51,9 +51,11 @@ def is_authorized(username):
 # Params: email - the email to add
 # Return: True if successful, None if not
 def authorize_email(email):
+    organization = '%'
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            session.add(AuthorizedUser(username=email))
+            session.add(AuthorizedUser(username=email,
+                organization=organization))
             session.commit()
             return True
 

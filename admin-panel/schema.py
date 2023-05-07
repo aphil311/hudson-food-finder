@@ -111,3 +111,4 @@ class Ownership(Base):
 class AuthorizedUser(Base):
     __tablename__ = 'authorizedusers'
     username = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
+    organization = sqlalchemy.Column(sqlalchemy.String)
