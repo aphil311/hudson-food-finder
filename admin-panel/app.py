@@ -451,13 +451,16 @@ def authorize_users():
     # verify user is authorized
     picture = authorize()
     auth_super()
+    email = flask.session.get('email')
 
-    # get all authorized emails
+    # get all authorized emails and organizations
     emails = database.get_emails()
+    organizations = database.find_organizations(email)
 
     # render the page
     html_code = flask.render_template('auth-users.html',
-        picture=picture, emails=emails, super=True)
+        picture=picture, emails=emails, organizations=organizations,
+        super=True)
     return flask.make_response(html_code)
 
 # auth_finished() ------------------------------------------------------
@@ -470,28 +473,33 @@ def auth_finished():
 
     # get the email we are authorizing
     email = flask.request.form.get('email')
+    access = flask.request.form.get('access')
 
     status = 1      # 1 = success, 2 = failure
     # Faulty email submitted
     if not re.match("[^@]+@[^@]+\.[^@]+", email):
-        message = 'Invalid email submitted, please enter a valid email address \
-        email: ' + email
+        message = 'Invalid email submitted, please enter a valid \
+            email address email: ' + email
         status = 2
     # Email is in database already
-    elif database.is_authorized(email):
-        message = 'User ' + email + ' is already authorized'
+    elif access in database.get_access(email) or \
+        '%' in database.get_access(email):
+        message = 'User ' + email + ' is already authorized for that organization'
         status = 2
     # Email is not in database and is valid - needs to be authorized
     else: 
-        database.authorize_email(email)
+        database.authorize_email(email, access)
         message = 'User ' + email + ' has successfully been authorized'
 
     # get the emails and picture to render the page
     emails = database.get_emails()
+    email = flask.session.get('email')
+    organizations = database.find_organizations(email)
 
     # render the page
     html_code = flask.render_template('auth-finished.html', status=status,
-        message=message, emails=emails, picture=picture, super=True)
+        message=message, emails=emails, picture=picture, 
+        organizations=organizations, super=True)
     return flask.make_response(html_code)
 
 # auth_removed() -------------------------------------------------------
@@ -513,6 +521,7 @@ def auth_removed():
     # verify user is authorized
     picture = authorize()
     auth_super()
+    email = flask.session.get('email')
 
     # get the email we are de-authorizing
     email = flask.request.form.get('email')
@@ -534,9 +543,11 @@ def auth_removed():
     
     # get the emails and picture to render the page
     emails = database.get_emails()
+    organizations = database.find_organizations(email)
 
     # render the page
     html_code = flask.render_template('auth-finished.html', 
         message=message, picture=picture,
-        emails=emails, status=status, super=True)
+        emails=emails, status=status, organizations=organizations,
+        super=True)
     return flask.make_response(html_code)

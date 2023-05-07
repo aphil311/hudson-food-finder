@@ -70,8 +70,8 @@ def is_super_authorized(username):
 # Adds an email to the AuthorizedUser table
 # Params: email - the email to add
 # Return: True if successful, None if not
-def authorize_email(email):
-    organization = '%'
+def authorize_email(email, access):
+    organization = access
     try:
         with sqlalchemy.orm.Session(engine) as session:
             session.add(AuthorizedUser(username=email,
@@ -106,7 +106,7 @@ def deauthorize_email(email):
 def get_emails():
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            query = session.query(AuthorizedUser.username)
+            query = session.query(AuthorizedUser.username).distinct()
             results = query.all()
             emails = []
             for row in results:
