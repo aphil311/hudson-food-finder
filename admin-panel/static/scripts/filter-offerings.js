@@ -1,4 +1,4 @@
-function handleResponse(response) {
+function handleFilterResponse(response) {
     $("#offerings-table").html(response);
 }
 
@@ -14,6 +14,6 @@ function filterOfferings() {
     request = $.ajax({
         type: "GET",
         url: url,
-        success: handleResponse
+        success: handleFilterResponse
     });
   }
