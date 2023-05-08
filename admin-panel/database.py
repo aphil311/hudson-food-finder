@@ -527,7 +527,7 @@ def bulk_update(filename):
                         date_regex)
                     if val != 0:
                         error_str = 'Error on row ' + str(
-                            csv_reader.index(row) + 1) + ': ' + str(val)
+                            csv_reader.index(row) + 2) + ': ' + str(val)
                         error_messages.append(error_str)
                         continue
 
