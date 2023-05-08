@@ -507,10 +507,21 @@ def auth_finished():
     email = flask.session.get('email')
     organizations = database.find_organizations(email)
 
+    table = []
+
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('SUPER ADMIN',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
+
     # render the page
     html_code = flask.render_template('auth-finished.html', status=status,
         message=message, emails=emails, picture=picture, 
-        organizations=organizations, super=True)
+        organizations=organizations, super=True, users=table)
     return flask.make_response(html_code)
 
 # auth_removed() -------------------------------------------------------
@@ -556,9 +567,20 @@ def auth_removed():
     emails = database.get_emails()
     organizations = database.find_organizations(email)
 
+    table = []
+
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('SUPER ADMIN',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
+
     # render the page
     html_code = flask.render_template('auth-finished.html', 
         message=message, picture=picture,
         emails=emails, status=status, organizations=organizations,
-        super=True)
+        super=True, users=table)
     return flask.make_response(html_code)
