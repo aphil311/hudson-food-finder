@@ -46,14 +46,36 @@ def is_authorized(username):
         print(ex, file=sys.stderr)
         return None
 
+# is_super_authorized() ------------------------------------------------
+# Checks if a user is authorized to access the admin panel
+# Params: username - the username to check
+# Return: True if authorized, False if not, None if error
+def is_super_authorized(username):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(AuthorizedUser) \
+                .filter(AuthorizedUser.username == username) \
+                .filter(AuthorizedUser.organization == '%')
+            try:
+                query.one()
+                return True
+            except sqlalchemy.exc.NoResultFound:
+                return False
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
 # authorize_email() ----------------------------------------------------
 # Adds an email to the AuthorizedUser table
 # Params: email - the email to add
 # Return: True if successful, None if not
-def authorize_email(email):
+def authorize_email(email, access):
+    organization = access
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            session.add(AuthorizedUser(username=email))
+            session.add(AuthorizedUser(username=email,
+                organization=organization))
             session.commit()
             return True
 
@@ -84,12 +106,34 @@ def deauthorize_email(email):
 def get_emails():
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            query = session.query(AuthorizedUser.username)
+            query = session.query(AuthorizedUser.username).distinct()
             results = query.all()
             emails = []
             for row in results:
                 emails.append(row[0])
             return emails
+
+    except Exception as ex:
+        print(ex, file=sys.stderr)
+        return None
+
+# get_access() ---------------------------------------------------------
+# Returns the organization that an email has access to
+# Params: email - the email to check
+# Return: the organizations that the email has access to as a tuple
+def get_access(email):
+    try:
+        with sqlalchemy.orm.Session(engine) as session:
+            query = session.query(AuthorizedUser.organization) \
+                .filter(AuthorizedUser.username==email)
+            try:
+                orgs_owned = query.all()
+                orgs = []
+                for row in orgs_owned:
+                    orgs.append(row[0])
+                return tuple(orgs)
+            except sqlalchemy.exc.NoResultFound:
+                return None
 
     except Exception as ex:
         print(ex, file=sys.stderr)
@@ -260,13 +304,15 @@ def update_off(offering_id, inputs):
 # find_organizations() -------------------------------------------------
 # Gets all organizations from the database
 # Return: a list of organization objects
-def find_organizations():
+def find_organizations(email):
     try:
         with sqlalchemy.orm.Session(engine) as session:
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
                 Organization.org_id) \
+                .filter(Organization.org_name.ilike(AuthorizedUser.organization)) \
+                .filter(AuthorizedUser.username == email) \
                 .order_by(Organization.org_name)
             results = query.all()
 
@@ -635,4 +681,5 @@ def bulk_update(filename):
 
 if __name__ == '__main__':
     print('testing database.py')
-    bulk_update('input-sample.csv')
+    access = get_access('aidantphil21@gmail.com')
+    print (access)

@@ -122,3 +122,8 @@ class Offering:
             if self._days_open[i]:
                 result += days[i] + ', '
         return result[:-2]
+
+    def get_min_date(self):
+        return date(1970, 1, 1)
+    def get_max_date(self):
+        return date(9999, 12, 31)

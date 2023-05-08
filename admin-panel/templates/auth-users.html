@@ -16,6 +16,12 @@
                 <input name="email" type="email" class="form-control" id="email" placeholder="name@example.com">
                 <label for="email">Email address</label>
             </div>
+            <select class="form-select" name="access" id="">
+                <option value="%" selected>SUPER ADMIN</option>
+                {% for organization in organizations %}
+                    <option>{{ organization.get_org_name() }}</option>
+                {% endfor %}
+            </select>
             <input class="btn btn-primary" type="submit" value="Submit">
         </div>
     </form>
@@ -38,5 +44,27 @@
         </div>
     </form>
 </div>
+
+<div class="container-fluid mt-3">
+    <p>All administrators can be found here for reference.</p>
+    <table class="table">
+        <tr>
+            <th>Email</th>
+            <th>Organizations</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>
+                {{ user[1][0] }}
+                {% for org in user[1][1:] %}
+                <br> {{ org }}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
 
 {% include 'foot.html' %}

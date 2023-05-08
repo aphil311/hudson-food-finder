@@ -6,6 +6,7 @@
 # Main file for generating views for the admin panel web app
 #-----------------------------------------------------------------------
 
+from datetime import date
 import os
 import flask
 import database
@@ -58,6 +59,53 @@ def authorize(username=None):
         flask.abort(response)
     else:
         return flask.session.get('picture')
+    
+#-----------------------------------------------------------------------
+# auth_super()
+# Checks if the user is a super admin
+#-----------------------------------------------------------------------
+def auth_super():
+    username = auth.authenticate()
+    if not database.is_super_authorized(username):
+        html_code = 'You are not authorized to use this part of the application.'
+        response = flask.make_response(html_code)
+        flask.abort(response)
+    else:
+        return flask.session.get('picture')
+
+#-----------------------------------------------------------------------
+# auth_off()
+# Checks if the user is an admin of an organization
+#-----------------------------------------------------------------------
+def auth_off(offering):
+    # ensure the user is authorized to edit offerings for that
+    # organization
+    email = flask.session.get('email')
+    # organizations the user has acess to
+    organizations = database.get_access(email)
+    if '%' in organizations:
+        return
+    if not offering.get_org() in organizations:
+        html_code = 'You are not authorized to edit this offering.'
+        response = flask.make_response(html_code)
+        flask.abort(response)
+
+#-----------------------------------------------------------------------
+# auth_org()
+# Checks if the user is an admin of an organization
+#-----------------------------------------------------------------------
+def auth_org(organization):
+    # ensure the user is authorized to edit offerings for that
+    # organization
+    email = flask.session.get('email')
+    # organizations the user has acess to
+    organizations = database.get_access(email)
+    if '%' in organizations:
+        return
+    if not organization.get_org_name() in organizations:
+        html_code = 'You are not authorized to edit this organization.'
+        response = flask.make_response(html_code)
+        flask.abort(response)
 
 # routes for login -----------------------------------------------------
 @app.route('/login', methods=['GET'])
@@ -79,12 +127,15 @@ def logoutapp():
 def index():
     # authenticate user and get picture
     picture = authorize()
+    email = flask.session.get('email')
+    super_admin = database.is_super_authorized(email)
 
     # get all offerings from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     html_code = flask.render_template('offerings.html',
-        offerings=None, picture = picture, organizations=organizations)
+        offerings=None, picture=picture, organizations=organizations,
+        super=super_admin)
     return flask.make_response(html_code)
 
 #-----------------------------------------------------------------------
@@ -98,13 +149,16 @@ def index():
 def offerings():
     # authenticate user
     picture = authorize()
+    email = flask.session.get('email')
+    super_admin = database.is_super_authorized(email)
 
     # get all organizations from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     # render the template
     html_code = flask.render_template('offerings.html',
-        offerings=None, picture = picture, organizations=organizations)
+        offerings=None, picture = picture, organizations=organizations,
+        super=super_admin)
     return flask.make_response(html_code)
 
 # search_offerings() ---------------------------------------------------
@@ -114,14 +168,20 @@ def offerings():
 def search_offerings():
     # authenticate user
     authorize()
+    email = flask.session.get('email')
+    organizations = database.get_access(email)
 
     # form the search query and get offerings from the database
     search_query = flask.request.args.get('search')
     search_query = '%' + search_query + '%'
-    offerings, expired = database.find_offerings((search_query, '%'))
+    offerings, expired = [], []
+    for org in organizations:
+        off, exp = database.find_offerings((search_query, org))
+        offerings.extend(off)
+        expired.extend(exp)
 
     # get all organizations from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     # render the template
     html_code = flask.render_template('offering-table.html',
@@ -155,14 +215,20 @@ def filter_offerings():
 def edit_offering():
     # authenticate user
     picture = authorize()
+    email = flask.session.get('email')
+    super_admin = database.is_super_authorized(email)
 
     # get the specific offering we want to edit
     offering_id = flask.request.args.get('id')
     offering = database.get_offering(offering_id)
 
+    # ensure the user is authorized to edit offerings for that
+    # organization
+    auth_off(offering)
+
     # render the template
     html_code = flask.render_template('edit-offering.html', offering=offering,
-        picture=picture)
+        picture=picture, super=super_admin)
     return flask.make_response(html_code)
 
 # send_update_off() ----------------------------------------------------
@@ -195,13 +261,22 @@ def send_update_off():
     new_data['start_time'] = flask.request.form.get('start-time')
     new_data['end_time'] = flask.request.form.get('end-time')
     new_data['start_date'] = flask.request.form.get('start-date')
+    if not new_data['start_date']:
+        new_data['start_date'] = date(1970, 1, 1)
     new_data['end_date'] = flask.request.form.get('end-date')
+    if not new_data['end_date']:
+        new_data['end_date'] = date(9999, 12, 31)
     new_data['service'] = flask.request.form.get('service')
     new_data['group'] = flask.request.form.get('group')
     new_data['description'] = flask.request.form.get('description')
 
     # get the offering id and update the offering
     offering_id = flask.request.form.get('id')
+
+    # ensure the user is authorized to edit offerings for that
+    # organization
+    auth_off(database.get_offering(offering_id))
+
     database.update_off(offering_id, new_data)
 
     # redirect to the offerings page
@@ -217,13 +292,16 @@ def send_update_off():
 def search_organizations():
     # authenticate user
     picture = authorize()
+    email = flask.session.get('email')
+    super_admin = database.is_super_authorized(email)
 
     # get organizations from the database
-    organizations = database.find_organizations()
+    organizations = database.find_organizations(email)
 
     # render the template
     html_code = flask.render_template('organizations.html',
-        organizations=organizations, picture=picture)
+        organizations=organizations, picture=picture,
+        super=super_admin)
     return flask.make_response(html_code)
 
 # edit_organization() --------------------------------------------------
@@ -233,14 +311,20 @@ def search_organizations():
 def edit_organization():
     # authenticate user
     picture = authorize()
+    email = flask.session.get('email')
+    super_admin = database.is_super_authorized(email)
 
     # get the specific organiation we want to edit
     organization_id = flask.request.args.get('id')
     organization = database.get_organization(organization_id)
 
+    # ensure the user is authorized to edit that organization
+    auth_org(organization)
+
     # render the template
     html_code = flask.render_template('edit-organization.html',
-        organization=organization, picture=picture)
+        organization=organization, picture=picture,
+        super=super_admin)
     return flask.make_response(html_code)
 
 # send_update_org() ----------------------------------------------------
@@ -261,6 +345,10 @@ def send_update_org():
 
     # get the organization id and update the organization
     organization_id = flask.request.form.get('id')
+
+    # ensure the user is authorized to edit that organization
+    auth_org(database.get_organization(organization_id))
+
     database.update_org(organization_id, new_data)
 
     # redirect to the organizations page
@@ -276,10 +364,11 @@ def send_update_org():
 def upload():
     # authenticate user
     picture = authorize()
+    auth_super()
 
     # render the template
     html_code = flask.render_template('upload.html', message='',
-        picture=picture)
+        picture=picture, super=True)
     return flask.make_response(html_code)
 
 # upload_confirmation() ------------------------------------------------
@@ -288,6 +377,7 @@ def upload():
 def upload_confirmation():
     # authenticate user
     picture = authorize()
+    auth_super()
 
     # get the file from the form
     file = flask.request.files.get('file')
@@ -304,7 +394,7 @@ def upload_confirmation():
 
     # render the template
     html_code = flask.render_template('upload.html', messages=messages,
-        picture = picture)
+        picture=picture, super=True)
     return flask.make_response(html_code)
 
 # download() -----------------------------------------------------------
@@ -313,10 +403,11 @@ def upload_confirmation():
 def download():
     # authenticate user
     picture = authorize()
+    auth_super()
 
     # render the template
     html_code = flask.render_template('download.html',
-        picture = picture)
+        picture = picture, super=True)
     return flask.make_response(html_code)
 
 # download_csv() -------------------------------------------------------
@@ -326,6 +417,7 @@ def download():
 def download_csv():
     # authenticate user
     authorize()
+    auth_super()
 
     # makes the file from the database
     status = database.get_csv()
@@ -358,13 +450,28 @@ def download_csv():
 def authorize_users():
     # verify user is authorized
     picture = authorize()
+    auth_super()
+    email = flask.session.get('email')
 
-    # get all authorized emails
+    # get all authorized emails and organizations
     emails = database.get_emails()
+    organizations = database.find_organizations(email)
+
+    table = []
+
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('SUPER ADMIN',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
 
     # render the page
     html_code = flask.render_template('auth-users.html',
-        picture=picture, emails=emails)
+        picture=picture, emails=emails, organizations=organizations,
+        users=table, super=True)
     return flask.make_response(html_code)
 
 # auth_finished() ------------------------------------------------------
@@ -373,31 +480,48 @@ def authorize_users():
 def auth_finished():
     # verify user is authorized
     picture = authorize()
+    auth_super()
 
     # get the email we are authorizing
     email = flask.request.form.get('email')
+    access = flask.request.form.get('access')
 
     status = 1      # 1 = success, 2 = failure
     # Faulty email submitted
     if not re.match("[^@]+@[^@]+\.[^@]+", email):
-        message = 'Invalid email submitted, please enter a valid email address \
-        email: ' + email
+        message = 'Invalid email submitted, please enter a valid \
+            email address email: ' + email
         status = 2
     # Email is in database already
-    elif database.is_authorized(email):
-        message = 'User ' + email + ' is already authorized'
+    elif access in database.get_access(email) or \
+        '%' in database.get_access(email):
+        message = 'User ' + email + ' is already authorized for that organization'
         status = 2
     # Email is not in database and is valid - needs to be authorized
     else: 
-        database.authorize_email(email)
+        database.authorize_email(email, access)
         message = 'User ' + email + ' has successfully been authorized'
 
     # get the emails and picture to render the page
     emails = database.get_emails()
+    email = flask.session.get('email')
+    organizations = database.find_organizations(email)
+
+    table = []
+
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('SUPER ADMIN',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
 
     # render the page
     html_code = flask.render_template('auth-finished.html', status=status,
-        message=message, emails=emails, picture=picture)
+        message=message, emails=emails, picture=picture, 
+        organizations=organizations, super=True, users=table)
     return flask.make_response(html_code)
 
 # auth_removed() -------------------------------------------------------
@@ -418,6 +542,8 @@ def auth_removed():
 
     # verify user is authorized
     picture = authorize()
+    auth_super()
+    email = flask.session.get('email')
 
     # get the email we are de-authorizing
     email = flask.request.form.get('email')
@@ -439,9 +565,22 @@ def auth_removed():
     
     # get the emails and picture to render the page
     emails = database.get_emails()
+    organizations = database.find_organizations(email)
+
+    table = []
+
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('SUPER ADMIN',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
 
     # render the page
     html_code = flask.render_template('auth-finished.html', 
         message=message, picture=picture,
-        emails=emails, status=status)
+        emails=emails, status=status, organizations=organizations,
+        super=True, users=table)
     return flask.make_response(html_code)

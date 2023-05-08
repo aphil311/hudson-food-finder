@@ -1,9 +1,10 @@
-DROP TABLE IF EXISTS authorizedusers;
+DROP TABLE IF EXISTS authorized_users;
 
-CREATE TABLE authorizedusers (
-	username TEXT
+CREATE TABLE authorized_users (
+	username TEXT,
+	organization TEXT
 );
 
-INSERT INTO authorizedusers (username) VALUES ('zainahmed1956@gmail.com');
-INSERT INTO authorizedusers (username) VALUES ('yousefamin800@gmail.com');
-INSERT INTO authorizedusers (username) VALUES ('aidantphil21@gmail.com');
+INSERT INTO authorized_users (username, organization) VALUES ('zainahmed1956@gmail.com', '%');
+INSERT INTO authorized_users (username, organization) VALUES ('yousefamin800@gmail.com', '%');
+INSERT INTO authorized_users (username, organization) VALUES ('aidantphil21@gmail.com', '%');
