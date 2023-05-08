@@ -103,10 +103,14 @@ def deauthorize_email(email):
 # get_emails() ---------------------------------------------------------
 # Returns a list of all emails in the AuthorizedUser table
 # Returns: a list of emails
-def get_emails():
+def get_emails(org='%'):
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            query = session.query(AuthorizedUser.username).distinct()
+            query = session.query(AuthorizedUser.username) \
+                .filter((AuthorizedUser.organization.ilike(org)) |
+                        (AuthorizedUser.organization == '%')) \
+                .distinct() \
+                .order_by(AuthorizedUser.username)
             results = query.all()
             emails = []
             for row in results:

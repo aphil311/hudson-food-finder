@@ -458,6 +458,42 @@ def download_csv():
 # AUTHORIZATION ROUTES
 #-----------------------------------------------------------------------
 
+# get_emails() ---------------------------------------------------------
+# Page for getting all the emails in the database from an offering
+@app.route('/get-emails', methods = ['GET'])
+def get_emails():
+    # verify user is authorized
+    authorize()
+    auth_super()
+
+    # get the offering id from the request
+    organization = flask.request.args.get('organization')
+    print(organization)
+
+    # get the emails from the database
+    emails = database.get_emails(organization)
+    for email in emails:
+        print(email)
+
+    table = []
+    for user in emails:
+        orgs = database.get_access(user)
+        user_orgs = []
+        if '%' in orgs:
+            user_orgs = ('ADMIN',)
+            if user in superadmins:
+                user_orgs = ('SUPER ADMIN',)
+            elif user in developers:
+                user_orgs = ('DEVELOPER',)
+        else:
+            user_orgs = orgs
+        table.append([user, user_orgs])
+
+    # send the table to the template
+    html_code = flask.render_template('email-table.html',
+        users=table)
+    return flask.make_response(html_code)
+
 # authorize_users() ----------------------------------------------------
 # Page for authorizing users to access the database or de-authorizing
 @app.route('/authorize-users', methods = ['GET'])
@@ -472,7 +508,6 @@ def authorize_users():
     organizations = database.find_organizations(email)
 
     table = []
-
     for user in emails:
         orgs = database.get_access(user)
         user_orgs = []

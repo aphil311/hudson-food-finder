@@ -1,0 +1,17 @@
+<table class="table">
+    <tr>
+        <th>Email</th>
+        <th>Organizations</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user[0] }}</td>
+        <td>
+            {{ user[1][0] }}
+            {% for org in user[1][1:] %}
+            <br> {{ org }}
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>

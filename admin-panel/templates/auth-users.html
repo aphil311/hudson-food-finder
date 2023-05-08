@@ -1,6 +1,6 @@
 <!-- AUTHORIZE TAB -->
 {% include 'head.html' %}
-
+<script src="../static/scripts/generate-table.js"></script>
 <!-- header -->
 <p>Authorize Users</p>
 <hr>
@@ -46,7 +46,16 @@
 </div>
 
 <div class="container-fluid mt-3">
-    <p>All administrators can be found here for reference.</p>
+    <p>All authorized users can be found here for reference.</p>
+    <select name="emails" id="org-select">
+        <option value="%">All</option>
+        {% for organization in organizations %}
+            <option>{{ organization.get_org_name() }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="container-fluid" id="email-table">
     <table class="table">
         <tr>
             <th>Email</th>
