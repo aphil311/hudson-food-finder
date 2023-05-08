@@ -27,7 +27,7 @@
                 <label for="email">Email address</label>
             </div>
             <select class="form-select" name="access" id="">
-                <option value="%" selected>SUPER ADMIN</option>
+                <option value="%" selected>ADMIN</option>
                 {% for organization in organizations %}
                     <option>{{ organization.get_org_name() }}</option>
                 {% endfor %}

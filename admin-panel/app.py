@@ -48,6 +48,20 @@ csp = {
 talisman = Talisman(app, content_security_policy=csp)
 
 #-----------------------------------------------------------------------
+# define superadmins and developers
+superadmins = [
+    'cgrandin@hcnj.us',
+    'delma.yorimoto@rutgers.edu',
+    'cadams-griffin@hcnj.us',
+]
+developers = [
+    'yousefamin800@gmail.com',
+    'zainahmed1956@gmail.com',
+    'aidantphil21@gmail.com'
+]
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
 # authorize()
 # Checks if the user is authorized to use the admin panel
 #-----------------------------------------------------------------------
@@ -463,7 +477,11 @@ def authorize_users():
         orgs = database.get_access(user)
         user_orgs = []
         if '%' in orgs:
-            user_orgs = ('SUPER ADMIN',)
+            user_orgs = ('ADMIN',)
+            if user in superadmins:
+                user_orgs = ('SUPER ADMIN',)
+            elif user in developers:
+                user_orgs = ('DEVELOPER',)
         else:
             user_orgs = orgs
         table.append([user, user_orgs])
@@ -513,7 +531,11 @@ def auth_finished():
         orgs = database.get_access(user)
         user_orgs = []
         if '%' in orgs:
-            user_orgs = ('SUPER ADMIN',)
+            user_orgs = ('ADMIN',)
+            if user in superadmins:
+                user_orgs = ('SUPER ADMIN',)
+            elif user in developers:
+                user_orgs = ('DEVELOPER',)
         else:
             user_orgs = orgs
         table.append([user, user_orgs])
@@ -528,18 +550,6 @@ def auth_finished():
 # Confirmation page for de-authorizing users to access the database
 @app.route('/auth-removed', methods = ['POST'])
 def auth_removed():
-    # define superadmins and developers
-    superadmins = [
-        'cgrandin@hcnj.us',
-        'delma.yorimoto@rutgers.edu',
-        'cadams-griffin@hcnj.us',
-    ]
-    developers = [
-        'yousefamin800@gmail.com',
-        'zainahmed1956@gmail.com',
-        'aidantphil21@gmail.com'
-    ]
-
     # verify user is authorized
     picture = authorize()
     auth_super()
@@ -555,7 +565,7 @@ def auth_removed():
         status = 4
     # Can't deathorize admin
     elif email in superadmins or email in developers:
-        message = 'Cannot deauthorize admin'
+        message = 'Cannot deauthorize super admin or developer'
         status = 4
     # Email is in database and is valid - and needs to be DE-AUTHORIZED
     else: 
@@ -573,7 +583,11 @@ def auth_removed():
         orgs = database.get_access(user)
         user_orgs = []
         if '%' in orgs:
-            user_orgs = ('SUPER ADMIN',)
+            user_orgs = ('ADMIN',)
+            if user in superadmins:
+                user_orgs = ('SUPER ADMIN',)
+            elif user in developers:
+                user_orgs = ('DEVELOPER',)
         else:
             user_orgs = orgs
         table.append([user, user_orgs])
