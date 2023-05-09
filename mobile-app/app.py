@@ -11,6 +11,13 @@ import init
 
 app = init.app
 
+# not_found_error() ----------------------------------------------
+# Error handler for 404 errors
+@app.errorhandler(404)
+def internal_server_error(e):
+    # note that we set the 500 status explicitly
+    return flask.render_template('404.html'), 404
+
 #-----------------------------------------------------------------------
 # index()
 # Displays offerings in a list
@@ -50,5 +57,8 @@ def search_results():
 def offering():
     off_id = flask.request.args.get('id')
     offering = database.get_offering(off_id)
+    if not offering:
+        flask.abort(404)
+
     html_code = flask.render_template('off_details.html', offering=offering)
     return flask.make_response(html_code)
