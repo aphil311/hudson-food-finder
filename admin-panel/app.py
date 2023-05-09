@@ -355,6 +355,7 @@ def send_update_org():
     new_data['name'] = flask.request.form.get('name')
     new_data['phone'] = flask.request.form.get('phone')
     new_data['website'] = flask.request.form.get('website')
+    new_data['photo_url'] = flask.request.form.get('photo_url')
     new_data['address'] = flask.request.form.get('address')
 
     # get the organization id and update the organization

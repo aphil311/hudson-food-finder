@@ -314,7 +314,7 @@ def find_organizations(email):
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
-                Organization.org_id) \
+                Organization.org_id, Organization.photo_url) \
                 .filter(Organization.org_name.ilike(AuthorizedUser.organization)) \
                 .filter(AuthorizedUser.username == email) \
                 .order_by(Organization.org_name)
@@ -340,7 +340,7 @@ def get_organization(org_id):
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
-                Organization.org_id) \
+                Organization.org_id, Organization.photo_url) \
                 .filter(Organization.org_id == org_id) \
 
             results = query.all()
@@ -364,6 +364,7 @@ def update_org(organization_id, inputs):
             setattr(organization, 'org_name', inputs['name'])
             setattr(organization, 'phone', inputs['phone'])
             setattr(organization, 'website', inputs['website'])
+            setattr(organization, 'photo_url', inputs['photo_url'])
             setattr(organization, 'street', inputs['address'])
 
             session.commit()

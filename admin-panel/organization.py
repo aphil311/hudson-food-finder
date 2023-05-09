@@ -24,6 +24,7 @@ class Organization:
         self._street = properties[3]
         self._zip_code = properties[4]
         self._id = properties[5]
+        self._photo_url = properties[6]
 
     #-------------------------------------------------------------------
     # getter methods
@@ -34,6 +35,8 @@ class Organization:
         return self._phone
     def get_website(self):
         return self._website
+    def get_photo_url(self):
+        return self._photo_url
     def get_street(self):
         return self._street
     def get_id(self):
