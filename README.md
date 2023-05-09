@@ -73,7 +73,7 @@ This project can be run locally by running `python runserver.py <port>` and navi
 - [X] **Prototype**
 - [X] **Alpha**
 - [X] **Beta**
-- [ ] **Final**
+- [X] **Final**
 
 
 See the [open issues](https://github.com/aphil311/hudson_food_finder/issues) for a full list of proposed features (and known issues).
