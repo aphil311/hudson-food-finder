@@ -118,7 +118,7 @@ class Offering:
     def get_end_datef(self):
         if self._close_date == date(9999, 12, 31):
             return 'N/A'
-        if type(self._close_date) == str:
+        if isinstance(self._close_date, str):
             print(self._close_date)
         return self._close_date.strftime('%m/%d/%y')
 
