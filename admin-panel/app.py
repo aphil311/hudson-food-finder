@@ -134,6 +134,13 @@ def callback():
 def logoutapp():
     return auth.logoutapp()
 
+# not_found_error() ----------------------------------------------
+# Error handler for 404 errors
+@app.errorhandler(404)
+def internal_server_error(e):
+    # note that we set the 500 status explicitly
+    return flask.render_template('404.html'), 404
+
 # index() --------------------------------------------------------------
 # Home page for the admin panel - shows all offerings in a table with
 # a few buttons to sort, filter, and edit offerings
@@ -235,6 +242,8 @@ def edit_offering():
     # get the specific offering we want to edit
     offering_id = flask.request.args.get('id')
     offering = database.get_offering(offering_id)
+    if not offering:
+        flask.abort(404)
 
     # ensure the user is authorized to edit offerings for that
     # organization
@@ -331,6 +340,8 @@ def edit_organization():
     # get the specific organiation we want to edit
     organization_id = flask.request.args.get('id')
     organization = database.get_organization(organization_id)
+    if not organization:
+        flask.abort(404)
 
     # ensure the user is authorized to edit that organization
     auth_org(organization)
