@@ -32,6 +32,11 @@
         </div>
         <!-- start time -->
         <div class="input-group mb-3">
+            <span class="input-group-text">Description of days open</span>
+            <input type="text" name="days-desc" class="form-control" value="{{ offering.get_days_desc() }}">
+        </div>
+        <!-- start time -->
+        <div class="input-group mb-3">
             <span class="input-group-text">Start Time</span>
             <input type="time" name="start-time" class="form-control" value="{{ offering.get_start_time() }}">
         </div>

@@ -68,7 +68,7 @@ developers = [
 def authorize(username=None):
     username = auth.authenticate()
     if not database.is_authorized(username):
-        html_code = 'You are not authorized to use this application.'
+        html_code = flask.render_template('unauthorized.html')
         response = flask.make_response(html_code)
         flask.abort(response)
     else:
@@ -281,6 +281,7 @@ def send_update_off():
 
     # add the rest of the data to the dictionary
     new_data['days_open'] = days_open_str
+    new_data['days_desc'] = flask.request.form.get('days-desc')
     new_data['start_time'] = flask.request.form.get('start-time')
     new_data['end_time'] = flask.request.form.get('end-time')
     new_data['start_date'] = flask.request.form.get('start-date')

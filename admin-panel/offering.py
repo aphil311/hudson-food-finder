@@ -68,6 +68,11 @@ class Offering:
             self._description = ''
         self._id = properties[10]
 
+        if properties[11]:
+            self._days_desc = properties[11]
+        else:
+            self._days_desc = ''
+
     #-------------------------------------------------------------------
     # getter methods
     #-------------------------------------------------------------------
@@ -79,6 +84,8 @@ class Offering:
         return self._title
     def get_days_open(self):
         return self._days_open
+    def get_days_desc(self):
+        return self._days_desc
     def get_start_time(self):
         return self._start_time
     def get_end_time(self):

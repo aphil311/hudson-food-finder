@@ -165,7 +165,8 @@ def find_offerings(terms):
                 Offering.start_time, Offering.end_time,
                 Offering.init_date, Offering.close_date,
                 Service.service_type, PeopleGroup.people_group,
-                Offering.off_desc, Offering.off_id) \
+                Offering.off_desc, Offering.off_id,
+                Offering.days_desc) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -188,7 +189,7 @@ def find_offerings(terms):
                 Offering.start_time, Offering.end_time,
                 Offering.init_date, Offering.close_date,
                 Service.service_type, PeopleGroup.people_group,
-                Offering.off_desc, Offering.off_id) \
+                Offering.off_desc, Offering.off_id, Offering.days_desc) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -223,7 +224,8 @@ def get_offering(off_id):
                 Offering.start_time, Offering.end_time,
                 Offering.init_date, Offering.close_date,
                 Service.service_type, PeopleGroup.people_group,
-                Offering.off_desc, Offering.off_id) \
+                Offering.off_desc, Offering.off_id,
+                Offering.days_desc) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -255,6 +257,7 @@ def update_off(offering_id, inputs):
             offering = session.query(Offering).filter_by(off_id=offering_id).first()
             setattr(offering, 'title', inputs['title'])
             setattr(offering, 'days_open', inputs['days_open'])
+            setattr(offering, 'days_desc', inputs['days_desc'])
             setattr(offering, 'start_time', inputs['start_time'])
             setattr(offering, 'end_time', inputs['end_time'])
             setattr(offering, 'init_date', inputs['start_date'])
@@ -401,9 +404,6 @@ def get_csv():
                 .join(Service) \
                 .join(PeopleGroup)
             results = query.all()
-
-            for row in results:
-                print (row)
 
             # write to csv file
             file_path = os.path.join(ROOT_DIR, 'static',
