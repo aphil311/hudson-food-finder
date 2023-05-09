@@ -31,9 +31,24 @@
         </tr>
         {% endfor %}
     </table>
-        <p>Expired</p>
-        <hr>
-        <table class="table table-hover">
+
+    {% if expired %}
+    <p>Expired</p>
+    <hr>
+    <table class="table table-hover">
+        <tr>
+            <th></th>
+            <th>Organization</th>
+            <th>Offering</th>
+            <th>Days Open</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Service</th>
+            <th>Group Served</th>
+            <th>Description</th>
+        </tr>
         {% for offering in expired %}
         <tr>
             <td><a class="icon-link" href="edit-offering?id={{ offering.get_id() }}"><i class="bi fa-lg bi-pencil-square"></i></a></td>
@@ -49,6 +64,6 @@
             <td>{{ offering.get_description() }}</td>
         </tr>
         {% endfor %}
-        </table>
     </table>
+    {% endif %}
 </div>
