@@ -39,5 +39,7 @@ class Organization:
         return self._photo_url
     def get_street(self):
         return self._street
+    def get_zip_code(self):
+        return self._zip_code
     def get_id(self):
         return self._id

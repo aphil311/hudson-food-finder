@@ -38,6 +38,10 @@
             <span class="input-group-text">Street Address</span>
             <input type="text" name="address" class="form-control" value="{{ organization.get_street() }}">
         </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Zip Code</span>
+            <input type="text" name="zip_code" class="form-control" value="{{ organization.get_zip_code() }}">
+        </div>
         <!-- submit button -->
         <button type="submit" class="btn btn-primary">Update</button>
     </form>

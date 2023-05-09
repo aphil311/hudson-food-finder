@@ -366,6 +366,7 @@ def update_org(organization_id, inputs):
             setattr(organization, 'website', inputs['website'])
             setattr(organization, 'photo_url', inputs['photo_url'])
             setattr(organization, 'street', inputs['address'])
+            setattr(organization, 'zip_code', inputs['zip_code'])
 
             session.commit()
             return 0
