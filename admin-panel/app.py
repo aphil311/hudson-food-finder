@@ -8,16 +8,16 @@
 
 from datetime import date
 import os
+import re
+import sys
 import flask
-import database
-import config.init as init
-import auth
-from config.definitions import ROOT_DIR
 from flask_talisman import Talisman
 from decouple import config
 import flask_wtf.csrf
-import re
-import sys
+import auth
+import database
+from config import init
+from config.definitions import ROOT_DIR
 
 #-----------------------------------------------------------------------
 app = init.app
@@ -71,9 +71,7 @@ def authorize(username=None):
         html_code = flask.render_template('unauthorized.html')
         response = flask.make_response(html_code)
         flask.abort(response)
-    else:
-        return flask.session.get('picture')
-    
+
 #-----------------------------------------------------------------------
 # auth_super()
 # Checks if the user is a super admin
@@ -81,11 +79,11 @@ def authorize(username=None):
 def auth_super():
     username = auth.authenticate()
     if not database.is_super_authorized(username):
-        html_code = 'You are not authorized to use this part of the application.'
+        html_code = 'You are not authorized to use this part of the '
+        html_code += 'application.'
+        html_code += '<br><a href="/">Return to home page</a>'
         response = flask.make_response(html_code)
         flask.abort(response)
-    else:
-        return flask.session.get('picture')
 
 #-----------------------------------------------------------------------
 # auth_off()
@@ -134,11 +132,12 @@ def callback():
 def logoutapp():
     return auth.logoutapp()
 
-# not_found_error() ----------------------------------------------
+# not_found_error() ----------------------------------------------------
 # Error handler for 404 errors
 @app.errorhandler(404)
-def internal_server_error(e):
+def not_found_error(ex):
     # note that we set the 500 status explicitly
+    print(str(ex))
     return flask.render_template('404.html'), 404
 
 # index() --------------------------------------------------------------
@@ -147,9 +146,10 @@ def internal_server_error(e):
 @app.route('/')
 def index():
     # authenticate user and get picture
-    picture = authorize()
+    authorize()
     email = flask.session.get('email')
     super_admin = database.is_super_authorized(email)
+    picture = flask.session.get('picture')
 
     # get all offerings from the database
     organizations = database.find_organizations(email)
@@ -163,14 +163,15 @@ def index():
 # OFFERINGS ROUTES
 #-----------------------------------------------------------------------
 
-# offerings() ----------------------------------------------------------
+# get_offerings() ------------------------------------------------------
 # Gets all offerings from the database and displays them in a table
 # with a dropdown of all organizations
 @app.route('/offerings')
-def offerings():
+def get_offerings():
     # authenticate user
-    picture = authorize()
+    authorize()
     email = flask.session.get('email')
+    picture = flask.session.get('picture')
     super_admin = database.is_super_authorized(email)
 
     # get all organizations from the database
@@ -235,9 +236,10 @@ def filter_offerings():
 @app.route('/edit-offering', methods=['GET'])
 def edit_offering():
     # authenticate user
-    picture = authorize()
+    authorize()
     email = flask.session.get('email')
     super_admin = database.is_super_authorized(email)
+    picture = flask.session.get('picture')
 
     # get the specific offering we want to edit
     offering_id = flask.request.args.get('id')
@@ -250,8 +252,8 @@ def edit_offering():
     auth_off(offering)
 
     # render the template
-    html_code = flask.render_template('edit-offering.html', offering=offering,
-        picture=picture, super=super_admin)
+    html_code = flask.render_template('edit-offering.html',
+        offering=offering, picture=picture, super=super_admin)
     return flask.make_response(html_code)
 
 # send_update_off() ----------------------------------------------------
@@ -315,8 +317,9 @@ def send_update_off():
 @app.route('/organizations', methods=['GET'])
 def search_organizations():
     # authenticate user
-    picture = authorize()
+    authorize()
     email = flask.session.get('email')
+    picture = flask.session.get('picture')
     super_admin = database.is_super_authorized(email)
 
     # get organizations from the database
@@ -334,9 +337,10 @@ def search_organizations():
 @app.route('/edit-organization', methods=['GET'])
 def edit_organization():
     # authenticate user
-    picture = authorize()
+    authorize()
     email = flask.session.get('email')
     super_admin = database.is_super_authorized(email)
+    picture = flask.session.get('picture')
 
     # get the specific organiation we want to edit
     organization_id = flask.request.args.get('id')
@@ -391,8 +395,9 @@ def send_update_org():
 @app.route('/upload')
 def upload():
     # authenticate user
-    picture = authorize()
+    authorize()
     auth_super()
+    picture = flask.session.get('picture')
 
     # render the template
     html_code = flask.render_template('upload.html', message='',
@@ -404,8 +409,9 @@ def upload():
 @app.route('/upload-offerings', methods=['POST'])
 def upload_confirmation():
     # authenticate user
-    picture = authorize()
+    authorize()
     auth_super()
+    picture = flask.session.get('picture')
 
     # get the file from the form
     file = flask.request.files.get('file')
@@ -430,8 +436,9 @@ def upload_confirmation():
 @app.route('/download')
 def download():
     # authenticate user
-    picture = authorize()
+    authorize()
     auth_super()
+    picture = flask.session.get('picture')
 
     # render the template
     html_code = flask.render_template('download.html',
@@ -455,18 +462,18 @@ def download_csv():
         # success : return csv in static/files
         file_path = os.path.join(ROOT_DIR, 'static',
             'files', 'output.csv')
-        csv = open(file_path).read()
+        with open(file_path, encoding='utf-8') as csv_file:
+            csv = csv_file.read()
         os.remove(file_path)
         return flask.Response(
             csv,
             mimetype="text/csv",
             headers={"Content-disposition":
                     "attachment; filename=offerings.csv"})
-    else:
-        # failure : return error message
-        return flask.Response(
-            'Error: could not download csv',
-            mimetype="text/html")
+    # failure : return error message
+    return flask.Response(
+        'Error: could not download csv',
+        mimetype="text/html")
 
 #-----------------------------------------------------------------------
 # AUTHORIZATION ROUTES
@@ -513,9 +520,10 @@ def get_emails():
 @app.route('/authorize-users', methods = ['GET'])
 def authorize_users():
     # verify user is authorized
-    picture = authorize()
+    authorize()
     auth_super()
     email = flask.session.get('email')
+    picture = flask.session.get('picture')
 
     # get all authorized emails and organizations
     emails = database.get_emails()
@@ -546,8 +554,9 @@ def authorize_users():
 @app.route('/auth-finished', methods = ['POST'])
 def auth_finished():
     # verify user is authorized
-    picture = authorize()
+    authorize()
     auth_super()
+    picture = flask.session.get('picture')
 
     # get the email we are authorizing
     email = flask.request.form.get('email')
@@ -555,17 +564,18 @@ def auth_finished():
 
     status = 1      # 1 = success, 2 = failure
     # Faulty email submitted
-    if not re.match("[^@]+@[^@]+\.[^@]+", email):
-        message = 'Invalid email submitted, please enter a valid \
-            email address email: ' + email
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        message = 'Invalid email submitted, please enter a valid '
+        message += 'email address email: ' + email
         status = 2
     # Email is in database already
     elif access in database.get_access(email) or \
         '%' in database.get_access(email):
-        message = 'User ' + email + ' is already authorized for that organization'
+        message = 'User ' + email
+        message += ' is already authorized for that organization'
         status = 2
     # Email is not in database and is valid - needs to be authorized
-    else: 
+    else:
         database.authorize_email(email, access)
         message = 'User ' + email + ' has successfully been authorized'
 
@@ -590,8 +600,8 @@ def auth_finished():
         table.append([user, user_orgs])
 
     # render the page
-    html_code = flask.render_template('auth-finished.html', status=status,
-        message=message, emails=emails, picture=picture, 
+    html_code = flask.render_template('auth-finished.html',
+        status=status, message=message, emails=emails, picture=picture,
         organizations=organizations, super=True, users=table)
     return flask.make_response(html_code)
 
@@ -600,9 +610,10 @@ def auth_finished():
 @app.route('/auth-removed', methods = ['POST'])
 def auth_removed():
     # verify user is authorized
-    picture = authorize()
+    authorize()
     auth_super()
     email = flask.session.get('email')
+    picture = flask.session.get('picture')
 
     # get the email we are de-authorizing
     email = flask.request.form.get('email')
@@ -617,11 +628,11 @@ def auth_removed():
         message = 'Cannot deauthorize super admin or developer'
         status = 4
     # Email is in database and is valid - and needs to be DE-AUTHORIZED
-    else: 
+    else:
         database.deauthorize_email(email)
         message = 'User ' + email
         message += ' has successfully been de-authorized'
-    
+
     # get the emails and picture to render the page
     emails = database.get_emails()
     organizations = database.find_organizations(email)
@@ -642,7 +653,7 @@ def auth_removed():
         table.append([user, user_orgs])
 
     # render the page
-    html_code = flask.render_template('auth-finished.html', 
+    html_code = flask.render_template('auth-finished.html',
         message=message, picture=picture,
         emails=emails, status=status, organizations=organizations,
         super=True, users=table)

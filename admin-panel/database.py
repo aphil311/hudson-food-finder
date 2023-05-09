@@ -14,9 +14,9 @@ import sqlalchemy
 from sqlalchemy import text
 import offering as offmod
 import organization as orgmod
-import config.init as init
 from schema import Offering, Organization, AuthorizedUser
 from schema import Ownership, Service, PeopleGroup
+from config import init
 from config.definitions import ROOT_DIR
 
 #-----------------------------------------------------------------------
@@ -70,8 +70,8 @@ def is_super_authorized(username):
 # Adds an email to the AuthorizedUser table
 # Params: email - the email to add
 # Return: True if successful, None if not
-def authorize_email(email, access):
-    organization = access
+def authorize_email(email, access_level):
+    organization = access_level
     try:
         with sqlalchemy.orm.Session(engine) as session:
             session.add(AuthorizedUser(username=email,
@@ -82,7 +82,7 @@ def authorize_email(email, access):
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
-    
+
 # deauthorize_email() --------------------------------------------------
 # Removes an email from the AuthorizedUser table
 # Params: email - the email to remove
@@ -99,7 +99,7 @@ def deauthorize_email(email):
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
-    
+
 # get_emails() ---------------------------------------------------------
 # Returns a list of all emails in the AuthorizedUser table
 # Returns: a list of emails
@@ -176,7 +176,7 @@ def find_offerings(terms):
                 .filter(Organization.org_name.ilike(org)) \
                 .filter(Offering.close_date > sqlalchemy.func.now()) \
                 .order_by(Organization.org_name, Offering.title)
-            
+
             # get all and put into list of offering objects
             results = query.all()
             offerings = []
@@ -189,7 +189,8 @@ def find_offerings(terms):
                 Offering.start_time, Offering.end_time,
                 Offering.init_date, Offering.close_date,
                 Service.service_type, PeopleGroup.people_group,
-                Offering.off_desc, Offering.off_id, Offering.days_desc) \
+                Offering.off_desc, Offering.off_id,
+                Offering.days_desc) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -198,7 +199,7 @@ def find_offerings(terms):
                 .filter(Offering.title.ilike(offering)) \
                 .filter(Organization.org_name.ilike(org)) \
                 .filter(Offering.close_date <= sqlalchemy.func.now())
-            
+
             # get all and put into list of offering objects
             results = query.all()
             expired = []
@@ -206,7 +207,7 @@ def find_offerings(terms):
                 expired.append(offmod.Offering(row))
 
             return offerings, expired
-        
+
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
@@ -232,15 +233,14 @@ def get_offering(off_id):
                 .join(Service) \
                 .join(PeopleGroup) \
                 .filter(Offering.off_id == off_id)
-            
+
             # get the result of the query
             results = query.all()
             if results is not None:
                 # should only be one result
                 return offmod.Offering(results[0])
-            else:
-                return None
-    
+            return None
+
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
@@ -254,7 +254,8 @@ def update_off(offering_id, inputs):
     try:
         with sqlalchemy.orm.session.Session(engine) as session:
             # update offerings
-            offering = session.query(Offering).filter_by(off_id=offering_id).first()
+            offering = session.query(Offering).filter_by(
+                off_id=offering_id).first()
             setattr(offering, 'title', inputs['title'])
             setattr(offering, 'days_open', inputs['days_open'])
             setattr(offering, 'days_desc', inputs['days_desc'])
@@ -318,7 +319,8 @@ def find_organizations(email):
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
                 Organization.org_id, Organization.photo_url) \
-                .filter(Organization.org_name.ilike(AuthorizedUser.organization)) \
+                .filter(Organization.org_name.ilike(
+                    AuthorizedUser.organization)) \
                 .filter(AuthorizedUser.username == email) \
                 .order_by(Organization.org_name)
             results = query.all()
@@ -349,8 +351,7 @@ def get_organization(org_id):
             results = query.all()
             if results is not None:
                 return orgmod.Organization(results[0])
-            else:
-                return None
+            return None
     except Exception as ex:
         print(ex, file=sys.stderr)
         return None
@@ -363,7 +364,8 @@ def get_organization(org_id):
 def update_org(organization_id, inputs):
     try:
         with sqlalchemy.orm.session.Session(engine) as session:
-            organization = session.query(Organization).filter_by(org_id=organization_id).first()
+            organization = session.query(Organization).filter_by(
+                org_id=organization_id).first()
             setattr(organization, 'org_name', inputs['name'])
             setattr(organization, 'phone', inputs['phone'])
             setattr(organization, 'website', inputs['website'])
@@ -411,13 +413,14 @@ def get_csv():
             with open (file_path, 'w', encoding='utf-8') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow(['Organization', 'Phone Number',
-                    'Website', 'Photo URL', 'Street', 'Zip Code', 'Title', 'Days',
-                    'Day Description', 'Start Time', 'End Time', 'Start Date',
-                    'End Date', 'Service', 'People Served', 'Description'])
+                    'Website', 'Photo URL', 'Street', 'Zip Code',
+                    'Title', 'Days', 'Day Description', 'Start Time',
+                    'End Time', 'Start Date', 'End Date', 'Service',
+                    'People Served', 'Description'])
                 for row in results:
                     csv_writer.writerow(row)
                 return 0
-                    
+
     except Exception as ex:
         print(ex, file=sys.stderr)
         return 1
@@ -435,7 +438,7 @@ def validate_file(csv_reader):
         return 'File does not have the 16 required columns'
     # check if file has correct column names
     for key in csv_reader[0].keys():
-        if key not in ['Organization', 'Phone Number', 'Website', 
+        if key not in ['Organization', 'Phone Number', 'Website',
             'Photo URL', 'Street', 'Zip Code', 'Title', 'Days',
             'Day Description', 'Start Time', 'End Time', 'Start Date',
             'End Date', 'Service', 'People Served', 'Description']:
@@ -499,7 +502,7 @@ def bulk_update(filename):
                 'IDENTITY CASCADE'))
             session.execute(text('TRUNCATE people_groups RESTART '
                 'IDENTITY CASCADE'))
-            
+
             # open csv and ignore non utf-8 characters
             with open(filename, 'r', encoding='utf-8',
                 errors='ignore') as csv_file:
@@ -610,7 +613,7 @@ def bulk_update(filename):
                         org_id = organizations
                     else:
                         org_id = res[0]
-                    
+
                     #---------------------------------------------------
                     # Add to offering table
                     #---------------------------------------------------
@@ -621,7 +624,7 @@ def bulk_update(filename):
                         '(:title, :days_open, :days_desc, :start_time, '
                         ':end_time, :init_date, :close_date, '
                         ':off_service, :group_served, :off_desc)')
-                    
+
                     # replace with default values
                     if row.get('Title') == '':
                         row['Title'] = row.get('Organization')
@@ -630,9 +633,9 @@ def bulk_update(filename):
                         if row[key] == '':
                             row[key] = None
                     # use default values for start and end time
-                    if row.get('Start Time') == None:
+                    if row.get('Start Time') is None:
                         row['Start Time'] = '00:00'
-                    if row.get('End Time') == None:
+                    if row.get('End Time') is None:
                         row['End Time'] = '23:59'
                     # switch dates to postgres format
                     # YYYY-MM-DD
@@ -685,7 +688,7 @@ def bulk_update(filename):
         return (1, ['File failed to upload due to an internal error.'])
 
     # return error messages
-    error_messages.append('Successfully added ' + str(offerings) + 
+    error_messages.append('Successfully added ' + str(offerings) +
         ' offerings!')
     return (0, error_messages)
 

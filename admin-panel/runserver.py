@@ -8,7 +8,6 @@
 
 import argparse
 import sys
-import wsgiref.simple_server as wss
 import app as hcff
 
 #-----------------------------------------------------------------------
@@ -17,8 +16,6 @@ import app as hcff
 #-----------------------------------------------------------------------
 def main():
     # Google expects the server to be running on port 5000
-    PORT = 5000
-
     # handle arguments if any (should be none)
     parser = argparse.ArgumentParser(
         description='The admin panel application')
@@ -26,7 +23,7 @@ def main():
 
     # start the server
     try:
-        hcff.app.run(host='localhost', port = PORT, debug = True, 
+        hcff.app.run(host='localhost', port=5000, debug=True,
             ssl_context = ('cert.pem', 'key.pem'))
     except Exception as ex:
         print(ex, file=sys.stderr)

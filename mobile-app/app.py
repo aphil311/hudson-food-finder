@@ -14,8 +14,9 @@ app = init.app
 # not_found_error() ----------------------------------------------
 # Error handler for 404 errors
 @app.errorhandler(404)
-def internal_server_error(e):
-    # note that we set the 500 status explicitly
+def internal_server_error(ex):
+    # note that we set the 404 status explicitly
+    print(str(ex))
     return flask.render_template('404.html'), 404
 
 #-----------------------------------------------------------------------
@@ -42,7 +43,7 @@ def search_results():
     sort_by = flask.request.args.get('sort')
     services = flask.request.args.getlist('service')
     days = flask.request.args.get('days')
-    times = (flask.request.args.get('start_time'), 
+    times = (flask.request.args.get('start_time'),
         flask.request.args.get('end_time'))
     groups = flask.request.args.getlist('group')
     # Form query and get offerings from database
@@ -53,12 +54,17 @@ def search_results():
         offerings=offerings)
     return flask.make_response(html_code)
 
+#-----------------------------------------------------------------------
+# get_offering()
+# Displays details of a specific offering
+#-----------------------------------------------------------------------
 @app.route('/offerings', methods=['GET'])
-def offering():
+def get_offering():
     off_id = flask.request.args.get('id')
     offering = database.get_offering(off_id)
     if not offering:
         flask.abort(404)
 
-    html_code = flask.render_template('off_details.html', offering=offering)
+    html_code = flask.render_template('off_details.html',
+        offering=offering)
     return flask.make_response(html_code)

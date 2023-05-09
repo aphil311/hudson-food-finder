@@ -34,9 +34,10 @@ def find_offerings(filter):
     term = 'offerings.days_open LIKE ('
     # split days into a list where each day is a separate element
     days = days.split('-')
-    for x in range(len(days)):
-        if days[x] == 'T':
-            temp = term + "'" + template[:x*2] + 'T' + template[x*2+1:] + "')"
+    for index in range(len(days)):
+        if days[index] == 'T':
+            temp = term + "'" + template[:index*2] + 'T'
+            temp += template[index*2+1:] + "')"
             day_query.append(sqlalchemy.text(temp))
 
     if len(day_query) == 0:
@@ -50,10 +51,12 @@ def find_offerings(filter):
             # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
-                Offering.days_desc, Offering.start_time, Offering.end_time,
-                Organization.org_name, Offering.off_id,
-                Offering.off_desc, Organization.zip_code, Service.service_type,
-                Group.people_group, Organization.phone, Organization.website) \
+                Offering.days_desc, Offering.start_time,
+                Offering.end_time, Organization.org_name,
+                Offering.off_id, Offering.off_desc,
+                Organization.zip_code, Service.service_type,
+                Group.people_group, Organization.phone,
+                Organization.website) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -93,10 +96,12 @@ def get_offering(id):
             # form the query
             query = session.query(Organization.photo_url,
                 Offering.title, Organization.street, Offering.days_open,
-                Offering.days_desc, Offering.start_time, Offering.end_time,
-                Organization.org_name, Offering.off_id,
-                Offering.off_desc, Organization.zip_code, Service.service_type,
-                Group.people_group, Organization.phone, Organization.website) \
+                Offering.days_desc, Offering.start_time,
+                Offering.end_time, Organization.org_name,
+                Offering.off_id, Offering.off_desc,
+                Organization.zip_code, Service.service_type,
+                Group.people_group, Organization.phone,
+                Organization.website) \
                 .select_from(Organization) \
                 .join(Ownership) \
                 .join(Offering) \
@@ -108,8 +113,7 @@ def get_offering(id):
             results = query.all()
             if results is None:
                 return None
-            else:
-                return offmod.Offering(results[0])
+            return offmod.Offering(results[0])
 
     except Exception as ex:
         print(ex, file=sys.stderr)

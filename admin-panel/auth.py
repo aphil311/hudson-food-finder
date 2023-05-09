@@ -30,7 +30,8 @@ client = oauthlib.oauth2.WebApplicationClient(GOOGLE_CLIENT_ID)
 # login() --------------------------------------------------------------
 # Log in to the application.
 def login():
-    google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
+    google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL,
+        timeout=10).json()
     authorization_endpoint = (
         google_provider_cfg['authorization_endpoint'])
 
@@ -53,9 +54,10 @@ def callback():
 
     # Determine the URL to fetch tokens that allow the application to
     # ask for the user's profile data.
-    google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
+    google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL,
+        timeout=10).json()
     token_endpoint = google_provider_cfg['token_endpoint']
-    
+
     # Construct a request to fetch the tokens.
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
@@ -70,6 +72,7 @@ def callback():
         headers=headers,
         data=body,
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+        timeout=10
     )
 
     # Parse the tokens.
@@ -80,7 +83,8 @@ def callback():
     # including the user's Google profile image and email address.
     userinfo_endpoint = google_provider_cfg['userinfo_endpoint']
     uri, headers, body = client.add_token(userinfo_endpoint)
-    userinfo_response = requests.get(uri, headers=headers, data=body)
+    userinfo_response = requests.get(uri, headers=headers, data=body,
+        timeout=10)
 
     # Optional: Make sure the user's email address is verified.
     if not userinfo_response.json().get('email_verified'):

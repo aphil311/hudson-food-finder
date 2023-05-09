@@ -29,7 +29,7 @@ class Organization(Base):
     services = sqlalchemy.Column(sqlalchemy.String)
     ownerships = sqlalchemy.orm.relationship("Ownership",
         back_populates="organization")
-    
+
     # Define the many-to-many relationship with AuthorizedUser
     admin = sqlalchemy.orm.relationship(
         "AuthorizedUser",
@@ -77,8 +77,9 @@ class ZipCode(Base):
 #-----------------------------------------------------------------------
 class Service(Base):
     __tablename__ = 'services'
-    service_id = sqlalchemy.Column(sqlalchemy.Integer, 
-        sqlalchemy.ForeignKey('offerings.off_service'), primary_key=True)
+    service_id = sqlalchemy.Column(sqlalchemy.Integer,
+        sqlalchemy.ForeignKey('offerings.off_service'),
+            primary_key=True)
     service_type = sqlalchemy.Column(sqlalchemy.String)
     offering = sqlalchemy.orm.relationship("Offering",
         back_populates="service")
@@ -90,7 +91,8 @@ class Service(Base):
 class PeopleGroup(Base):
     __tablename__ = 'people_groups'
     group_id = sqlalchemy.Column(sqlalchemy.Integer,
-        sqlalchemy.ForeignKey('offerings.group_served'), primary_key=True)
+        sqlalchemy.ForeignKey('offerings.group_served'),
+            primary_key=True)
     people_group = sqlalchemy.Column(sqlalchemy.String)
     offering = sqlalchemy.orm.relationship("Offering",
         back_populates="people_groups")
@@ -130,6 +132,8 @@ class AuthorizedUser(Base):
 # Define the association table for the many-to-many relationship
 org_admins = sqlalchemy.Table(
     'org_admins', Base.metadata,
-    sqlalchemy.Column('org_id', sqlalchemy.Integer, sqlalchemy.ForeignKey('organizations.org_id')),
-    sqlalchemy.Column('username', sqlalchemy.String, sqlalchemy.ForeignKey('authorized_users.username'))
+    sqlalchemy.Column('org_id', sqlalchemy.Integer,
+        sqlalchemy.ForeignKey('organizations.org_id')),
+    sqlalchemy.Column('username', sqlalchemy.String,
+        sqlalchemy.ForeignKey('authorized_users.username'))
 )
