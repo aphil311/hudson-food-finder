@@ -36,11 +36,11 @@ class Offering:
                       file=sys.stderr)
                 self._days.append(None)
         self._days_desc = properties[4]
-        if (properties[5]):
+        if properties[5]:
             self._start_time = properties[5]
         else:
             self._start_time = time(0, 0)
-        if  (properties[5]):
+        if properties[5]:
             self._end_time = properties[6]
         else:
             self._end_time = time(23, 59)
@@ -48,7 +48,7 @@ class Offering:
         self._off_id = properties[8]
 
         self._description = properties[9]
-        if self._description == None:
+        if self._description is None:
             self._description = ''
 
         self._zipcode = properties[10]
@@ -86,16 +86,16 @@ class Offering:
 
     def get_zipcode(self):
         return self._zipcode
-    
+
     def get_service(self):
         return self._service
-    
+
     def get_group(self):
         return self._group
-    
+
     def get_phone(self):
         return self._phone
-    
+
     def get_website(self):
         return self._website
 
@@ -111,18 +111,18 @@ class Offering:
     def get_daysf(self):
         if self._days_desc:
             return self._days_desc
-        else:
-            if self._days == [True, True, True, True, True, True, True]:
-                return 'Open every day'
-            if self._days == [False, True, True, True, True, True, False]:
-                return 'Open on weekdays'
-            if self._days == [True, False, False, False, False, False,
-                True]:
-                return 'Open on weekends'
-            days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-                    'Thursday', 'Friday', 'Saturday']
-            result = ''
-            for i in range(7):
-                if self._days[i]:
-                    result += days[i] + ', '
-            return 'Open every ' + result[:-2]
+        if self._days == [True, True, True, True, True, True, True]:
+            return 'Open every day'
+        if self._days == [False, True, True, True, True, True,
+            False]:
+            return 'Open on weekdays'
+        if self._days == [True, False, False, False, False, False,
+            True]:
+            return 'Open on weekends'
+        days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                'Thursday', 'Friday', 'Saturday']
+        result = ''
+        for i in range(7):
+            if self._days[i]:
+                result += days[i] + ', '
+        return 'Open every ' + result[:-2]
