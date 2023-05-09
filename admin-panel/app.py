@@ -596,7 +596,7 @@ def auth_removed():
 
     # Can't deauthorize yourself
     if email == flask.session.get('email'):
-        message = 'Cannot deauthorize youself'
+        message = 'Cannot deauthorize yourself'
         status = 4
     # Can't deathorize admin
     elif email in superadmins or email in developers:
