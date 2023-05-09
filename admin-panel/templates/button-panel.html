@@ -44,11 +44,13 @@
                 view expired listings. </p>
             <p> Under offerings, you could view various information about organizations like 
                 their phone number, website, and address. </p>
+            {% if super %}
             <p> Using the Upload button, you could add new offerings by uploading a CSV file. You
                 could also download all the offerings that are currently listed by using the Download
                 button. </p>
             <p> Lastly, you could authorize or deauthorize users in accessing this panel by 
                 clicking on the 'Authorize Users' button in the side panel. </p>
+            {% endif %}
           </div>
           <!-- Create a modal footer -->
           <div class="modal-footer">

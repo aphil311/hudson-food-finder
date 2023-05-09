@@ -21,7 +21,7 @@
         <td>{{ organization.get_org_name() }}</td>
         <td>{{ organization.get_phone() }}</td>
         <td>{{ organization.get_website() }}</td>
-        <td>{{ organization.get_street() }}</td>
+        <td>{{ organization.get_street() }}, {{ organization.get_zip_code() }}</td>
     </tr>
     {% endfor %}
 </table>

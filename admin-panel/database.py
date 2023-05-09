@@ -103,10 +103,14 @@ def deauthorize_email(email):
 # get_emails() ---------------------------------------------------------
 # Returns a list of all emails in the AuthorizedUser table
 # Returns: a list of emails
-def get_emails():
+def get_emails(org='%'):
     try:
         with sqlalchemy.orm.Session(engine) as session:
-            query = session.query(AuthorizedUser.username).distinct()
+            query = session.query(AuthorizedUser.username) \
+                .filter((AuthorizedUser.organization.ilike(org)) |
+                        (AuthorizedUser.organization == '%')) \
+                .distinct() \
+                .order_by(AuthorizedUser.username)
             results = query.all()
             emails = []
             for row in results:
@@ -310,7 +314,7 @@ def find_organizations(email):
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
-                Organization.org_id) \
+                Organization.org_id, Organization.photo_url) \
                 .filter(Organization.org_name.ilike(AuthorizedUser.organization)) \
                 .filter(AuthorizedUser.username == email) \
                 .order_by(Organization.org_name)
@@ -336,7 +340,7 @@ def get_organization(org_id):
             query = session.query(Organization.org_name,
                 Organization.phone, Organization.website,
                 Organization.street, Organization.zip_code,
-                Organization.org_id) \
+                Organization.org_id, Organization.photo_url) \
                 .filter(Organization.org_id == org_id) \
 
             results = query.all()
@@ -360,7 +364,9 @@ def update_org(organization_id, inputs):
             setattr(organization, 'org_name', inputs['name'])
             setattr(organization, 'phone', inputs['phone'])
             setattr(organization, 'website', inputs['website'])
+            setattr(organization, 'photo_url', inputs['photo_url'])
             setattr(organization, 'street', inputs['address'])
+            setattr(organization, 'zip_code', inputs['zip_code'])
 
             session.commit()
             return 0
@@ -447,6 +453,9 @@ def validate_row(row, days, time, date):
     for key in row.keys():
         if row.get(key):
             row[key] = row.get(key).strip()
+    # organization name should not be empty
+    if row.get('Organization') == '' or row.get('Organization') is None:
+        return 'Organization name cannot be empty'
     # days should be formatted correctly
     if not days.match(row.get('Days')):
         return 'Days column not properly formatted'
@@ -561,7 +570,6 @@ def bulk_update(filename):
                     group_id = group_to_id.get(group)
                     if not group_id:
                         group_to_id[group] = groups + 1
-                        print('Group not in database... adding')
                         groups += 1
                         # add to db
                         insert_stmt = text('INSERT INTO people_groups '
@@ -578,6 +586,9 @@ def bulk_update(filename):
                         .filter(Organization.org_name.ilike(
                         row.get('Organization')))
                     res = query.first()
+
+                    # zip code should be 5 digits
+                    row['Zip Code'] = row.get('Zip Code').zfill(5)
 
                     # if organization not in database, add it, else
                     # save the org_id
@@ -633,7 +644,6 @@ def bulk_update(filename):
                             '-' + date
                     else:
                         row['Start Date'] = '1970-01-01'
-                        print('default')
                     if row.get('End Date'):
                         temp = row.get('End Date').split('/')
                         month = str(temp[0]).zfill(2)
